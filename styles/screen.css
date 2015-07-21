@@ -1,0 +1,25 @@
+/* Over-ride shel branding bar */
+.sapMShellBrandingBar {
+  display: none;
+}
+
+.ffaLoginPageDashBg {
+  background: -moz-linear-gradient(-45deg, #35b8b0 0%, #1c799d 100%);
+  background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,#35b8b0), color-stop(100%,#1c799d));
+  background: -webkit-linear-gradient(-45deg, #35b8b0 0%,#1c799d 100%);
+  background: -o-linear-gradient(-45deg, #35b8b0 0%,#1c799d 100%);
+  background: -ms-linear-gradient(-45deg, #35b8b0 0%,#1c799d 100%);
+  background: linear-gradient(135deg, #35b8b0 0%,#1c799d 100%);
+}
+
+.ffaLoginPageDashBg:before {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  background: url(../images/pattern.png);
+}

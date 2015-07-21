@@ -1,0 +1,13 @@
+<mvc:View
+	controllerName="view.NotFound" 
+	height="100%"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m">
+	<MessagePage 
+  		showHeader="true"
+  		showNavButton="true"
+		navButtonPress="onBackPressed"
+		title="Oops... couldn't find that particular page"
+		text="Sorry about that - it appears that page has gone walk-about; please navigate backwards and try another page...">
+  	</MessagePage>
+</mvc:View>

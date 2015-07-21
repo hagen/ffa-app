@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta charset="UTF-8">
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="viewport" content="minimal-ui">
+		<link rel="shortcut icon" href="images/favicon.png"/>
+		<link rel="apple-touch-icon" href="images/touch-icon-ipad.png">
+		<link rel="apple-touch-icon" sizes="76x76" href="images/touch-icon-ipad.png">
+		<link rel="apple-touch-icon" sizes="120x120" href="images/touch-icon-iphone-retina.png">
+		<link rel="apple-touch-icon" sizes="152x152" href="images/touch-icon-ipad-retina.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="images/touch-icon-ipad-plus.png">
+
+		<title>App Portfolio Login</title>
+
+		<!-- UI5 Bootstrap with SAPUI5 -->
+		<script
+			type="text/javascript"
+			id="sap-ui-bootstrap"
+			src="../openui5-runtime-1.28.11/resources/sap-ui-core.js"
+			data-sap-ui-theme="sap_bluecrystal"
+			data-sap-ui-xx-bindingSyntax="complex"
+			data-sap-ui-libs="sap.m"
+			data-sap-ui-resourceroots='{
+				"com.ffa.dash": "./",
+				"view" : "./view",
+				"util" : "./util",
+				"thirdparty" : "./thirdparty"
+			}'>
+		</script>
+
+		<script>
+			sap.ui.getCore().attachInit(function() {
+				new sap.m.Shell({
+					app: new sap.ui.core.ComponentContainer({
+						id: "idAppComponent",
+						height: "100%",
+						name: "com.ffa.dash"
+					})
+				}).placeAt("content");
+			});
+		</script>
+
+		<link rel="stylesheet" type="text/css" href="styles/screen.css">
+	</head>
+
+	<body class="sapUiBody" id="content">
+	</body>
+
+</html>
