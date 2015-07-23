@@ -1,0 +1,209 @@
+<mvc:View
+	controllerName="view.Login"
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:l="sap.ui.layout"
+  xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core"
+	xmlns:html="http://www.w3.org/1999/xhtml">
+	<Page
+		id="idLoginPage"
+		enableScrolling="false"
+		showHeader="false"
+		showNavButton="false"
+		class="ffaLoginPageDashBg">
+		<content>
+			<!-- Spiders animation by GreenSock.com -->
+			<html:canvas id="idSpiders" class="spiders" />
+			<!-- Main login content -->
+			<html:div
+				id="idDivLoginPanelWrapper"
+				class="ffaPanelCenter">
+				<IconTabBar
+					id="idSignInIconTabBar"
+					expanded="true"
+					select="onTabSelect"
+					applyContentPadding="false">
+					<items>
+						<IconTabFilter
+							key="signin"
+							text="Sign in">
+							<l:Grid
+								defaultSpan="L12 M12 S12"
+								width="auto">
+								<l:content>
+									<f:SimpleForm
+										id="idLoginForm"
+										maxContainerCols="2"
+										editable="true"
+										layout="ResponsiveGridLayout"
+										labelSpanL="3"
+										labelSpanM="3"
+										emptySpanL="4"
+										emptySpanM="4"
+										columnsL="1"
+										columnsM="1"
+										class="editableForm">
+										<f:content>
+											<Input
+												type="Email"
+												value=""
+												placeholder="E-mail" />
+											<Input
+												type="Password"
+												value=""
+												placeholder="Password" />
+											<CheckBox
+												id="idLoginCheckbox"
+												text="Remember me"
+												textAlign="Begin">
+												<layoutData>
+													<l:GridData
+														span="L6 M6 S6" />
+												</layoutData>
+											</CheckBox>
+											<Button
+												id="idLoginButton"
+												text="SIGN IN"
+												type="Emphasized"
+												class="ffaLoginButton">
+												<layoutData>
+													<l:GridData
+														span="L6 M6 S6" />
+												</layoutData>
+											</Button>
+										</f:content>
+									</f:SimpleForm>
+								</l:content>
+							</l:Grid>
+						</IconTabFilter>
+
+						<IconTabFilter
+							key="register"
+							text="Register">
+							<l:Grid
+								defaultSpan="L12 M12 S12"
+								width="auto">
+								<l:content>
+									<f:SimpleForm
+										id="idRegisterForm"
+										maxContainerCols="2"
+										editable="true"
+										layout="ResponsiveGridLayout"
+										labelSpanL="3"
+										labelSpanM="3"
+										emptySpanL="4"
+										emptySpanM="4"
+										columnsL="1"
+										columnsM="1"
+										class="editableForm">
+										<f:content>
+											<Input
+												id="idFirstNameInput"
+												value=""
+												placeholder="First name">
+												<layoutData>
+													<l:GridData
+														span="L6 M6 S6" />
+												</layoutData>
+											</Input>
+											<Input
+												id="idLastNameInput"
+												value=""
+												placeholder="Last name">
+												<layoutData>
+													<l:GridData
+														span="L6 M6 S6" />
+												</layoutData>
+											</Input>
+											<Input
+												id="idRegisterEmail"
+												value=""
+												type="Email"
+												placeholder="E-mail"
+												change="onRegisterEmailChange">
+												<layoutData>
+													<l:GridData
+														span="L12 M12 S12" />
+												</layoutData>
+											</Input>
+											<Input
+												id="idRegisterPassword"
+												type="Password"
+												value=""
+												placeholder="Password">
+												<layoutData>
+													<l:GridData
+														span="L12 M12 S12" />
+												</layoutData>
+											</Input>
+											<CheckBox
+												id="idShowPasswordCheckbox"
+												text="Show password"
+												textAlign="Begin"
+												select="onShowPasswordCheckBoxSelect">
+												<layoutData>
+													<l:GridData
+														span="L6 M6 S6" />
+												</layoutData>
+											</CheckBox>
+											<Button
+												id="idRegisterButton"
+												text="REGISTER"
+												type="Emphasized"
+												class="ffaLoginButton"
+												press="onRegisterButtonPress">
+												<layoutData>
+													<l:GridData
+														span="L6 M6 S6" />
+												</layoutData>
+											</Button>
+										</f:content>
+									</f:SimpleForm>
+								</l:content>
+							</l:Grid>
+						</IconTabFilter>
+					</items>
+				</IconTabBar>
+				<l:Grid
+					defaultSpan="L6 M6 S12"
+					width="auto">
+					<l:content>
+						<Title
+							id="idLoginSeparator"
+							text="OR"
+							level="H4"
+							textAlign="Center"
+							titleStyle="H4"
+							width="100%">
+							<layoutData>
+								<l:GridData
+									span="L12 M12 S12" />
+							</layoutData>
+						</Title>
+						<Button
+							id="idLoginButtonGoogle"
+							icon="sap-icon://socicon/google"
+							text="Log in with Google"
+							class="ffaLoginButtonGoogle" />
+						<Button
+							id="idLoginButtonLinkedIn"
+							icon="sap-icon://socicon/linkedin"
+							text="Log in with LinkedIn"
+							class="ffaLoginButtonLinkedIn"/>
+						<Button
+							id="idLoginButtonScn"
+							icon="sap-icon://sap-logo-shape"
+							text="Log in with SCN"
+							class="ffaLoginButtonScn"/>
+						<Button
+							id="idLoginButtonTwitter"
+							icon="sap-icon://socicon/twitter"
+							text="Log in with Twitter"
+							class="ffaLoginButtonTwitter" />
+					</l:content>
+				</l:Grid>
+			</html:div>
+		</content>
+	</Page>
+</mvc:View>

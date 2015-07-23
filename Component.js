@@ -25,10 +25,15 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component",{
 				clearTarget : false,
 				transition : "slide"
 			},
-			routes : [ {
-				pattern : "",
-				name : "home",
-				view : "Home",
+			routes : [{
+				pattern : "plans",
+				name : "plans",
+				view : "Plans",
+				viewLevel: 2
+			},{
+				pattern : ":tab:",
+				name : "login",
+				view : "Login",
 				viewLevel: 1
 			},{
 				name : "catchallMaster",

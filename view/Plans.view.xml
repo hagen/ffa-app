@@ -1,18 +1,22 @@
 <mvc:View
-	controllerName="view.Home"
+	controllerName="view.Plans"
 	xmlns="sap.m"
 	xmlns:mvc="sap.ui.core.mvc"
 	xmlns:html="http://www.w3.org/1999/xhtml">
 	<Page
-		id="idHomePage"
+		id="idPlansPage"
 		enableScrolling="false"
 		showHeader="false"
 		showNavButton="false"
 		class="ffaLoginPageDashBg">
 		<content>
-			<!-- Animation by GreenSock.com -->
+			<!-- Spiders animation by GreenSock.com -->
 			<html:canvas id="idSpiders" class="spiders" />
-			<Text text="We're live!" />
+			<!-- Main login content -->
+			<html:div
+				id="idDivPlansPanelWrapper"
+				class="ffaCanvasLift">
+			</html:div>
 		</content>
 	</Page>
 </mvc:View>
