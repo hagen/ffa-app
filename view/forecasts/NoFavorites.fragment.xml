@@ -1,0 +1,13 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core">
+	<!-- TODO localisation of text -->
+	<MessagePage
+		id="idNoFavoritesMessagePage"
+		icon="sap-icon://favorite"
+		class="ffaNoFavouritesYellowIcon"
+		showHeader="false"
+		showNavButton="false"
+		description="Favourite forecasts you want to find later"
+		text="You don't have any favourites" /> <!-- TODO Localisation -->
+</core:FragmentDefinition>

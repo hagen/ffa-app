@@ -1,0 +1,11 @@
+<core:FragmentDefinition
+  xmlns="sap.m"
+  xmlns:core="sap.ui.core">
+  <BusyDialog
+    id="idDataSetBusyDialog"
+    cancelButtonText="Cancel"
+    showCancelButton="true"
+    text=""
+    title="">    
+  </BusyDialog>
+</core:FragmentDefinition>

@@ -1,0 +1,30 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc"
+  xmlns:l="sap.ui.layout"
+  xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core">
+  <!-- Google Sheets configuration page -->
+  <Dialog
+    id="idDimensionDataTypeDialog"
+    title="Change data type"
+    class="sapUiPopupWithPadding">
+    <endButton>
+      <Button
+        text="Cancel"
+        press="onDimensionDataTypeDialogClose" />
+    </endButton>
+    <content>
+			<SelectList
+				id="idDimensionDataTypeSelectList"
+				selectionChange="onDimensionTypeSelectChanged">
+				<items>
+					<core:Item key="text" text="Text" />
+					<core:Item key="number" text="Number" />
+					<core:Item key="decimal" text="Decimal" />
+					<core:Item key="date" text="Date" />
+				</items>
+    </SelectList>
+    </content>
+  </Dialog>
+</core:FragmentDefinition>

@@ -1,0 +1,38 @@
+<mvc:View
+	controllerName="view.plans.Plans"
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:l="sap.ui.layout"
+	xmlns:html="http://www.w3.org/1999/xhtml">
+	<Page
+		id="idPlansPage"
+		enableScrolling="false"
+		showHeader="false"
+		showNavButton="false"
+		class="ffaPlansPageDashBg">
+		<content>
+			<!-- Spiders animation by GreenSock.com -->
+			<html:canvas id="idSpiders" class="spiders" />
+			<!-- Main login content -->
+			<html:div
+				id="idDivPlansPanelWrapper"
+				class="ffaPlansPanelCenter">
+				<TileContainer
+					id="idPlansTileContainer"
+					allowAdd="false"
+					editable="false"
+					tiles="{plans>/}">
+					<StandardTile
+						icon="sap-icon://{plans>icon}"
+						info="{plans>plan}"
+						infoState="None"
+						type="{plans>tile}"
+						number="{plans>price}"
+						numberUnit="{plans>unit}"
+						title="{plans>title}"
+						press="onPlansTilePress"/>
+				</TileContainer>
+			</html:div>
+		</content>
+	</Page>
+</mvc:View>

@@ -1,0 +1,48 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m">
+  <Table
+    growing="false"
+    id="idDataSetDefinitionTable"
+    inset="false"
+    items="{
+      path: 'dataset>Dimensions',
+      sorter: { path: 'index' }
+    }"
+    noDataText="No Definition defined..."
+    class="sapUiContentPadding ffaDataSetDefinitionTable">
+    <headerToolbar>
+      <Toolbar>
+        <Label  text="Data set definition"/>
+      </Toolbar>
+    </headerToolbar>
+    <columns>
+      <Column hAlign="Left">
+        <Text  text="Field name"/>
+      </Column>
+      <Column hAlign="Left">
+        <Text  text="Type"/>
+      </Column>
+      <Column hAlign="Right">
+        <Text  text="Length"/>
+      </Column>
+      <Column hAlign="Left">
+        <Text  text="Contains nulls"/>
+      </Column>
+      <Column hAlign="Right">
+        <Text  text="Position (index)"/>
+      </Column>
+    </columns>
+    <items>
+      <ColumnListItem>
+        <cells>
+          <Text  text="{dataset>name}"/>
+          <Link
+            text="{= ${dataset>type}.charAt(0).toUpperCase() + ${dataset>type}.slice(1) }"
+            press="onDataSetDefinitionTypeLinkPress"/>
+          <ObjectNumber  number="{dataset>length}"/>
+          <Text  text="{= ${dataset>nullable} === 'X' ? 'Yes' : 'No' }"/>
+          <ObjectNumber  number="{= ${dataset>index} + 1 }"/>
+        </cells>
+      </ColumnListItem>
+    </items>
+  </Table>
+</core:FragmentDefinition>

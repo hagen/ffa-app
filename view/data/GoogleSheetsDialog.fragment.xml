@@ -1,0 +1,94 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+  xmlns:l="sap.ui.layout"
+  xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core">
+  <!-- Google Sheets configuration page -->
+  <Dialog
+    id="idDataSetGoogleSheetsDialog"
+    title="Google Sheets"
+    class="sapUiPopupWithPadding">
+    <beginButton>
+      <Button
+        text="Save"
+        press="onGoogleSheetsSavePress"
+        type="Emphasized"/>
+    </beginButton>
+    <endButton>
+      <Button
+        text="Cancel"
+        press="onGoogleSheetsCancelPress" />
+    </endButton>
+    <content>
+      <l:Grid
+        defaultSpan="L12 M12 S12"
+        width="auto">
+        <l:content>
+          <f:SimpleForm
+            id="idGoogleSheetsConfigForm"
+            maxContainerCols="2"
+            editable="true"
+            layout="ResponsiveGridLayout"
+            labelSpanL="3"
+            labelSpanM="3"
+            emptySpanL="4"
+            emptySpanM="4"
+            columnsL="1"
+            columnsM="1"
+            class="editableForm">
+            <f:content>
+							<Label
+                for="idGoogleSheetsName"
+                text="Data set name"
+								required="true">
+								<layoutData>
+									<l:GridData
+										span="L12 M12 S12" />
+								</layoutData>
+							</Label>
+              <Input
+                id="idGoogleSheetsName">
+								<layoutData>
+									<l:GridData
+										span="L12 M12 S12" />
+								</layoutData>
+							</Input>
+              <Label
+                for="idGoogleSheetsKey"
+                text="Google Sheets Key"
+								required="true">
+								<layoutData>
+									<l:GridData
+										span="L12 M12 S12" />
+								</layoutData>
+							</Label>
+              <Input
+                id="idGoogleSheetsKey">
+								<layoutData>
+									<l:GridData
+										span="L11 M11 S11" />
+								</layoutData>
+							</Input>
+							<core:Icon
+								id="idGoogleSheetsHelpIcon"
+								src="sap-icon://question-mark"
+								size="2.4rem"
+								activeColor="#007cc0"
+								hoverColor="#007cc0"
+								press="onGoogleSheetsHelpIconPress">
+								<core:layoutData>
+									<l:GridData
+										span="L1 M1 S1" />
+								</core:layoutData>
+							</core:Icon>
+							<CheckBox
+								id="idGoogleSheetsHeadersCheckbox"
+								selected="true"
+								text="Spreadsheet has headers?"/>
+            </f:content>
+          </f:SimpleForm>
+        </l:content>
+      </l:Grid>
+    </content>
+  </Dialog>
+</core:FragmentDefinition>

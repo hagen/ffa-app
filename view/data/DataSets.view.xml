@@ -1,0 +1,193 @@
+<mvc:View
+	controllerName="view.data.DataSets"
+	xmlns="sap.m"
+  xmlns:l="sap.ui.layout"
+  xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core"
+	xmlns:mvc="sap.ui.core.mvc">
+	<SplitContainer
+		id="idDataSetsSplitContainer">
+    <masterPages>
+      <Page
+        id="idDataSetsMasterPage"
+				title="Data sets"
+				showHeader="true">
+				<customHeader>
+					<Toolbar
+						id="idDataSetsMasterToolbar">
+						<Button
+							id="idDataSetsMasterHomeButton"
+							icon="sap-icon://home"
+							press="onNavBackPress" />
+						<Title
+							id="idDataSetsMasterTitle"
+							textAlign="Center"
+							text="Data sets"
+							width="100%"/>
+						<!-- This button is only activated when navigating through folders -->
+						<Button
+							id="idDataSetsMasterUpButton"
+							icon=""
+							text=""
+							press="onMasterUpPress" />
+					</Toolbar>
+				</customHeader>
+				<footer>
+					<Toolbar
+						id="idDataSetsMasterFooterToolbar">
+						<Button
+							id="idDataSetMasterEditButton"
+							text="Edit"
+							press="onMasterEditButtonPress" />
+						<Button
+							id="idDataSetMasterDoneButton"
+							text="Done"
+							visible="false"
+							press="onMasterDoneButtonPress" />
+						<ToolbarSpacer />
+						<Button
+							id="idDataSetMasterAddButton"
+							icon="sap-icon://add"
+							press="onMasterAddButtonPress" />
+					</Toolbar>
+				</footer>
+				<content>
+					<!-- TODO Localisation for no data text -->
+					<List
+						id="idDataSetMasterList"
+						enableBusyIndicator="true"
+						noDataText="Alas... we are without datasets"
+						mode="SingleSelectMaster"
+						delete="onDataSetListItemDeletePress"
+						items="{
+							path: 'dataset>/DataSets',
+							parameters : {
+								expand : 'DataSource'
+							},
+							sorter : [{
+								path : 'DataSource/name',
+								descending : false,
+								group : true
+							}],
+							filters : [{
+								path : 'endda',
+								operator : 'EQ',
+								value1: '9999-12-31'
+							}],
+							groupHeaderFactory : '.getDataSetGroupHeader'
+						}"
+						itemPress="onListItemPress">
+						<StandardListItem
+							adaptTitleSize="true"
+							icon="sap-icon://{dataset>DataSource/icon}"
+							title="{dataset>name}"
+							type="Active" />
+					</List>
+				</content>
+      </Page>
+    </masterPages>
+    <detailPages>
+			<!-- TODO localisation of text -->
+			<MessagePage
+				id="idDataSetsMessagePage"
+				icon="sap-icon://message-information"
+				showHeader="false"
+				showNavButton="false"
+				text="Begin by selecting one of your glorious data sets..."
+				title="Data set workbench">
+				<customDescription>
+					<Link
+						id="idMessagePageLink"
+						text="or create one now"
+						press="onMasterAddButtonPress"/>
+				</customDescription>
+			</MessagePage>
+
+			<!-- Google Data Set details page -->
+      <Page
+        id="idDataSetDetailPageGoogle"
+				showHeader="true"
+				showNavButton="{device>isPhone}"
+				navButtonPress="onNavBackPress"
+				title="Google Sheets">
+				<content>
+					<l:Grid
+		        defaultSpan="L12 M12 S12"
+						class="sapUiSmallMarginTop"
+		        width="auto">
+		        <l:content>
+		          <f:SimpleForm
+		            id="idGoogleSheetsConfigForm"
+		            maxContainerCols="2"
+		            editable="true"
+		            layout="ResponsiveGridLayout"
+		            labelSpanL="2"
+		            labelSpanM="2"
+		            emptySpanL="4"
+		            emptySpanM="4"
+		            columnsL="1"
+		            columnsM="1"
+		            class="editableForm">
+		            <f:content>
+									<Label
+		                for="idGoogleSheetsName"
+		                text="Data set name">
+										<layoutData>
+											<l:GridData
+												span="L2 M2 S12" />
+										</layoutData>
+									</Label>
+		              <Input
+		                id="idGoogleSheetsName"
+										value="{dataset>name}"
+        						enabled="false">
+										<layoutData>
+											<l:GridData
+												span="L10 M10 S12" />
+										</layoutData>
+									</Input>
+		              <Label
+		                for="idGoogleSheetsKey"
+		                text="Key">
+										<layoutData>
+											<l:GridData
+												span="L2 M2 S12" />
+										</layoutData>
+									</Label>
+		              <Input
+		                id="idGoogleSheetsKey"
+										value="{dataset>Google/key}"
+        						enabled="false">
+										<layoutData>
+											<l:GridData
+												span="L10 M10 S12" />
+										</layoutData>
+									</Input>
+									<Label
+		                for="idGoogleSheetsHeadersCheckbox"
+		                text=""><!-- empty text -->
+										<layoutData>
+											<l:GridData
+												span="L2 M2 S12" />
+										</layoutData>
+									</Label>
+									<CheckBox
+										id="idGoogleSheetsHeadersCheckbox"
+										selected="{= ${dataset>Google/headers} === 'X' ? true : false }"
+										enabled="false"
+										text="Spreadsheet has headers?">
+										<layoutData>
+											<l:GridData
+												span="L10 M10 S12" />
+										</layoutData>
+									</CheckBox>
+		            </f:content>
+		          </f:SimpleForm>
+		        </l:content>
+		      </l:Grid>
+					<core:Fragment fragmentName="view.data.Definition" type="XML" />
+				</content>
+      </Page>
+    </detailPages>
+	</SplitContainer>
+</mvc:View>
