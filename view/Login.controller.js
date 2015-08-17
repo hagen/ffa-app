@@ -1,4 +1,5 @@
 jQuery.sap.declare("view.Login");
+jQuery.sap.require("thirdparty.spiders.Spiders");
 
 // Provides controller view.Login
 sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
@@ -14,6 +15,9 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
 	 */
 	Login.prototype.onInit = function() {
 		this.getRouter().getRoute("login").attachPatternMatched(this._onRouteMatched, this);
+		sap.ui.core.IconPool.addIcon("google", "socicon", { fontFamily: "socicon", content: "0063" });
+		sap.ui.core.IconPool.addIcon("twitter", "socicon", { fontFamily: "socicon", content: "0061" });
+		sap.ui.core.IconPool.addIcon("linkedin", "socicon", { fontFamily: "socicon", content: "006A" });
 	};
 
 	/**
@@ -32,9 +36,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
 	 * On after rendering - the DOM is now built. Add in our 'New region' tile
 	 * at the beginning of the tile container
 	 */
-	Login.prototype.onAfterRendering = function() {
-		jQuery.sap.require("thirdparty.spiders.Spiders");
-	};
+	Login.prototype.onAfterRendering = function() {};
 
 	/**
 	 * Route matched handler...
@@ -83,7 +85,6 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
 		var oInput = oEvent.getSource();
 		var sEmail = oEvent.getParameter("value");
 		var sState = sap.ui.core.ValueState.Warning;
-
 		// TODO Localisation
 		var sText = "An account activation e-mail will be sent to this email";
 
@@ -118,29 +119,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
 	};
 
 	/**
-	 * When login is pressed, we validate the username and password
-	 * combination, and navigate to the dash.
-	 * @param  {object} oEvent button press event
-	 */
-	Login.prototype.onSignInButtonPress = function(oEvent) {
-		// Show that we are very busy
-		if (!this._oBusyDialog) {
-			this._oBusyDialog = sap.ui.xmlfragment("view.BusyDialog", this);
-			this.getView().addDependent(this._oBusyDialog);
-		}
-		this._oBusyDialog.open();
-
-		// We're gong to pause for a second...
-		jQuery.sap.delayedCall(2000, this, function () {
-			// And navigate to plans
-			this.getRouter().navTo("dash", {}, !sap.ui.Device.system.phone);
-			this._oBusyDialog.close();
-		});
-	};
-
-	/**
 	 * Register button. Wait a second, someone wants to register?!?! Yippee!!!
-	 * @param  {object} oEvent button event
 	 */
 	Login.prototype.onRegisterButtonPress = function(oEvent) {
 		// Show that we are very busy

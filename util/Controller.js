@@ -1,7 +1,7 @@
 jQuery.sap.declare("com.ffa.dash.util.Controller");
 
 // Provides controller util.Controller
-sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
+sap.ui.define(['jquery.sap.global','sap/ui/core/mvc/Controller'],
 	function(jQuery, MvcController) {
 	"use strict";
 
@@ -21,45 +21,6 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
 	 */
 	Controller.prototype.getRouter = function () {
 		return sap.ui.core.UIComponent.getRouterFor(this);
-	};
-
-	/**
-	 * Simple MessageBox error
-	 */
-	Controller.prototype.showErrorAlert = function(sMessage, sTitle, bCompact) {
-		jQuery.sap.require("sap.m.MessageBox");
-		sap.m.MessageBox.alert(sMessage, {
-	        icon: sap.m.MessageBox.Icon.ERROR,
-	        title: (sTitle ? sTitle : "Alert"),
-	        actions: [sap.m.MessageBox.Action.CLOSE],
-	        styleClass: bCompact? "sapUiSizeCompact" : ""
-	      });
-	};
-
-	/**
-	 * Simple MessageBox info alert
-	 */
-	Controller.prototype.showInfoAlert = function(sMessage, sTitle, bCompact) {
-		jQuery.sap.require("sap.m.MessageBox");
-		sap.m.MessageBox.show(sMessage, {
-	        icon: sap.m.MessageBox.Icon.INFORMATION,
-	        title: (sTitle ? sTitle : "Information"),
-	        actions: [sap.m.MessageBox.Action.OK],
-	        styleClass: bCompact? "sapUiSizeCompact" : ""
-	      });
-	};
-
-	/**
-	 * Simple MessageBox success alert
-	 */
-	Controller.prototype.showSuccessAlert = function(sMessage, sTitle, bCompact) {
-		jQuery.sap.require("sap.m.MessageBox");
-		sap.m.MessageBox.show(sMessage, {
-	        icon: sap.m.MessageBox.Icon.SUCCESS,
-	        title: (sTitle ? sTitle : "Success"),
-	        actions: [sap.m.MessageBox.Action.CLOSE],
-	        styleClass: bCompact? "sapUiSizeCompact" : ""
-	      });
 	};
 
 	/**

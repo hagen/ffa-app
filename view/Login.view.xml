@@ -18,7 +18,7 @@
 			<!-- Main login content -->
 			<html:div
 				id="idDivLoginPanelWrapper"
-				class="ffaLoginPanelCenter">
+				class="ffaPanelCenter">
 				<IconTabBar
 					id="idSignInIconTabBar"
 					expanded="true"
@@ -66,8 +66,7 @@
 												id="idLoginButton"
 												text="SIGN IN"
 												type="Emphasized"
-												class="ffaLoginButton"
-												press="onSignInButtonPress">
+												class="ffaLoginButton">
 												<layoutData>
 													<l:GridData
 														span="L6 M6 S6" />
@@ -184,23 +183,23 @@
 						</Title>
 						<Button
 							id="idLoginButtonGoogle"
-							icon="sap-icon://FontAwesome/google"
-							text="Sign in with Google"
+							icon="sap-icon://socicon/google"
+							text="Log in with Google"
 							class="ffaLoginButtonGoogle" />
 						<Button
 							id="idLoginButtonLinkedIn"
-							icon="sap-icon://FontAwesome/linkedin"
-							text="Sign in with LinkedIn"
+							icon="sap-icon://socicon/linkedin"
+							text="Log in with LinkedIn"
 							class="ffaLoginButtonLinkedIn"/>
 						<Button
 							id="idLoginButtonScn"
 							icon="sap-icon://sap-logo-shape"
-							text="Sign in with SCN"
+							text="Log in with SCN"
 							class="ffaLoginButtonScn"/>
 						<Button
 							id="idLoginButtonTwitter"
-							icon="sap-icon://FontAwesome/twitter"
-							text="Sign in with Twitter"
+							icon="sap-icon://socicon/twitter"
+							text="Log in with Twitter"
 							class="ffaLoginButtonTwitter" />
 					</l:content>
 				</l:Grid>
