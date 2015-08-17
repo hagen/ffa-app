@@ -1,0 +1,132 @@
+<mvc:View controllerName="view.forecasts.Forecasts" xmlns:chart="thirdparty.chartjs" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m">
+  <Page enableScrolling="false" id="idForecastCarouselPage" navButtonPress="onNavBackPress" showNavButton="true" title="{forecast>name}">
+    <footer>
+      <Toolbar design="Transparent">
+        <ToolbarSpacer/>
+        <SegmentedButton id="idForecastSegmentedButton" select="onSegmentedButtonSelect">
+          <Button id="idCarouselDatasetButton" text="Data set" width="100px">
+            <customData>
+              <core:CustomData key="tab" value="dataset"/>
+            </customData>
+          </Button>
+          <Button id="idCarouselOverviewButton" text="Overview" width="100px">
+            <customData>
+              <core:CustomData key="tab" value="overview"/>
+            </customData>
+          </Button>
+          <Button id="idCarouselVizButton" text="Viz" width="100px">
+            <customData>
+              <core:CustomData key="tab" value="viz"/>
+            </customData>
+          </Button>
+          <Button id="idCarouselTableButton" text="Table" width="100px">
+            <customData>
+              <core:CustomData key="tab" value="table"/>
+            </customData>
+          </Button>
+        </SegmentedButton>
+        <ToolbarSpacer/>
+      </Toolbar>
+    </footer>
+    <content>
+      <Carousel id="idForecastCarousel" pageChanged="onPageChanged" showPageIndicator="false">
+        <pages>
+          <Page enableScrolling="false" id="idCarouselDatasetPage" showHeader="false" title="Data set">
+            <customData>
+              <core:CustomData key="tab" value="dataset"/>
+            </customData>
+            <content>
+              <Text text="Data set page"/>
+            </content>
+          </Page>
+
+          <Page enableScrolling="true" id="idCarouselOverviewPage" showHeader="false" title="Forecast">
+            <customData>
+              <core:CustomData key="tab" value="overview"/>
+            </customData>
+            <content>
+              <ObjectHeader class="ffaTitleLoading" condensed="false" id="idOverviewHeader" intro="{forecast>name}" number="{forecast>horizon}" numberState="Success" numberUnit="day forecast" title="{forecast>name}" titleActive="true"
+                titlePress="onForecastNamePress">
+<!--<customData>
+									<core:CustomData key="running" value="{= ${Running/RUNNING} === 'X' ? 'true' : 'false' }" writeToDom="true" />
+								</customData>-->
+                <attributes>
+                  <ObjectAttribute active="false" text="{ path: 'forecast>train_to', formatter : '.nextDay' }" title="Effective as of"/>
+                  <ObjectAttribute active="false" text="{ path: 'forecast>train_from', type: 'sap.ui.model.type.Date', formatOptions : { pattern : 'dd/MM/yyyy' } }" title="Training from"/>
+                </attributes>
+                <statuses>
+                  <ObjectStatus state="None" text="{ path: 'MEDIAN_APE', type: 'sap.ui.model.type.Float' }" title="Median APE"/>
+                  <ObjectStatus state="None" text="{ path: 'MEAN_APE', type: 'sap.ui.model.type.Float' }" title="Mean APE"/>
+                </statuses>
+              </ObjectHeader>
+
+              <List enableBusyIndicator="true" headerText="Run history" id="idForecastRunList" itemPress="onRunListItemPress" items="{ path : 'forecast>Runs', parameters : { expand : 'Diagnostics' }, filters : '', sorter : { path : 'run_at', descending : true } }"
+                mode="SingleSelectMaster" noDataText="This forecast hasn't yet been run">
+                <StandardListItem adaptTitleSize="true" counter="{forecast>Diagnostics/horizon}" info="Horizon (days):" title="{ path: 'forecast>run_at', type: 'sap.ui.model.type.Date', formatOptions : { pattern : 'dd/MM/yyyy' } }" type="Active"/>
+              </List>
+            </content>
+          </Page>
+
+          <Page class="sapUiContentPadding" enableScrolling="false" id="idCarouselVizPage" showHeader="false" title="Visualisation">
+            <customData>
+              <core:CustomData key="tab" value="viz"/>
+            </customData>
+            <content>
+              <chart:ChartJs
+                id="idVizChartJs"/>
+            </content>
+          </Page>
+
+          <Page enableScrolling="false" id="idCarouselTablePage" showHeader="false" title="Tables">
+            <customData>
+              <core:CustomData key="tab" value="table"/>
+            </customData>
+            <content>
+              <Table
+								growing="false"
+								id="idForecastDataTable"
+								inset="false"
+								items="{
+									path: 'Data',
+									sorter: {
+										path: 'date',
+										descending : false
+									}
+								}">
+                <headerToolbar>
+                  <Toolbar>
+                    <Label text="Forecast data"/>
+                    <ToolbarSpacer/>
+                    <Button icon="sap-icon://drop-down-list" press="onDataTableSettingsPress"/>
+                    <Button enabled="{device>/isDesktop}" icon="sap-icon://download" press="onDataExport"/>
+                  </Toolbar>
+                </headerToolbar>
+                <columns>
+                  <Column hAlign="Left">
+                    <Text text="Date"/>
+                  </Column>
+                  <Column demandPopin="true" hAlign="Right" minScreenWidth="Tablet">
+                    <Text text="Forecast value"/>
+                  </Column>
+                </columns>
+                <items>
+                  <ColumnListItem>
+                    <cells>
+                      <Text text="{
+												path: 'forecast>date',
+												type: 'sap.ui.model.type.Date', formatOptions : { pattern : 'dd/MM/yyyy' } }"/>
+                      <ObjectNumber number="{
+												path: 'forecast>value',
+												type: 'sap.ui.model.type.Float'
+											}"/>
+                    </cells>
+                  </ColumnListItem>
+                </items>
+              </Table>
+            </content>
+          </Page>
+        </pages>
+      </Carousel>
+    </content>
+  </Page>
+</mvc:View>

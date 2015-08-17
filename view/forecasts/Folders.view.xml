@@ -1,0 +1,72 @@
+<mvc:View
+	controllerName="view.forecasts.Folders"
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:mvc="sap.ui.core.mvc">
+	<NavContainer
+		id="idFoldersNavContainer"
+		defaultTransitionName="slide">
+		<pages>
+			<Page
+				id="idFoldersPage"
+				title="/"
+				enableScrolling="false"
+				showNavButton="false">
+				<footer>
+					<Toolbar>
+						<Button
+							id="idFolderEditButton"
+							text="Edit"
+							press="onEditButtonPress">
+							<customData>
+								<core:CustomData key="edit" value="false" writeToDom="false" />
+							</customData>
+						</Button>
+						<ToolbarSpacer />
+						<Button
+							id="idNewFolderButton"
+							icon="sap-icon://add"
+							press="onFoldersAddButtonPress" />
+					</Toolbar>
+				</footer>
+				<content>
+					<TileContainer
+						id="idFoldersTileContainer"
+						tileMove="onTileMove"
+						tileDelete="onTileDelete"
+						allowAdd="false" />
+				</content>
+			</Page>
+
+			<Page
+				id="idForecastsPage"
+				title="/ {forecast>name}"
+				enableScrolling="false"
+				showNavButton="true"
+				navButtonPress="onFolderUpPress">
+				<footer>
+					<Toolbar>
+						<Button
+							text="Edit"
+							press="onEditButtonPress">
+							<customData>
+								<core:CustomData key="edit" value="false" writeToDom="false" />
+							</customData>
+						</Button>
+						<ToolbarSpacer />
+						<Button
+							icon="sap-icon://add"
+							press="onNewForecastPress" />
+					</Toolbar>
+				</footer>
+				<content>
+					<TileContainer
+						id="idForecastsTileContainer"
+						tileMove="onTileMove"
+						tileDelete="onTileDelete"
+						allowAdd="false" />
+				</content>
+			</Page>
+		</pages>
+	</NavContainer>
+</mvc:View>

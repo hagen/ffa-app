@@ -1,0 +1,1 @@
+!function(t){var o;t.wrap(t.Tooltip.prototype,"refresh",function(t){var r=arguments[1],a=this.chart,e=this,i=arguments,p=a.options.tooltip.delayForDisplay;o&&clearTimeout(o),p?o=window.setTimeout(function(){r===a.hoverPoint&&t.apply(e,Array.prototype.slice.call(i,1))},p||1e3):t.apply(e,Array.prototype.slice.call(i,1))})}(Highcharts);

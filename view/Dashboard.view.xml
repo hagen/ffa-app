@@ -1,0 +1,47 @@
+<mvc:View
+	controllerName="view.Dashboard"
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc">
+	<Page
+		id="idDashboardPage"
+		enableScrolling="false"
+		showHeader="false"
+		showNavButton="false">
+		<footer>
+			<Toolbar
+				id="idDashFooterToolbar">
+				<Button
+					icon="sap-icon://settings"
+					press="onSettingsPress"/>
+			</Toolbar>
+		</footer>
+		<content>
+			<TileContainer
+				id="idDashTileContainer"
+				allowAdd="false"
+				editable="false">
+				<StandardTile
+					id="idForecastsTile"
+					icon="sap-icon://kpi-corporate-performance"
+					info="Forecasts"
+					infoState="None"
+					title="Run, edit and view forecasts"
+					press="onForecastsTilePress"/>
+				<StandardTile
+					id="idDatasetsTile"
+					icon="sap-icon://database"
+					info="Data Sets"
+					infoState="None"
+					title="Manage data sets and sources"
+					press="onDatasetsTilePress"/>
+				<StandardTile
+					id="idAlgorithmsTile"
+					icon="sap-icon://syntax"
+					info="Function library"
+					infoState="None"
+					title="Browse forecast function library"
+					press="onAlogrithmsTilePress"/>
+			</TileContainer>
+		</content>
+	</Page>
+</mvc:View>

@@ -1,0 +1,29 @@
+<mvc:View
+	controllerName="view.forecasts.Favorites"
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:mvc="sap.ui.core.mvc">
+	<Page
+		id="idFavoritesPage"
+		title="Favourites"
+		enableScrolling="false"
+		showNavButton="false"
+		navButtonPress="onNavUpPress">
+		<footer>
+			<Toolbar
+				id="idFavoritesToolbar">
+			</Toolbar>
+		</footer>
+		<content>
+			<TileContainer
+				id="idFavoritesTileContainer"
+				allowAdd="false" />
+
+			<!-- No favorites message page -->
+			<core:Fragment
+				id="idNoFavoritesFragment"
+				fragmentName="view.forecasts.NoFavorites"
+				type="XML" />
+		</content>
+	</Page>
+</mvc:View>

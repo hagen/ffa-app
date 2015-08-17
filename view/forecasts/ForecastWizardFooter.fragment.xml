@@ -1,0 +1,14 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core">
+	<Toolbar>
+		<Button
+			text="Cancel"
+			press="onCancelWizardPress" />
+		<ToolbarSpacer />
+		<Button
+			text="Next"
+			type="Emphasized"
+			press="onNextWizardPress" />
+	</Toolbar>
+</core:FragmentDefinition>
