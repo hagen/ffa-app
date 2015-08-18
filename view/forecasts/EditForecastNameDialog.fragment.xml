@@ -1,0 +1,52 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:form="sap.ui.layout.form"
+	xmlns:core="sap.ui.core">
+	<Dialog
+		title="Edit forecast name"
+		horizontalScrolling="false"
+		verticalScrolling="false"
+		showHeader="true">
+		<beginButton>
+			<Button
+				id="idEditForecastNameSaveBtn"
+				text="Save"
+				press="onForecastNameSave"
+				class="ffaEmphasizedBtn"/>
+		</beginButton>
+		<endButton>
+			<Button
+				text="Cancel"
+				press="onForecastNameCancel"/>
+		</endButton>
+		<content>
+			<form:SimpleForm
+				id="idEditForecastForm"
+				minWidth="800"
+				maxContainerCols="1"
+				editable="true"
+				layout="ResponsiveGridLayout"
+				labelSpanL="4"
+				labelSpanM="3"
+				emptySpanL="4"
+				emptySpanM="4"
+				columnsL="1"
+				columnsM="1"
+				class="editableForm">
+				<form:content>
+					<Label
+						for="idEditForecastName"
+						text="Forecast name"
+						required="true"/>
+					<Input
+						id="idEditForecastName"
+						placeholder="Forecast name..."
+						type="Text"
+						maxLength="80"
+						width="100%"
+						value="{forecast>}" />
+				</form:content>
+			</form:SimpleForm>
+		</content>
+	</Dialog>
+</core:FragmentDefinition>
