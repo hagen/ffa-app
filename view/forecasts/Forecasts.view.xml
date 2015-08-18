@@ -1,5 +1,17 @@
 <mvc:View controllerName="view.forecasts.Forecasts" xmlns:chart="thirdparty.chartjs" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m">
-  <Page enableScrolling="false" id="idForecastCarouselPage" navButtonPress="onNavBackPress" showNavButton="true" title="{forecast>name}">
+  <Page
+    enableScrolling="false"
+    id="idForecastCarouselPage"
+    navButtonPress="onNavBackPress"
+    showNavButton="true"
+    title="{forecast>name}">
+    <headerContent>
+      <ToggleButton
+        id="idForecastFavoriteButton"
+        icon="sap-icon://favorite"
+        pressed="{= ${forecast>favorite} === 'X' }"
+        press="onFavoritePress" />
+    </headerContent>
     <footer>
       <Toolbar design="Transparent">
         <ToolbarSpacer/>
@@ -45,7 +57,15 @@
               <core:CustomData key="tab" value="overview"/>
             </customData>
             <content>
-              <ObjectHeader class="ffaTitleLoading" condensed="false" id="idOverviewHeader" intro="{forecast>name}" number="{forecast>horizon}" numberState="Success" numberUnit="day forecast" title="{forecast>name}" titleActive="true"
+              <ObjectHeader
+                condensed="false"
+                id="idOverviewHeader"
+                intro="{forecast>name}"
+                number="{forecast>horizon}"
+                numberState="Success"
+                numberUnit="day forecast"
+                title="{forecast>name}"
+                titleActive="true"
                 titlePress="onForecastNamePress">
 <!--<customData>
 									<core:CustomData key="running" value="{= ${Running/RUNNING} === 'X' ? 'true' : 'false' }" writeToDom="true" />
@@ -60,9 +80,51 @@
                 </statuses>
               </ObjectHeader>
 
-              <List enableBusyIndicator="true" headerText="Run history" id="idForecastRunList" itemPress="onRunListItemPress" items="{ path : 'forecast>Runs', parameters : { expand : 'Diagnostics' }, filters : '', sorter : { path : 'run_at', descending : true } }"
-                mode="SingleSelectMaster" noDataText="This forecast hasn't yet been run">
-                <StandardListItem adaptTitleSize="true" counter="{forecast>Diagnostics/horizon}" info="Horizon (days):" title="{ path: 'forecast>run_at', type: 'sap.ui.model.type.Date', formatOptions : { pattern : 'dd/MM/yyyy' } }" type="Active"/>
+              <List
+                enableBusyIndicator="true"
+                headerText="Run history"
+                id="idForecastRunList"
+                itemPress="onRunListItemPress"
+                items="{
+                  path : 'forecast>Runs',
+                  parameters : {
+                    expand : 'Diagnostics'
+                  },
+                  filters : '',
+                  sorter : {
+                    path : 'run_at',
+                    descending : true
+                  }
+                }"
+                mode="SingleSelectMaster"
+                noDataText="This forecast hasn't yet been run">
+                <headerToolbar>
+                  <Toolbar
+                    id="idRunHistoryToolbar">
+                    <Title
+                      text="Run history" />
+                    <ToolbarSpacer />
+                    <Button
+                      id="idReRunButton"
+                      icon="sap-icon://FontAwesome/play-circle-o"
+                      text="Re-run"
+                      press="onReRunPress" />
+                  </Toolbar>
+                </headerToolbar>
+                <items>
+                  <StandardListItem
+                    adaptTitleSize="true"
+                    counter="{forecast>Diagnostics/horizon}"
+                    info="Horizon (days):"
+                    title="{
+                      path: 'forecast>run_at',
+                      type: 'sap.ui.model.type.Date',
+                      formatOptions : {
+                        pattern : 'dd/MM/yyyy'
+                      }
+                    }"
+                    type="Active"/>
+                </items>
               </List>
             </content>
           </Page>
@@ -77,7 +139,11 @@
             </content>
           </Page>
 
-          <Page enableScrolling="false" id="idCarouselTablePage" showHeader="false" title="Tables">
+          <Page
+            enableScrolling="true"
+            id="idCarouselTablePage"
+            showHeader="false"
+            title="Tables">
             <customData>
               <core:CustomData key="tab" value="table"/>
             </customData>
@@ -87,7 +153,7 @@
 								id="idForecastDataTable"
 								inset="false"
 								items="{
-									path: 'Data',
+									path: 'forecast>Data',
 									sorter: {
 										path: 'date',
 										descending : false
@@ -95,7 +161,13 @@
 								}">
                 <headerToolbar>
                   <Toolbar>
-                    <Label text="Forecast data"/>
+                    <Title text="Forecast data (generated {
+                      path : 'forecast>run_at',
+                      type: 'sap.ui.model.type.Date',
+                      formatOptions : {
+                        pattern : 'dd/MM/yyyy'
+                      }
+                    })"/>
                     <ToolbarSpacer/>
                     <Button icon="sap-icon://drop-down-list" press="onDataTableSettingsPress"/>
                     <Button enabled="{device>/isDesktop}" icon="sap-icon://download" press="onDataExport"/>
@@ -114,10 +186,17 @@
                     <cells>
                       <Text text="{
 												path: 'forecast>date',
-												type: 'sap.ui.model.type.Date', formatOptions : { pattern : 'dd/MM/yyyy' } }"/>
+												type: 'sap.ui.model.type.Date',
+                        formatOptions : {
+                          pattern : 'dd/MM/yyyy'
+                        }
+                      }"/>
                       <ObjectNumber number="{
 												path: 'forecast>value',
-												type: 'sap.ui.model.type.Float'
+												type: 'sap.ui.model.type.Float',
+                        formatOptions : {
+                          maxFractionDigits : '2'
+                        }
 											}"/>
                     </cells>
                   </ColumnListItem>

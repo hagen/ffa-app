@@ -6,16 +6,42 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/Control", "./library", "./Sourc
       metadata: {
         library: "thirdparty.chartjs",
         properties: {
-          width: { type: "sap.ui.core.CSSSize", group: "Misc", defaultValue: "100%" },
-          height: { type: "sap.ui.core.CSSSize", group: "Misc", defaultValue: "100%" },
-          type: { type: "thirdparty.chartjs.ChartJsType", group: "Misc", defaultValue: thirdparty.chartjs.ChartJsType.Line },
+          width: {
+            type: "sap.ui.core.CSSSize",
+            group: "Misc",
+            defaultValue: "100%"
+          },
+          height: {
+            type: "sap.ui.core.CSSSize",
+            group: "Misc",
+            defaultValue: "100%"
+          },
+          type: {
+            type: "thirdparty.chartjs.ChartJsType",
+            group: "Misc",
+            defaultValue: thirdparty.chartjs.ChartJsType.Line
+          },
           /** late load prevents loading of the chart until programmatically requested */
-          lateLoad : { type : "boolean", group : "Misc", defaultValue : "false" }
+          lateLoad: {
+            type: "boolean",
+            group: "Misc",
+            defaultValue: "false"
+          }
         },
-        defaultAggregation : "datasets",
+        defaultAggregation: "datasets",
         aggregations: {
-          "labels" : { type : "thirdparty.chartjs.Label", mulitple : true, singluarName : "label", bindable : "bindable" },
-          "datasets" : { type : "thirdparty.chartjs.Dataset", multiple : true, singularName : "dataset", bindable : "bindable" }
+          "labels": {
+            type: "thirdparty.chartjs.Label",
+            mulitple: true,
+            singluarName: "label",
+            bindable: "bindable"
+          },
+          "datasets": {
+            type: "thirdparty.chartjs.Dataset",
+            multiple: true,
+            singularName: "dataset",
+            bindable: "bindable"
+          }
         }
       }
     });
@@ -48,22 +74,10 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/Control", "./library", "./Sourc
     };
 
     /**
-     * Before the chart is rendered, we will need to collect our Dataset
-     * data and supply to each data set.
+     * {description}
      * @param  {[type]} oEvent [description]
      */
-    ChartJs.prototype.onBeforeRendering = function(oEvent) {
-      // We have the datasets, and a model to use. Loop through data sets,
-      // and load up the data.
-      var aDatasets = this.getDatasets();
-      var bAsync = aDatasets.length > 5;
-      var oModel = this.getModel();
-
-      // Loop at datasets and load data...
-      jQuery.each(aDatasets, function(i, d) {
-        d.load(oModel);
-      });
-    };
+    ChartJs.prototype.onBeforeRendering = function(oEvent) { };
 
     /**
      * After rendering event; this is leveraged, in the case of ChartJs, to
@@ -94,9 +108,13 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/Control", "./library", "./Sourc
      * @return {Array}         Array of dataset objects
      */
     ChartJs.prototype.datasetsToData = function(aDatasets) {
+      //
+      var oModel = this.getModel();
 
+      // Loop at datasets and load data...
       var a = [];
       jQuery.each(aDatasets, function(index, d) {
+        d.load(oModel);
         a.push({
           label: d.getLabel(),
           fillColor: d.getFillColor(),
@@ -142,18 +160,16 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/Control", "./library", "./Sourc
      * @return {[type]}          [description]
      */
     ChartJs.prototype._build = function(oContext) {
-      switch (this.getType().toLowerCase()) {
-        case "line":
-          return new Chart(oContext).Line(this.toData(), {
-            bezierCurve: true
-          });
-          break;
-        case "bar":
-          return new Chart(oContext).Bar(this.toData(), {
-            bezierCurve: true
-          });
-          break;
+
+      // If I have no datasets, do not render.
+      if (this.getDatasets().length === 0) {
+        return;
       }
+
+      // Otherwise, continue on
+      return new Chart(oContext)[this.getType()](this.toData(), {
+        bezierCurve: true
+      });
     };
 
     /**

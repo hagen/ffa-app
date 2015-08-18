@@ -8,12 +8,12 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/Control", "./library"],
         properties: {
           label : { type : "string", group : "Misc", defaultValue : "Axis label" },
           value : { type : "string", group : "Misc", defaultValue : null },
-          fillColor : { type : "sap.ui.core.CSSSize", group : "Misc", defaultValue : "rgba(220,220,220,0.2)" },
-          strokeColor : { type : "sap.ui.core.CSSSize", group : "Misc", defaultValue : "rgba(220,220,220,1)" },
-          pointColor : { type : "sap.ui.core.CSSSize", group : "Misc", defaultValue : "rgba(220,220,220,1)" },
-          pointStrokeColor : { type : "sap.ui.core.CSSSize", group : "Misc", defaultValue : "#ffffff" },
-          pointHighlightFill : { type : "sap.ui.core.CSSSize", group : "Misc", defaultValue : "#ffffff" },
-          pointHighlightStroke : { type : "sap.ui.core.CSSSize", group : "Misc", defaultValue : "rgba(220,220,220,0.2)" }
+          fillColor : { type : "sap.ui.core.CSSColor", group : "Misc", defaultValue : "rgba(220,220,220,0.2)" },
+          strokeColor : { type : "sap.ui.core.CSSColor", group : "Misc", defaultValue : "rgba(220,220,220,1)" },
+          pointColor : { type : "sap.ui.core.CSSColor", group : "Misc", defaultValue : "rgba(220,220,220,1)" },
+          pointStrokeColor : { type : "sap.ui.core.CSSColor", group : "Misc", defaultValue : "#ffffff" },
+          pointHighlightFill : { type : "sap.ui.core.CSSColor", group : "Misc", defaultValue : "#ffffff" },
+          pointHighlightStroke : { type : "sap.ui.core.CSSColor", group : "Misc", defaultValue : "rgba(220,220,220,0.2)" }
         },
         aggregations : {
           data : { type : "sap.ui.core.Element", multiple : true, singularName : "data", bindable : "bindable" }
@@ -43,14 +43,9 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/Control", "./library"],
       var oBinding = this.getBinding("data");
       try {
         oModel.read(oBinding.getPath(), {
+          filters : oBinding.aApplicationFilters,
+          sorter : oBinding.aSorters,
           context : oBinding,
-        // }
-        // {
-        //   parameters : {
-        //     select : this.getValue()
-        //   },
-        //   filters : oBinding.getFilters(),
-        //   sorter : oBinding.getSorter(),
           success : jQuery.proxy(function(oData, mResponse) {
             jQuery.each(oData.results, jQuery.proxy(function(i, v) {
               this._data.push(v[this.getValue()]);
@@ -63,7 +58,6 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/Control", "./library"],
       } catch(e) {
          var i = 0;
       }
-
     };
 
     return Dataset;

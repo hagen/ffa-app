@@ -56,7 +56,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/view/forecasts/Controller"],
         }
 
         // If we found an item, then we can use it
-        if(oItem) {
+        if (oItem) {
           this._sRunId = oItem.getBindingContext("forecast").getProperty("id");
           this._oRunsLoadedPromise.resolve();
         }
@@ -66,8 +66,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/view/forecasts/Controller"],
     /**
      *
      */
-    Forecasts.prototype.onAfterRendering = function() {;
-    };
+    Forecasts.prototype.onAfterRendering = function() {};
 
     /***
      *    ██████╗  ██████╗ ██╗   ██╗████████╗███████╗███████╗
@@ -232,8 +231,8 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/view/forecasts/Controller"],
 
       // And then call the tab's set up page...
       try {
-        !this["setupPage" + sInflectedTab].apply(this, [])
-      } catch(e) {
+        !this["setup" + sInflectedTab + "Page"].apply(this, [])
+      } catch (e) {
         // Couldn't call the tab's setup function
         alert(e.message);
       }
@@ -253,7 +252,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/view/forecasts/Controller"],
      * Set up the data set page (if necessary)
      * @return {[type]} [description]
      */
-    Forecasts.prototype.setupPageDataset = function() {
+    Forecasts.prototype.setupDatasetPage = function() {
 
     };
 
@@ -261,7 +260,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/view/forecasts/Controller"],
      * Set up the forecast overview page (if necessary)
      * @return {[type]} [description]
      */
-    Forecasts.prototype.setupPageOverview = function() {
+    Forecasts.prototype.setupOverviewPage = function() {
 
     };
 
@@ -271,77 +270,123 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/view/forecasts/Controller"],
      * and the forecast Id. In this way, we'll get a listing of the data.
      * @return {[type]} [description]
      */
-    Forecasts.prototype.setupPageViz = function() {
+    Forecasts.prototype.setupVizPage = function() {
       // Before viz loads, collect all necessary data
       var oChart = this.getView().byId("idVizChartJs");
-      if(oChart.getDatasets().length > 0){
+      if (oChart.getDatasets().length > 0) {
         return;
       }
 
       // otherwise, set up the viz
       oChart.setModel(this.getView().getModel("forecast"));
 
-      //Bind labels (this is the x axis)
+      // Bind labels (this is the x axis)
       jQuery.when(this._oRunsLoadedPromise).then(jQuery.proxy(function() {
         oChart.bindLabels({
-          path : "forecast>/ForecastData",
-          parameters : {
-            select : "date"
+          path: "forecast>/ForecastData",
+          parameters: {
+            select: "date"
           },
-          filters : [new sap.ui.model.Filter({
-            path : "forecast_id",
-            operator : sap.ui.model.FilterOperator.EQ,
-            value1 : this._sForecastId
-          }), new sap.ui.model.Filter({
-            path : "run_id",
-            operator : sap.ui.model.FilterOperator.EQ,
-            value1 : this._sRunId
+          filters: [new sap.ui.model.Filter({
+            path: "run_id",
+            operator: sap.ui.model.FilterOperator.EQ,
+            value1: this._sRunId
           })],
-          sorter : [new sap.ui.model.Sorter({
-            path : "date",
-            descending : false
+          sorter: [new sap.ui.model.Sorter({
+            path: "date",
+            descending: false
           })],
-          template : new thirdparty.chartjs.Label({
-            text : {
+          template: new thirdparty.chartjs.Label({
+            text: {
               path: "forecast>date",
               type: "sap.ui.model.type.Date",
-              formatOptions : {
-                pattern : "dd/MM/yyyy"
+              formatOptions: {
+                pattern: "dd/MM/yyyy"
               }
             }
           })
         });
+
+        // Once the call returns, update the visualisation
+        oChart.addDataset(new thirdparty.chartjs.Dataset({
+          label: "Date",
+          value: "value",
+          fillColor: "rgba(144,203,159,0.2)",
+          strokeColor: "rgba(144,203,159,1)",
+          pointColor: "rgba(144,203,159,1)",
+          pointHighlightStroke: "rgba(144,203,159,1)",
+          data: {
+            path: "forecast>/ForecastData",
+            filters: [new sap.ui.model.Filter({
+              path: "run_id",
+              operator: sap.ui.model.FilterOperator.EQ,
+              value1: this._sRunId
+            })],
+            sorter: [new sap.ui.model.Sorter({
+              path: "date",
+              descending: false
+            })]
+          }
+        }));
       }, this));
 
-      // Once the call returns, update the visualisation
-      oChart.addDataset(new thirdparty.chartjs.Dataset({
-        label : "Date",
-        value : "value",
-        data : {
-          path : "/ForecastData",
-          filters : [new sap.ui.model.Filter({
-            path : "forecast_id",
-            operator : sap.ui.model.FilterOperator.EQ,
-            value1 : this._sForecastId
-          }), new sap.ui.model.Filter({
-            path : "run_id",
-            operator : sap.ui.model.FilterOperator.EQ,
-            value1 : this._sRunId
-          })],
-          sorter : [new sap.ui.model.Sorter({
-            path : "date",
-            descending : false
-          })]
-        }
-      }));
+      // Make sure we read in the run id
+      this._maybeGetLatestRun(this._oRunsLoadedPromise);
     };
 
     /**
      * Set up the forecast data table page (if necessary)
      * @return {[type]} [description]
      */
-    Forecasts.prototype.setupPageTable = function() {
+    Forecasts.prototype.setupTablePage = function() {
+      // Dependent on the run Id being populated, so we'll
+      // wait for that.
+      jQuery.when(this._oRunsLoadedPromise).then(jQuery.proxy(function() {
+        // Bind the table page to the most recent run.
+        var oPage = this.getView().byId("idCarouselTablePage");
+        oPage.bindElement("forecast>/Runs('" + this._sRunId + "')");
+      }, this));
 
+      // Make sure we read in the run id
+      this._maybeGetLatestRun(this._oRunsLoadedPromise);
+    };
+
+    /**
+     * Tries to load the latest run id, if not already loaded; once loaded, The
+     * promise is resloved.
+     * @param  {[type]} oPromise [description]
+     */
+    Forecasts.prototype._maybeGetLatestRun = function(oPromise) {
+      if (this._sRunId !== "") {
+        oPromise.resolve();
+        return;
+      }
+
+      // otherwise, load the most recent Runfrom the model.
+      this.getView().getModel("forecast").read("/Runs", {
+        urlParameters: {
+          $top: 1
+        },
+        filters: [new sap.ui.model.Filter({
+          path: "forecast_id",
+          operator: sap.ui.model.FilterOperator.EQ,
+          value1: this._sForecastId
+        })],
+        sorters: [new sap.ui.model.Sorter({
+          path: "run_at",
+          descending: true // newest at the top
+        })],
+        async: true,
+        success: jQuery.proxy(function(oData, mResponse) {
+          if (oData.results[0]) {
+            this._sRunId = oData.results[0].id;
+            oPromise.resolve();
+          }
+        }, this),
+        error: jQuery.proxy(function(mError) {
+          this._sRunId = "";
+        }, this)
+      });
     };
 
     /***
@@ -424,6 +469,77 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/view/forecasts/Controller"],
       this._routeToTab(this._sRoute, this._sForecastId, sTab);
     };
 
+    /**
+     * Favorite button pressed. Toggle on/off.
+     * @param  {object} oEvent Button press event
+     */
+    Forecasts.prototype.onFavoritePress = function(oEvent) {
+      var oButton = oEvent.getSource(),
+      oModel = this.getView().getModel("forecast");
+
+      // UPdate model and save
+      oModel.setProperty("/Forecasts('" + this._sForecastId + "')/favorite", (oButton.getPressed() ? "X" : " "));
+      if(oModel.hasPendingChanges()) {
+        oModel.submitChanges();
+      }
+    };
+
+    /***
+     *    ███████╗██████╗ ██╗████████╗    ███╗   ██╗ █████╗ ███╗   ███╗███████╗
+     *    ██╔════╝██╔══██╗██║╚══██╔══╝    ████╗  ██║██╔══██╗████╗ ████║██╔════╝
+     *    █████╗  ██║  ██║██║   ██║       ██╔██╗ ██║███████║██╔████╔██║█████╗
+     *    ██╔══╝  ██║  ██║██║   ██║       ██║╚██╗██║██╔══██║██║╚██╔╝██║██╔══╝
+     *    ███████╗██████╔╝██║   ██║       ██║ ╚████║██║  ██║██║ ╚═╝ ██║███████╗
+     *    ╚══════╝╚═════╝ ╚═╝   ╚═╝       ╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝
+     *
+     */
+    /**
+     * Allow editing of the forecat name by clicking the title
+     */
+    Forecasts.prototype.onForecastNamePress = function(oEvent) {
+      // create edit name popup only once
+      if (!this._editNamePopup) {
+        this._editNamePopup = sap.ui.xmlfragment("idForecastNameEditFrag", "view.forecasts.EditForecastNameDialog", this);
+        this.getView().addDependent(this._editNamePopup);
+      }
+
+      // Collect current name
+      var oInput = sap.ui.core.Fragment.byId("idForecastNameEditFrag", "idEditForecastName");
+      oInput.setValue(this.getView().getModel("forecast").getProperty("/Forecasts('" + this._sForecastId + "')/name"));
+
+      // Open action sheet
+      this._editNamePopup.open();
+    };
+
+    /**
+     * User is saving the forecast name change. Persist against model.
+     * No validation is performed here.
+     */
+    Forecasts.prototype.onForecastNameSave = function(oEvent) {
+      // Collect name as changed by the user...
+      var oInput = sap.ui.core.Fragment.byId("idForecastNameEditFrag", "idEditForecastName");
+      var sName = oInput.getValue();
+      if (sName === "" || sName === null) {
+        this.showErrorAlert("Forecast name cannot be blank");
+        return;
+      }
+
+      // Otherwise persist changes
+      var oModel = this.getView().getModel("forecast");
+      oModel.setProperty("/Forecasts('" + this._sForecastId + "')/name", sName);
+      if (oModel.hasPendingChanges()) { // which it will
+        oModel.submitChanges();
+      }
+      this._editNamePopup.close();
+    };
+
+    /**
+     * User is cancelling the name change - do not persist changes to model
+     */
+    Forecasts.prototype.onForecastNameCancel = function(oEvent) {
+      this._editNamePopup.close();
+    };
+
     /***
      *    ██████╗ ██╗   ██╗███╗   ██╗███████╗
      *    ██╔══██╗██║   ██║████╗  ██║██╔════╝
@@ -467,9 +583,11 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/view/forecasts/Controller"],
       var dDate = new Date(sDate);
 
       // Create the Date Formatter
-      var dateFormat = sap.ui.core.format.DateFormat.getDateInstance({ pattern: "dd/MM/yyyy" });
+      var dateFormat = sap.ui.core.format.DateFormat.getDateInstance({
+        pattern: "dd/MM/yyyy"
+      });
 
-      dDate.setDate(dDate.getDate()+1);
+      dDate.setDate(dDate.getDate() + 1);
       return dateFormat.format(new Date(dDate.getTime()));
     };
 

@@ -266,6 +266,9 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
       // Set our tile to be 'active'
       oTile.setIcon("sap-icon://accept");
       oTile.toggleStyleClass(sClass);
+
+      // simulate skipping to next page
+      this.onNextWizardPress(null);
     };
 
     /**
