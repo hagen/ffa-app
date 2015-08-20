@@ -137,12 +137,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
 
 			// Bind the view to the data set Id
 			var oPage = this.getView().byId(sDetailPageId);
-			switch(sSource) {
-				case "Excel":
-					oParams.expand += ",Excel"; break;
-				case "Google":
-					oParams.expand += ",Google"; break;
-			}
+			oParams.expand += "," + sSource;
 
 			// Bind the destination page with the path and expand params
 			oPage.bindElement("dataset>" + sPath, oParams);
@@ -324,82 +319,6 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
 			bUpdate // Import data?
 		);
 	};
-
-	/**
-	 * When the data definition type link is pressed, we allow the user to modify
-	 * the data type, through a simple drop-down. Changes are immediate.
-	 * @param  {object} oEvent Link press event
-	 */
-  DataSets.prototype.onDataSetDefinitionTypeLinkPress = function(oEvent) {
-		// Get the source and it's binding context
-		var oLink = oEvent.getSource();
-		var oParent = oLink.getParent(); // Column list item (with collection cells)
-		var sId = oParent.getBindingContext("dataset").getProperty("id");
-
-		// Create the dialog fragment.
-		if(!this._oDimensionTypeDialog) {
-      this._oDimensionTypeDialog = sap.ui.xmlfragment("idDimensionDataTypeFragment", "view.data.DimensionDataTypeDialog", this);
-      this.getView().addDependent(this._oDimensionTypeDialog);
-    }
-
-		// Just set the correct selected key
-		sap.ui.core.Fragment.byId("idDimensionDataTypeFragment", "idDimensionDataTypeSelectList").setSelectedKey(oLink.getText().toLowerCase());
-
-		// supply the dialog with the binding Id, so we can use it later...
-		this._oDimensionTypeDialog.data("id", sId);
-
-    // now show the dialog
-    this._oDimensionTypeDialog.open();
-	};
-
-	/**
-	 * When the dimension data type picker dialog is closed, we simply
-	 * close the dialog; no changes are applied
-	 * @param  {object} oEvent  Event source (button press)
-	 */
-	DataSets.prototype.onDimensionDataTypeDialogClose = function(oEvent) {
-		// No longer busy
-		this._oDimensionTypeDialog.setBusy(true);
-		// now close the dialog
-    this._oDimensionTypeDialog.close();
-	};
-
-	/**
-	 * When the dimension type select is changed, this event handler is fired
-	 * by proxy, and in so doing, is passed the event source the select) and
-	 * the original link. The link object needs to be replaced into the collection
-	 * of cells, at position 2 (index 1)
-	 * @param  {object} oEvent  Event source (Dropdown to hide)
-	 */
-	DataSets.prototype.onDimensionTypeSelectChanged = function(oEvent) {
-		// Busy!
-		this._oDimensionTypeDialog.setBusy(true);
-
-		var oItem = oEvent.getParameter("selectedItem");
-		var sType = oItem.getText().toLowerCase();
-		var sId = this._oDimensionTypeDialog.data("id");
-
-		// when the dropdown selection is changed
-		// save the change and return the link with it's new value
-		var oModel = this.getView().getModel("dataset");
-		oModel.setProperty("/Dimensions('" + sId + "')/type", sType);
-		oModel.submitChanges(jQuery.proxy(function() {
-			// close
-			this.onDimensionDataTypeDialogClose(null);
-		}, this), jQuery.proxy(function(){
-			// close
-			this.onDimensionDataTypeDialogClose(null);
-		}, this),
-		false);
-	}
-
-  /**
-   *
-   *
-   * Google Sheets
-   *
-   *
-   */
 
 	return DataSets;
 

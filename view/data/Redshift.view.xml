@@ -1,0 +1,241 @@
+<mvc:View
+	controllerName="view.data.Redshift"
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc"
+  xmlns:l="sap.ui.layout"
+  xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core">
+	<Page
+		enableScrolling="false"
+		showHeader="true">
+		<customHeader>
+			<Toolbar>
+				<Button
+					id="idCancelButton"
+					text="Cancel"
+					press="onCancelPress" />
+				<ToolbarSpacer />
+				<Title
+					textAlign="Center"
+					text="Configure connection" />
+				<ToolbarSpacer />
+				<Text
+					text="" />
+			</Toolbar>
+		</customHeader>
+		<footer>
+			<Toolbar>
+				<Button
+					id="idBackButton"
+					text="Back"
+					enabled="false"
+					press="onBackPress" />
+				<ToolbarSpacer />
+				<Button
+					id="idNextButton"
+					text="Next"
+					enabled="true"
+					press="onNextPress" />
+			</Toolbar>
+		</footer>
+		<NavContainer
+			id="idNavContainer">
+			<pages>
+				<Page
+					id="idPage1"
+					showHeader="false"
+					enableScrolling="false">
+					<l:Grid
+		        defaultSpan="L12 M12 S12"
+		        width="auto">
+		        <l:content>
+		          <f:SimpleForm
+		            id="idRedshiftConfigForm"
+		            maxContainerCols="2"
+		            editable="true"
+		            layout="ResponsiveGridLayout"
+		            labelSpanL="3"
+		            labelSpanM="3"
+		            emptySpanL="4"
+		            emptySpanM="4"
+		            columnsL="1"
+		            columnsM="1"
+		            class="editableForm sapUiMediumMarginTop">
+		            <f:content>
+		              <Label
+		                text="Dataset name"
+										required="true" />
+		              <Input
+		                id="idRedshiftNameInput"
+										value="{redshift>/name}">
+		              </Input>
+
+		              <Label
+		                text="Redshift endpoint"
+										required="true" />
+		              <Input
+		                id="idRedshiftEndpointInput"
+										value="{redshift>/endpoint}"
+										placeholder="e.g. cluster.c63cnbrlgreen.ap-southeast-3.redshift.amazonaws.com">
+		              </Input>
+
+									<Label
+		                text="Database"
+										required="true" />
+		              <Input
+		                id="idRedshiftDatabaseInput"
+										value="{redshift>/database}">
+		              </Input>
+
+									<Label
+		                text="Port"
+										required="true" />
+		              <Input
+		                id="idRedshiftPortInput"
+										value="{redshift>/port}"
+										type="Number"
+										placeholder="e.g. 5439">
+		              </Input>
+
+									<Label
+		                text="User name" />
+		              <Input
+		                id="idRedshiftUsernameInput"
+										value="{redshift>/username}">
+		              </Input>
+
+									<Label
+		                text="Password" />
+		              <Input
+		                id="idRedshiftPasswordInput"
+										value="{redshift>/password}"
+										type="Password">
+		              </Input>
+
+									<Label
+										text="" />
+									<CheckBox
+										id="idRedshiftRememberPasswordCheckBox"
+										selected="{redshift>/remember}"
+										text="Save username &amp; password?"/>
+		            </f:content>
+		          </f:SimpleForm>
+
+							<f:SimpleForm
+		            id="idRedshiftTestConsoleForm"
+		            maxContainerCols="1"
+		            editable="true"
+		            layout="ResponsiveGridLayout"
+		            labelSpanL="3"
+		            labelSpanM="3"
+		            emptySpanL="4"
+		            emptySpanM="4"
+		            columnsL="1"
+		            columnsM="1"
+		            class="editableForm sapUiMediumMarginTop">
+		            <f:content>
+									<TextArea
+										id="idTestConsoleTextArea"
+										rows="10"
+										columns="20"
+										visible="true"
+										value="Console..."
+										enabled="false">
+										<layoutData>
+											<l:GridData
+												span="L12 M12 S12" />
+										</layoutData>
+									</TextArea>
+		            </f:content>
+		          </f:SimpleForm>
+		        </l:content>
+		      </l:Grid>
+				</Page>
+
+				<Page
+					id="idPage2"
+					enableScrolling="false"
+					showHeader="false">
+					<l:Grid
+		        defaultSpan="L12 M12 S12"
+		        width="auto">
+		        <l:content>
+		          <f:SimpleForm
+		            id="idRedshiftQueryForm"
+		            maxContainerCols="1"
+		            editable="true"
+		            layout="ResponsiveGridLayout"
+		            labelSpanL="3"
+		            labelSpanM="3"
+		            emptySpanL="4"
+		            emptySpanM="4"
+		            columnsL="1"
+		            columnsM="1"
+		            class="editableForm">
+		            <f:content>
+		              <Label
+		                text="Please also supply an SQL query to run against the database. This
+										query will form the basis of your data set">
+										<layoutData>
+											<l:GridData
+												span="L12 M12 S12" />
+										</layoutData>
+									</Label>
+		              <TextArea
+		                id="idQueryTextArea"
+										rows="5"
+										columns="20"
+										value="{redshift>/query}"
+										placeholder="e.g. select * from data_table">
+										<layoutData>
+											<l:GridData
+												span="L12 M12 S12" />
+										</layoutData>
+									</TextArea>
+									<Button
+										id="idRedshiftTestButton"
+										press="onQueryPress"
+										type="Emphasized"
+										text="Test">
+										<layoutData>
+											<l:GridData
+												span="L12 M12 S12" />
+										</layoutData>
+									</Button>
+		            </f:content>
+		          </f:SimpleForm>
+
+							<f:SimpleForm
+		            id="idRedshiftConsoleForm"
+		            maxContainerCols="1"
+		            editable="true"
+		            layout="ResponsiveGridLayout"
+		            labelSpanL="3"
+		            labelSpanM="3"
+		            emptySpanL="4"
+		            emptySpanM="4"
+		            columnsL="1"
+		            columnsM="1"
+		            class="editableForm">
+		            <f:content>
+									<TextArea
+										id="idSaveConsoleTextArea"
+										rows="10"
+										columns="20"
+										visible="true"
+										value="Console..."
+										enabled="false">
+										<layoutData>
+											<l:GridData
+												span="L12 M12 S12" />
+										</layoutData>
+									</TextArea>
+		            </f:content>
+		          </f:SimpleForm>
+		        </l:content>
+		      </l:Grid>
+				</Page>
+			</pages>
+		</NavContainer>
+	</Page>
+</mvc:View>

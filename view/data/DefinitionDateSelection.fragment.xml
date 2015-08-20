@@ -4,15 +4,13 @@
     inset="false"
     items="{
       path: 'dataset>Dimensions',
-      sorter: { path: 'index' }
+      sorter: {
+        path: 'index'
+      }
     }"
     noDataText="No Definition defined..."
+    mode="SingleSelectLeft"
     class="sapUiContentPadding ffaDataSetDefinitionTable">
-    <headerToolbar>
-      <Toolbar>
-        <Label  text="Data set definition"/>
-      </Toolbar>
-    </headerToolbar>
     <columns>
       <Column hAlign="Left">
         <Text  text="Field name"/>
@@ -21,24 +19,17 @@
         <Text  text="Type"/>
       </Column>
       <Column hAlign="Right">
-        <Text  text="Length"/>
-      </Column>
-      <Column hAlign="Left">
-        <Text  text="Contains nulls"/>
-      </Column>
-      <Column hAlign="Right">
         <Text  text="Position (index)"/>
       </Column>
     </columns>
     <items>
-      <ColumnListItem>
+      <ColumnListItem
+        selected="{${dataset>type}.toLowerCase() === 'date'}">
         <cells>
           <Text  text="{dataset>name}"/>
           <Link
             text="{= ${dataset>type}.charAt(0).toUpperCase() + ${dataset>type}.slice(1) }"
             press="onDataSetDefinitionTypeLinkPress"/>
-          <ObjectNumber  number="{dataset>length}"/>
-          <Text  text="{= ${dataset>nullable} === 'X' ? 'Yes' : 'No' }"/>
           <ObjectNumber  number="{= ${dataset>index} + 1 }"/>
         </cells>
       </ColumnListItem>

@@ -1,0 +1,190 @@
+<mvc:View
+	controllerName="view.data.GoogleSheets"
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc"
+  xmlns:l="sap.ui.layout"
+  xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core">
+	<Page
+		enableScrolling="false"
+		showHeader="true">
+		<customHeader>
+			<Toolbar>
+				<Button
+					id="idCancelButton"
+					text="Cancel"
+					press="onCancelPress" />
+				<ToolbarSpacer />
+				<Title
+					textAlign="Center"
+					text="Configure Google Sheet" />
+				<ToolbarSpacer />
+				<Text
+					text="" />
+			</Toolbar>
+		</customHeader>
+		<footer>
+			<Toolbar>
+				<Button
+					id="idBackButton"
+					text="Back"
+					enabled="false"
+					press="onBackPress" />
+				<ToolbarSpacer />
+				<Button
+					id="idNextButton"
+					text="Next"
+					enabled="true"
+					press="onNextPress" />
+			</Toolbar>
+		</footer>
+		<NavContainer
+			id="idNavContainer">
+			<pages>
+				<Page
+					id="idPage1"
+					enableScrolling="false"
+					showHeader="false">
+					<l:Grid
+						defaultSpan="L12 M12 S12"
+						width="auto">
+						<l:content>
+							<f:SimpleForm
+								id="idConfigForm"
+								maxContainerCols="2"
+								editable="true"
+								layout="ResponsiveGridLayout"
+								labelSpanL="3"
+								labelSpanM="3"
+								emptySpanL="4"
+								emptySpanM="4"
+								columnsL="1"
+								columnsM="1"
+								class="editableForm sapUiMediumMarginTop">
+								<f:content>
+									<Label
+										text="Data set name"
+										required="true">
+									</Label>
+
+									<Input
+										id="idNameInput">
+										<layoutData>
+											<l:GridData
+												span="L6 M6 S5" />
+										</layoutData>
+									</Input>
+
+									<Label
+										text="Google Sheets Key"
+										required="true">
+									</Label>
+
+									<Input
+										id="idKeyInput">
+										<layoutData>
+											<l:GridData
+												span="L5 M5 S4" />
+										</layoutData>
+									</Input>
+
+									<core:Icon
+										id="idHelpIcon"
+										src="sap-icon://question-mark"
+										size="1.5rem"
+										activeColor="#007cc0"
+										hoverColor="#007cc0"
+										press="onHelpIconPress"
+										class="ffaIconTinyMarginTop">
+										<core:layoutData>
+											<l:GridData
+												span="L1 M1 S1" />
+										</core:layoutData>
+									</core:Icon>
+
+									<Label
+										text="" />
+									<CheckBox
+										id="idHeadersCheckbox"
+										selected="true"
+										text="Spreadsheet has headers?"/>
+								</f:content>
+							</f:SimpleForm>
+
+							<f:SimpleForm
+		            id="idRedshiftTestConsoleForm"
+		            maxContainerCols="1"
+		            editable="true"
+		            layout="ResponsiveGridLayout"
+		            labelSpanL="3"
+		            labelSpanM="3"
+		            emptySpanL="4"
+		            emptySpanM="4"
+		            columnsL="1"
+		            columnsM="1"
+		            class="editableForm sapUiMediumMarginTop">
+		            <f:content>
+									<TextArea
+										id="idTestConsoleTextArea"
+										rows="10"
+										columns="20"
+										visible="true"
+										value="Console..."
+										enabled="false">
+										<layoutData>
+											<l:GridData
+												span="L12 M12 S12" />
+										</layoutData>
+									</TextArea>
+		            </f:content>
+		          </f:SimpleForm>
+						</l:content>
+					</l:Grid>
+				</Page>
+
+				<Page
+					id="idPage2"
+					enableScrolling="true"
+					showHeader="false">
+					<Table
+						id="idDimensionsTable"
+				    growing="false"
+				    inset="false"
+				    items="{
+				      path: 'dataset>Dimensions',
+				      sorter: {
+				        path: 'index'
+				      }
+				    }"
+				    noDataText="No Definition defined..."
+				    mode="SingleSelectLeft"
+				    class="sapUiContentPadding ffaDataSetDefinitionTable">
+				    <columns>
+				      <Column hAlign="Left">
+				        <Text  text="Field name"/>
+				      </Column>
+				      <Column hAlign="Left">
+				        <Text  text="Type"/>
+				      </Column>
+				      <Column hAlign="Right">
+				        <Text  text="Position (index)"/>
+				      </Column>
+				    </columns>
+				    <items>
+				      <ColumnListItem
+				        selected="{${dataset>type}.toLowerCase() === 'date'}">
+				        <cells>
+				          <Text  text="{dataset>name}"/>
+				          <Link
+				            text="{= ${dataset>type}.charAt(0).toUpperCase() + ${dataset>type}.slice(1) }"
+				            press="onTypeLinkPress"/>
+				          <ObjectNumber  number="{= ${dataset>index} + 1 }"/>
+				        </cells>
+				      </ColumnListItem>
+				    </items>
+				  </Table>
+				</Page>
+			</pages>
+		</NavContainer>
+	</Page>
+</mvc:View>

@@ -115,6 +115,9 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
 
       // Navigate!
       this.getRouter().navTo(sRoute, oArgs, !sap.ui.Device.system.phone);
+
+      // We also need to send the wizard back to page 1
+      this.getView().byId("idForecastWizardNavContainer").backToPage(this.getView().createId("idNewForecastWizardPage1"));
     };
 
     /**
@@ -341,6 +344,11 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
       // via. a binding on the ColumnListItem's selected property
       oTable.bindItems({
         path: "dataset>Dimensions",
+        filters : [new sap.ui.model.Filter({
+          path : "type",
+          operator : sap.ui.model.FilterOperator.NE,
+          value1 : "text"
+        })],
         sorter: [new sap.ui.model.Sorter("index", false)],
         template: sap.ui.xmlfragment("view.forecasts.DefinitionRow")
       });
@@ -450,6 +458,10 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
           path: "id",
           operator: sap.ui.model.FilterOperator.NE,
           value1: this._oFields.date
+        }),new sap.ui.model.Filter({
+          path : "type",
+          operator : sap.ui.model.FilterOperator.NE,
+          value1 : "text"
         })],
         template: sap.ui.xmlfragment("view.forecasts.DefinitionRow")
       });
@@ -564,6 +576,10 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
             path: "id",
             operator: sap.ui.model.FilterOperator.NE,
             value1: this._oFields.forecast
+          }),new sap.ui.model.Filter({
+            path : "type",
+            operator : sap.ui.model.FilterOperator.NE,
+            value1 : "text"
           })],
           and: true
         })],

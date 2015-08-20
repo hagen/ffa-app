@@ -42,7 +42,24 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
           view: "data.Wizard",
           targetControl: "idDataSetsSplitContainer",
           targetAggregation: "detailPages",
-          viewLevel: 4
+          viewLevel: 4,
+          subroutes : [{
+            pattern: "datasets/new/redshift",
+            name: "redshift",
+            view: "data.Redshift",
+            targetControl: "idContainer",
+            targetAggregation: "pages",
+            transition : "flip",
+            viewLevel: 5
+          },{
+            pattern: "datasets/new/sheets",
+            name: "sheets",
+            view: "data.GoogleSheets",
+            targetControl: "idContainer",
+            targetAggregation: "pages",
+            transition : "flip",
+            viewLevel: 5
+          }]
         }]
       }, {
         pattern: "workbench",

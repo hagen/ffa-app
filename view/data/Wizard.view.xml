@@ -5,38 +5,43 @@
   xmlns:l="sap.ui.layout"
 	xmlns:core="sap.ui.core"
 	xmlns:html="http://www.w3.org/1999/xhtml">
+
   <!-- TODO localise texts -->
-  <Page
+	<Page
     id="idDataSetsWizardStartPage"
     title="Data source">
     <content>
       <html:div
         class="ffaDataSetWizardPage1Container">
         <l:Grid
-          defaultSpan="L12 M12 S12"
+          defaultSpan="L6 M6 S12"
           class="sapUiSmallMarginTop">
           <l:content>
             <ObjectListItem
               id="idDataSetWizardHanaCloudObjectListItem"
-              title="HANA Cloud Platform"
-              intro="HCP system landscape"
+              title="SAP HANA"
               icon="sap-icon://sap-logo-shape"
               type="Active"
-              press="onHanaCloudPress"
+              press="onHanaItemPress"
               class="ffaDataSourceIconHana">
             </ObjectListItem>
             <ObjectListItem
-              id="idDataSetWizardHanaOnPremObjectListItem"
-              title="HANA System"
-              intro="Hosted/on-premise system"
-              icon="sap-icon://building"
+              id="idRedshiftObjectListItem"
+              title="AWS Redshift"
+              icon="sap-icon://FontMfizz/aws"
+              press="onRedshiftItemPress"
               type="Active"
-              class="ffaDataSourceIconHana">
+              class="ffaDataSourceIconRedshift">
+            </ObjectListItem>
+            <ObjectListItem
+              id="idHadoopObjectListItem"
+              title="Hadoop"
+              icon="sap-icon://FontMfizz/hadoop"
+              type="Active">
             </ObjectListItem>
             <ObjectListItem
               id="idDataSetWizardExcelObjectListItem"
-              title="Excel spreadshet"
-              intro="Local/remote Excel 97-2013 file"
+              title="Excel"
               icon="sap-icon://excel-attachment"
               type="Active"
               class="ffaDataSourceIconExcel">
@@ -44,7 +49,6 @@
             <ObjectListItem
               id="idDataSetWizardGoogleDocObjectListItem"
               title="Google Docs Spreadsheet"
-              intro="Publicly available Google Docs Spreadshet"
               icon="sap-icon://FontAwesome/google"
               type="Active"
               press="onGoogleSheetsPress"
@@ -53,7 +57,6 @@
 						<ObjectListItem
               id="idDataSetWizardCsvObjectListItem"
               title="CSV file"
-              intro="Comma-separated values"
               icon="sap-icon://FontAwesome/file-text-o"
               type="Active"
               press="onCsvPress">

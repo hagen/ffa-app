@@ -12,12 +12,12 @@
     <endButton>
       <Button
         text="Cancel"
-        press="onDimensionDataTypeDialogClose" />
+        press="onTypeDialogClose" />
     </endButton>
     <content>
 			<SelectList
 				id="idDimensionDataTypeSelectList"
-				selectionChange="onDimensionTypeSelectChanged">
+				selectionChange="onTypeSelectChanged">
 				<items>
 					<core:Item key="text" text="Text" />
 					<core:Item key="number" text="Number" />

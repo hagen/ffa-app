@@ -1,5 +1,6 @@
 jQuery.sap.declare("view.App");
 jQuery.sap.require("thirdparty.font-awesome.FontAwesomeIconPool");
+jQuery.sap.require("thirdparty.font-mfizz.FontMFizzIconPool");
 
 // Provides controller view.App
 sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],

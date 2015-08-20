@@ -5,22 +5,23 @@
   xmlns:f="sap.ui.layout.form"
 	xmlns:core="sap.ui.core">
   <!--
-		HANA On Premise configuration page
+		HANA configuration page
 		TODO localise screen
 	-->
   <Dialog
-    id="idDataSetHanaOnPremiseDialog"
-    title="HANA (On-Premise) System"
+    id="idDataSetHanaDialog"
+    title="HANA Cloud System"
     class="sapUiPopupWithPadding">
     <beginButton>
       <Button
         text="Save"
-        press="onHanaOnPremiseSavePress"/>
+        press="onHanaSavePress"
+        type="Emphasized"/>
     </beginButton>
     <endButton>
       <Button
         text="Cancel"
-        press="onHanaOnPremiseCancelPress" />
+        press="onHanaCancelPress" />
     </endButton>
     <content>
       <l:Grid
@@ -28,7 +29,7 @@
         width="auto">
         <l:content>
           <f:SimpleForm
-            id="idHanaOnPremiseConfigForm"
+            id="idHanaCloudConfigForm"
             maxContainerCols="2"
             editable="true"
             layout="ResponsiveGridLayout"
@@ -41,28 +42,36 @@
             class="editableForm">
             <f:content>
               <Label
-                text="Landscape host" />
+                text="Host" />
               <Input
-                id="idHanaOnPremiseHostInput">
+                id="idHanaHostInput">
               </Input>
 
 							<Label
-                text="Instance number" />
+                text="Port" />
               <Input
-                id="idHanaOnPremiseInstanceInput">
+                id="idHanaPortInput"
+								type="Number"
+								placeholder="e.g. 30015">
               </Input>
 
 							<Label
-                text="Mode" />
-              <RadioGroup
-                id="idHanaOnPremiseModeRadioGroup">
-              </RadioGroup>
+                text="User name" />
+              <Input
+                id="idHanaUsernameInput">
+              </Input>
 
 							<Label
-                text="Description" />
+                for="idHanaPasswordInput"
+                text="Password" />
               <Input
-                id="idHanaOnPremiseDescriptionInput">
+                id="idHanaCloudPasswordInput"
+								type="Password">
               </Input>
+
+							<CheckBox
+								id="idHanaRememberPasswordCheckBox"
+								text="Save password?"/>
             </f:content>
           </f:SimpleForm>
         </l:content>
