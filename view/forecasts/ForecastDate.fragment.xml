@@ -14,12 +14,6 @@
         <Text  text="Type"/>
       </Column>
       <Column hAlign="Right">
-        <Text  text="Length"/>
-      </Column>
-      <Column hAlign="Left">
-        <Text  text="Contains nulls"/>
-      </Column>
-      <Column hAlign="Right">
         <Text  text="Position (index)"/>
       </Column>
     </columns>

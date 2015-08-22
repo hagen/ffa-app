@@ -91,14 +91,14 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
           subroutes: [{
 	          pattern: "workbench/folders/new",
 	          name: "new-forecast-from-root",
-	          view: "forecasts.ForecastWizard",
+	          view: "forecasts.Wizard",
 	          targetControl: "idWorkbenchSplitContainer",
 	          targetAggregation: "detailPages",
 	          viewLevel: 5
 	        }, {
 	          pattern: "workbench/folders/:folder_id:/new",
 	          name: "new-forecast-from-folder",
-	          view: "forecasts.ForecastWizard",
+	          view: "forecasts.Wizard",
 	          targetControl: "idContainer",
 	          targetAggregation: "pages",
 	          viewLevel: 5

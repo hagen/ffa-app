@@ -1,11 +1,11 @@
-jQuery.sap.declare("com.ffa.dash.view.forecasts.Controller");
+jQuery.sap.declare("view.forecasts.Controller");
 
 // Provides controller util.Controller
 sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
 function(jQuery, UtilController) {
   "use strict";
 
-  var Controller = UtilController.extend("com.ffa.dash.view.forecasts.Controller", /** @lends com.ffa.dash.view.forecasts.Controller */ {
+  var Controller = UtilController.extend("view.forecasts.Controller", /** @lends view.forecasts.Controller */ {
     _aForecasts: [],
     _aBatchOps: []
   });
@@ -141,4 +141,71 @@ function(jQuery, UtilController) {
   Controller.prototype.hasParent = function(sId) {
     return (this.getParent(sId) === false ? false : true);
   };
+
+  /***
+   *    ██████╗ ██╗   ██╗███████╗██╗   ██╗
+   *    ██╔══██╗██║   ██║██╔════╝╚██╗ ██╔╝
+   *    ██████╔╝██║   ██║███████╗ ╚████╔╝
+   *    ██╔══██╗██║   ██║╚════██║  ╚██╔╝
+   *    ██████╔╝╚██████╔╝███████║   ██║
+   *    ╚═════╝  ╚═════╝ ╚══════╝   ╚═╝
+   *
+   */
+
+   /**
+    * Opens a busy dialog WITH title and text
+    * @param  {object} oParams Object of parameters
+    */
+   Controller.prototype.openBusyDialog = function(oParams) {
+     // Create the fragment and open!
+     if (!this._oBusyDialog) {
+       this._oBusyDialog = sap.ui.xmlfragment("idBusyDialogFragment", "view.BusyDialog", this);
+       this.getView().addDependent(this._oBusyDialog);
+     }
+
+     // Set title, text and cancel event
+     this._oBusyDialog.setTitle(oParams.title);
+     this._oBusyDialog.setText(oParams.text);
+     if (typeof oParams.onCancel === 'function') {
+       this._oBusyDialog.attachEvent('close', function(oEvent) {
+         if(oEvent.getParameter("cancelPressed")) {
+           oParams.onCancel();
+         }
+       });
+     }
+
+     // And cancel button?
+     if (oParams.showCancelButton === undefined) {
+       this._oBusyDialog.setShowCancelButton(false);
+     } else {
+       this._oBusyDialog.setShowCancelButton(oParams.showCancelButton);
+     }
+
+     // now show the dialog
+     this._oBusyDialog.open();
+   };
+   Controller.prototype.showBusyDialog = function(oParams) {
+     this.openBusyDialog(oParams);
+   };
+
+   /**
+    * Updates the open busy dialog with new text.
+    * @param  {object} oParams Params containing only text
+    */
+   Controller.prototype.updateBusyDialog = function(oParams) {
+     this._oBusyDialog.setText(oParams.text);
+   };
+
+   /**
+    * Closes the busy dialog
+    */
+   Controller.prototype.closeBusyDialog = function(oParams) {
+     if (this._oBusyDialog) {
+       // now show the dialog
+       this._oBusyDialog.close();
+     }
+   };
+   Controller.prototype.hideBusyDialog = function(oParams) {
+     this.closeBusyDialog(oParams);
+   };
 });

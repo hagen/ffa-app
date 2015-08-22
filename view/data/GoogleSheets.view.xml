@@ -146,6 +146,23 @@
 					id="idPage2"
 					enableScrolling="true"
 					showHeader="false">
+					<Panel
+						headerText=""
+						class="sapUiSmallMarginTop">
+						<Text text="{= ${device>/isTouch} ?
+							'These are the columns I could find in your spreadsheet. Please
+							review them, make sure everything looks okay, then Save. Please also take note
+							that at least one of these columns must be of type Date. If none of these columns
+							represent date, please add this column to the spreadsheet. However, if your Date
+							column is here, but isn\'t listed as type Date, you can change the column data type
+							by tapping on the data type link.' :
+						 'These are the columns I could find in your spreadsheet. Please
+							review them, make sure everything looks okay, then Save. Please also take note
+							that at least one of these columns must be of type Date. If none of these columns
+							represent date, please add this column to the spreadsheet. However, if your Date
+							column is here, but isn\'t listed as type Date, you can change the column data type
+							by clicking on the data type link.' }" />
+					</Panel>
 					<Table
 						id="idDimensionsTable"
 				    growing="false"

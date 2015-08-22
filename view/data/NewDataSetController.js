@@ -18,7 +18,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
     Controller.prototype.openBusyDialog = function(oParams) {
       // Create the fragment and open!
       if (!this._oBusyDialog) {
-        this._oBusyDialog = sap.ui.xmlfragment("idDataSetBusyDialogFragment", "view.data.BusyDialog", this);
+        this._oBusyDialog = sap.ui.xmlfragment("idDataSetBusyDialogFragment", "view.BusyDialog", this);
         this.getView().addDependent(this._oBusyDialog);
       }
 

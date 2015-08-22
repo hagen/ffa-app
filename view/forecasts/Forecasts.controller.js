@@ -1,7 +1,7 @@
 jQuery.sap.declare("view.forecasts.Forecasts");
 
 // Provides controller forecasts.Forecasts
-sap.ui.define(["jquery.sap.global", "com/ffa/dash/view/forecasts/Controller"],
+sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
   function(jQuery, Controller) {
     "use strict";
 

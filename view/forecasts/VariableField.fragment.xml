@@ -1,6 +1,5 @@
 <core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m">
-  <ColumnListItem
-    selected="{= ${dataset>type} === 'number' ? true : false }">
+  <ColumnListItem>
     <cells>
       <Text  text="{dataset>name}"/>
       <Link

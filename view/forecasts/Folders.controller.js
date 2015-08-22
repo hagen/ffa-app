@@ -2,7 +2,7 @@ jQuery.sap.declare("view.forecasts.Folders");
 jQuery.sap.require("sap.m.MessageBox");
 
 // Provides controller forecasts.Folders
-sap.ui.define(["jquery.sap.global", "com/ffa/dash/view/forecasts/Controller"],
+sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
   function(jQuery, Controller) {
     "use strict";
 
