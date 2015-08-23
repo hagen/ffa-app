@@ -21,13 +21,11 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
       this._sTab = "";
       this._navByButton = false;
 
-      // Some promises...
-      this._oRunsLoadedPromise = jQuery.Deferred();
-
       // Route handlers
       this.getRouter().getRoute("forecast-from-folder").attachPatternMatched(this._onRouteMatchedFolder, this);
       this.getRouter().getRoute("forecast-from-recents").attachPatternMatched(this._onRouteMatchedRecents, this);
       this.getRouter().getRoute("forecast-from-favorites").attachPatternMatched(this._onRouteMatchedFavorites, this);
+      
       // and if some how they got here directly from the workbench, send them back to the folder
       this.getRouter().getRoute("forecasts").attachPatternMatched(this._onRouteMatchedDefault, this);
     };
@@ -124,9 +122,25 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      * @param  {object} oEvent Route matched event
      */
     Forecasts.prototype._onRouteMatched = function(oEvent) {
+
+      // We are heavily Dependent on the Run Id, so we'll declare this promise
+      // each time the route is matched, but only if it doesn't already exist. It is
+      // therefore important to make sure the promise is destroyed when we leave this view.
+      if (!this._oRunsLoadedPromise) {
+        this._oRunsLoadedPromise = jQuery.Deferred();
+      }
+
       var oParameters = oEvent.getParameters();
       this._sForecastId = oParameters.arguments.forecast_id;
       this._sRoute = oParameters.name;
+
+      // and we also need the Run Id. This can be supplied in the route, but
+      // if it isn't then we need to identify the latest run ID, with a query.
+      if (oParameters.arguments.run_id) {
+        this._sRunId = oParameters.arguments.run_id;
+      } else {
+        this._asyncGetLatestRun(this._oRunsLoadedPromise);
+      }
 
       // Bind Carousel/page
       this.getView().byId("idForecastCarouselPage").bindElement("forecast>/Forecasts('" + this._sForecastId + "')");
@@ -239,12 +253,12 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
     };
 
     /***
-     *    ██████╗  █████╗  ██████╗ ███████╗    ███████╗███████╗████████╗██╗   ██╗██████╗
-     *    ██╔══██╗██╔══██╗██╔════╝ ██╔════╝    ██╔════╝██╔════╝╚══██╔══╝██║   ██║██╔══██╗
-     *    ██████╔╝███████║██║  ███╗█████╗      ███████╗█████╗     ██║   ██║   ██║██████╔╝
-     *    ██╔═══╝ ██╔══██║██║   ██║██╔══╝      ╚════██║██╔══╝     ██║   ██║   ██║██╔═══╝
-     *    ██║     ██║  ██║╚██████╔╝███████╗    ███████║███████╗   ██║   ╚██████╔╝██║
-     *    ╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚══════╝    ╚══════╝╚══════╝   ╚═╝    ╚═════╝ ╚═╝
+     *    ██████╗  █████╗ ████████╗ █████╗ ███████╗███████╗████████╗
+     *    ██╔══██╗██╔══██╗╚══██╔══╝██╔══██╗██╔════╝██╔════╝╚══██╔══╝
+     *    ██║  ██║███████║   ██║   ███████║███████╗█████╗     ██║
+     *    ██║  ██║██╔══██║   ██║   ██╔══██║╚════██║██╔══╝     ██║
+     *    ██████╔╝██║  ██║   ██║   ██║  ██║███████║███████╗   ██║
+     *    ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚══════╝╚══════╝   ╚═╝
      *
      */
 
@@ -256,6 +270,16 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
 
     };
 
+    /***
+     *     ██████╗ ██╗   ██╗███████╗██████╗ ██╗   ██╗██╗███████╗██╗    ██╗
+     *    ██╔═══██╗██║   ██║██╔════╝██╔══██╗██║   ██║██║██╔════╝██║    ██║
+     *    ██║   ██║██║   ██║█████╗  ██████╔╝██║   ██║██║█████╗  ██║ █╗ ██║
+     *    ██║   ██║╚██╗ ██╔╝██╔══╝  ██╔══██╗╚██╗ ██╔╝██║██╔══╝  ██║███╗██║
+     *    ╚██████╔╝ ╚████╔╝ ███████╗██║  ██║ ╚████╔╝ ██║███████╗╚███╔███╔╝
+     *     ╚═════╝   ╚═══╝  ╚══════╝╚═╝  ╚═╝  ╚═══╝  ╚═╝╚══════╝ ╚══╝╚══╝
+     *
+     */
+
     /**
      * Set up the forecast overview page (if necessary)
      * @return {[type]} [description]
@@ -263,6 +287,16 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
     Forecasts.prototype.setupOverviewPage = function() {
 
     };
+
+    /***
+     *    ██╗   ██╗██╗███████╗
+     *    ██║   ██║██║╚══███╔╝
+     *    ██║   ██║██║  ███╔╝
+     *    ╚██╗ ██╔╝██║ ███╔╝
+     *     ╚████╔╝ ██║███████╗
+     *      ╚═══╝  ╚═╝╚══════╝
+     *
+     */
 
     /**
      * Set up the forecast viz page (if necessary); For viz, we need to Bind
@@ -329,10 +363,17 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
           }
         }));
       }, this));
-
-      // Make sure we read in the run id
-      this._maybeGetLatestRun(this._oRunsLoadedPromise);
     };
+
+    /***
+     *    ████████╗ █████╗ ██████╗ ██╗     ███████╗
+     *    ╚══██╔══╝██╔══██╗██╔══██╗██║     ██╔════╝
+     *       ██║   ███████║██████╔╝██║     █████╗
+     *       ██║   ██╔══██║██╔══██╗██║     ██╔══╝
+     *       ██║   ██║  ██║██████╔╝███████╗███████╗
+     *       ╚═╝   ╚═╝  ╚═╝╚═════╝ ╚══════╝╚══════╝
+     *
+     */
 
     /**
      * Set up the forecast data table page (if necessary)
@@ -346,47 +387,6 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
         var oPage = this.getView().byId("idCarouselTablePage");
         oPage.bindElement("forecast>/Runs('" + this._sRunId + "')");
       }, this));
-
-      // Make sure we read in the run id
-      this._maybeGetLatestRun(this._oRunsLoadedPromise);
-    };
-
-    /**
-     * Tries to load the latest run id, if not already loaded; once loaded, The
-     * promise is resloved.
-     * @param  {[type]} oPromise [description]
-     */
-    Forecasts.prototype._maybeGetLatestRun = function(oPromise) {
-      if (this._sRunId !== "") {
-        oPromise.resolve();
-        return;
-      }
-
-      // otherwise, load the most recent Runfrom the model.
-      this.getView().getModel("forecast").read("/Runs", {
-        urlParameters: {
-          $top: 1
-        },
-        filters: [new sap.ui.model.Filter({
-          path: "forecast_id",
-          operator: sap.ui.model.FilterOperator.EQ,
-          value1: this._sForecastId
-        })],
-        sorters: [new sap.ui.model.Sorter({
-          path: "run_at",
-          descending: true // newest at the top
-        })],
-        async: true,
-        success: jQuery.proxy(function(oData, mResponse) {
-          if (oData.results[0]) {
-            this._sRunId = oData.results[0].id;
-            oPromise.resolve();
-          }
-        }, this),
-        error: jQuery.proxy(function(mError) {
-          this._sRunId = "";
-        }, this)
-      });
     };
 
     /***
@@ -414,6 +414,9 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
       this.getRouter().navTo(this._sReturnRoute, {
         folder_id: sFolderId
       }, !sap.ui.Device.system.phone);
+
+      // Reset
+      this._reset();
     };
 
     /**
@@ -475,11 +478,11 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      */
     Forecasts.prototype.onFavoritePress = function(oEvent) {
       var oButton = oEvent.getSource(),
-      oModel = this.getView().getModel("forecast");
+        oModel = this.getView().getModel("forecast");
 
       // UPdate model and save
       oModel.setProperty("/Forecasts('" + this._sForecastId + "')/favorite", (oButton.getPressed() ? "X" : " "));
-      if(oModel.hasPendingChanges()) {
+      if (oModel.hasPendingChanges()) {
         oModel.submitChanges();
       }
     };
@@ -559,6 +562,44 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
       alert("Show run diagnostics");
     };
 
+    /**
+     * Tries to load the latest run id, if not already loaded; once loaded, The
+     * promise is resloved.
+     * @param  {[type]} oPromise [description]
+     */
+    Forecasts.prototype._asyncGetLatestRun = function(oPromise) {
+      if (this._sRunId !== "") {
+        oPromise.resolve();
+        return;
+      }
+
+      // otherwise, load the most recent Runfrom the model.
+      this.getView().getModel("forecast").read("/Runs", {
+        urlParameters: {
+          $top: 1
+        },
+        filters: [new sap.ui.model.Filter({
+          path: "forecast_id",
+          operator: sap.ui.model.FilterOperator.EQ,
+          value1: this._sForecastId
+        })],
+        sorters: [new sap.ui.model.Sorter({
+          path: "run_at",
+          descending: true // newest at the top
+        })],
+        async: true,
+        success: jQuery.proxy(function(oData, mResponse) {
+          if (oData.results[0]) {
+            this._sRunId = oData.results[0].id;
+            oPromise.resolve();
+          }
+        }, this),
+        error: jQuery.proxy(function(mError) {
+          this._sRunId = "";
+        }, this)
+      });
+    };
+
     /***
      *    ███████╗ ██████╗ ██████╗ ███╗   ███╗ █████╗ ████████╗████████╗███████╗██████╗ ███████╗
      *    ██╔════╝██╔═══██╗██╔══██╗████╗ ████║██╔══██╗╚══██╔══╝╚══██╔══╝██╔════╝██╔══██╗██╔════╝
@@ -589,6 +630,29 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
 
       dDate.setDate(dDate.getDate() + 1);
       return dateFormat.format(new Date(dDate.getTime()));
+    };
+
+    /***
+     *    ███████╗██╗  ██╗██╗████████╗
+     *    ██╔════╝╚██╗██╔╝██║╚══██╔══╝
+     *    █████╗   ╚███╔╝ ██║   ██║
+     *    ██╔══╝   ██╔██╗ ██║   ██║
+     *    ███████╗██╔╝ ██╗██║   ██║
+     *    ╚══════╝╚═╝  ╚═╝╚═╝   ╚═╝
+     *
+     */
+
+    /**
+     * On exit, reset the page and all global variables
+     * @return {[type]} [description]
+     */
+    Forecasts.prototype._reset = function() {
+      this._sForecastId = "";
+      this._sFolderId = "";
+      this._sRunId = "";
+
+      this._oRunsLoadedPromise.reject();
+      delete this._oRunsLoadedPromise;
     };
 
     return Forecasts;
