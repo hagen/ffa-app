@@ -194,13 +194,6 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
     mDeviceModel.setDefaultBindingMode("OneWay");
     this.setModel(mDeviceModel, "device");
 
-    // Create and set datasets domain model to the component
-    // var oDSModel = new sap.ui.model.odata.ODataModel(
-    // 	mConfig.serviceConfig.datasetOdataUrl,
-    // 	false,
-    // 	"HDITTMER",
-    // 	"H4n4u53r"
-    // );
     var oDSModel = new sap.ui.model.odata.ODataModel(
       mConfig.serviceConfig.datasetOdataUrl
     );
