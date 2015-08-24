@@ -25,7 +25,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
       this.getRouter().getRoute("forecast-from-folder").attachPatternMatched(this._onRouteMatchedFolder, this);
       this.getRouter().getRoute("forecast-from-recents").attachPatternMatched(this._onRouteMatchedRecents, this);
       this.getRouter().getRoute("forecast-from-favorites").attachPatternMatched(this._onRouteMatchedFavorites, this);
-      
+
       // and if some how they got here directly from the workbench, send them back to the folder
       this.getRouter().getRoute("forecasts").attachPatternMatched(this._onRouteMatchedDefault, this);
     };
@@ -302,24 +302,27 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      * Set up the forecast viz page (if necessary); For viz, we need to Bind
      * the chart control to the forecast data set for the latest run,
      * and the forecast Id. In this way, we'll get a listing of the data.
-     * @return {[type]} [description]
+     * @param {boolean} bRefresh Force reload of the chart
      */
-    Forecasts.prototype.setupVizPage = function() {
+    Forecasts.prototype.setupVizPage = function(bRefresh) {
+      // require Highcharts.
+      jQuery.sap.require("thirdparty.highcharts.Highcharts");
+
       // Before viz loads, collect all necessary data
-      var oChart = this.getView().byId("idVizChartJs");
-      if (oChart.getDatasets().length > 0) {
+      if (this._oChart && !bRefresh) {
         return;
       }
 
-      // otherwise, set up the viz
-      oChart.setModel(this.getView().getModel("forecast"));
+      // Collect the forecast model.
+      let oModel = this.getView().getModel("forecast");
 
-      // Bind labels (this is the x axis)
+      // We cannot do anything without a Run ID. So wait until that is loaded.
       jQuery.when(this._oRunsLoadedPromise).then(jQuery.proxy(function() {
-        oChart.bindLabels({
-          path: "forecast>/ForecastData",
-          parameters: {
-            select: "date"
+
+        // Right, now we can begin. The first thing we need, is our data.
+        oModel.read("/ForecastData", {
+          urlParameters: {
+            $select: "date,value"
           },
           filters: [new sap.ui.model.Filter({
             path: "run_id",
@@ -330,39 +333,143 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
             path: "date",
             descending: false
           })],
-          template: new thirdparty.chartjs.Label({
-            text: {
-              path: "forecast>date",
-              type: "sap.ui.model.type.Date",
-              formatOptions: {
-                pattern: "dd/MM/yyyy"
-              }
-            }
-          })
-        });
+          success: jQuery.proxy(function(oData, mResponse) {
+            // With a success response, we can spin through the results
+            // and prepare the 2D data array for highcharts
+            this._drawViz((function() {
+              let aData = [];
+              jQuery.each(oData.results || [], function(index, obj) {
+                // Push on the x and y
+                let date = "";
+                let value = 0;
 
-        // Once the call returns, update the visualisation
-        oChart.addDataset(new thirdparty.chartjs.Dataset({
-          label: "Date",
-          value: "value",
-          fillColor: "rgba(144,203,159,0.2)",
-          strokeColor: "rgba(144,203,159,1)",
-          pointColor: "rgba(144,203,159,1)",
-          pointHighlightStroke: "rgba(144,203,159,1)",
-          data: {
-            path: "forecast>/ForecastData",
-            filters: [new sap.ui.model.Filter({
-              path: "run_id",
-              operator: sap.ui.model.FilterOperator.EQ,
-              value1: this._sRunId
-            })],
-            sorter: [new sap.ui.model.Sorter({
-              path: "date",
-              descending: false
-            })]
-          }
-        }));
+                // If x is of type Date, then parse to milliseconds
+                // parse a useful value
+                if (obj.date instanceof Date) {
+                  date = Date.parse(obj.date);
+                }
+
+                // Similarly, string number values are of no use; parse a number
+                if (typeof obj.value === "string") {
+                  // If we have a decimal point, parse a float,
+                  if (obj.value.indexOf(".") > -1) {
+                    value = parseFloat(obj.value);
+                  } else {
+                    // otherwise, an Integer is fine
+                    value = parseInt(obj.value);
+                  }
+                } else {
+                  value = obj.value;
+                }
+
+                // Add to data array
+                aData.push([date, value]);
+              });
+              // and return the data array, to then be pushed on to drawViz
+              return aData;
+            })(), this.getView().byId("idVizContainer").$()[0]);
+          }, this),
+          error: jQuery.proxy(function(mError) {
+
+          }, this)
+        });
       }, this));
+    };
+
+    /**
+     * Draws a Highcharts viz into the Div.
+     * @param  {[type]} aData    [description]
+     * @param  {[type]} jDiv     [description]
+     */
+    Forecasts.prototype._drawViz = function(aData, jDiv) {
+      let iHeight = 0;
+      let oPromise = jQuery.Deferred();
+
+      // When oPromise resolves, draw the chart.
+      jQuery.when(oPromise).then(jQuery.proxy(function() {
+        this._liquidsChart = new Highcharts.Chart({
+          chart: {
+            id: "idForecastViz",
+            backgroundColor: "none",
+            renderTo: jDiv,
+            style: {
+              fontFamily: ["Arial", "Helvetica", "sans-serif"]
+            },
+            panKey: "shift",
+            panning: true,
+            zoomType: "x"
+          },
+          credits: {
+            enabled: true,
+            href: "http://forefrontanalytics.com.au",
+            text: "Forefront Analytics"
+          },
+          exporting: {
+            enabled: true
+          },
+          navigation: {
+            buttonOptions: {
+              enabled: false
+            }
+          },
+          plotOptions: {
+            type: "line",
+            animation: true,
+            stickyTracking: false,
+            pointInterval: 86400000,
+            zIndex: 100
+          },
+          series: [{
+            id: "idForecastSeries",
+            color: "#f7a35c",
+            data: aData,
+            name: "Series name",
+            zIndex: 50
+          }],
+          title: {
+            text: "Chart title",
+          },
+          tooltip: {
+            headerFormat: '<span style="font-size: 10px">{point.key:%A, %b %e}</span><br/>',
+            pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y:,.0f}</b><br/>',
+            valueDecimals: 0,
+            delayForDisplay: 500 // TooltipDelay plugin, modified by yours truly
+          },
+          xAxis: {
+            id: "idXaxis",
+            type: "datetime",
+            dateTimeLabelFormats: {
+              day: "%b %e, '%y",
+              month: '%b "%y'
+            },
+            title: {
+              align: "middle",
+              enabled: true,
+              text: "Date"
+            }
+          },
+          yAxis: {
+            type: "linear",
+            title: {
+              align: "middle",
+              enabled: true,
+              text: "Y axis label"
+            }
+          }
+        });
+      }, this));
+
+      // Importantly, we cannot (and should not) draw anything until the
+      // div element has it's height set. So let's wait
+      let sCallId = jQuery.sap.intervalCall(500, this, function() {
+        iHeight = (jDiv ? jQuery(jDiv).height() : 0);
+
+        // Now, if we have a height (and an element), it's okay to continue
+        if (iHeight > 0) {
+          oPromise.resolve();
+          jQuery.sap.clearIntervalCall(sCallId);
+        }
+      }, []);
     };
 
     /***

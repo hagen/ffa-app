@@ -28,7 +28,7 @@
             <ObjectListItem
               id="idRedshiftObjectListItem"
               title="AWS Redshift"
-              icon="sap-icon://FontMfizz/aws"
+              icon="images/datasources/redshift.png"
               press="onRedshiftItemPress"
               type="Active"
               class="ffaDataSourceIconRedshift">

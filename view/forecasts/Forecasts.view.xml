@@ -1,4 +1,11 @@
-<mvc:View controllerName="view.forecasts.Forecasts" xmlns:chart="thirdparty.chartjs" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m">
+<mvc:View
+  controllerName="view.forecasts.Forecasts"
+  xmlns:chart="thirdparty.chartjs"
+  xmlns:core="sap.ui.core"
+  xmlns:l="sap.ui.layout"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+	xmlns:html="http://www.w3.org/1999/xhtml">
   <Page
     enableScrolling="false"
     id="idForecastCarouselPage"
@@ -134,8 +141,9 @@
               <core:CustomData key="tab" value="viz"/>
             </customData>
             <content>
-              <chart:ChartJs
-                id="idVizChartJs"/>
+              <html:div
+								id="idVizContainer"
+								class="ffaOverviewChartContainer"/>
             </content>
           </Page>
 

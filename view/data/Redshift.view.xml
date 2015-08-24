@@ -136,7 +136,7 @@
 		            <f:content>
 									<TextArea
 										id="idTestConsoleTextArea"
-										rows="10"
+										rows="5"
 										columns="20"
 										visible="true"
 										value="Console..."
