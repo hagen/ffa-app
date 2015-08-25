@@ -1,5 +1,5 @@
 <mvc:View
-	controllerName="view.Login"
+	controllerName="view.auth.SignIn"
 	xmlns="sap.m"
 	xmlns:mvc="sap.ui.core.mvc"
 	xmlns:l="sap.ui.layout"
@@ -46,10 +46,12 @@
 										class="editableForm">
 										<f:content>
 											<Input
+												id="idLoginEmail"
 												type="Email"
 												value=""
 												placeholder="E-mail" />
 											<Input
+												id="idLoginPassword"
 												type="Password"
 												value=""
 												placeholder="Password" />
@@ -67,6 +69,7 @@
 												text="SIGN IN"
 												type="Emphasized"
 												class="ffaLoginButton"
+												enabled="true"
 												press="onSignInButtonPress">
 												<layoutData>
 													<l:GridData
@@ -153,6 +156,7 @@
 												text="REGISTER"
 												type="Emphasized"
 												class="ffaLoginButton"
+												enabled="true"
 												press="onRegisterButtonPress">
 												<layoutData>
 													<l:GridData
@@ -186,22 +190,27 @@
 							id="idLoginButtonGoogle"
 							icon="sap-icon://FontAwesome/google"
 							text="Sign in with Google"
-							class="ffaLoginButtonGoogle" />
+							class="ffaLoginButtonGoogle"
+							press="onGooglePress" />
 						<Button
 							id="idLoginButtonLinkedIn"
 							icon="sap-icon://FontAwesome/linkedin"
 							text="Sign in with LinkedIn"
-							class="ffaLoginButtonLinkedIn"/>
+							class="ffaLoginButtonLinkedIn"
+							press="onLinkedInPress" />
 						<Button
 							id="idLoginButtonScn"
 							icon="sap-icon://sap-logo-shape"
 							text="Sign in with SCN"
-							class="ffaLoginButtonScn"/>
+							class="ffaLoginButtonScn"
+							enabled="false"
+							press="onSCNPress" />
 						<Button
 							id="idLoginButtonTwitter"
 							icon="sap-icon://FontAwesome/twitter"
 							text="Sign in with Twitter"
-							class="ffaLoginButtonTwitter" />
+							class="ffaLoginButtonTwitter"
+							press="onTwitterPress" />
 					</l:content>
 				</l:Grid>
 			</html:div>

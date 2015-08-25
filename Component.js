@@ -12,8 +12,8 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
       resourceBundle: "i18n/i18n.properties",
       serviceConfig: {
         name: "OData",
-        datasetOdataUrl: "http://localhost/fa/ppo/drop3/xs/services/dataset.xsodata",
-        forecastOdataUrl: "http://localhost/fa/ppo/drop3/xs/services/forecast.xsodata"
+        datasetOdataUrl: "/fa/ppo/drop3/xs/services/dataset.xsodata",
+        forecastOdataUrl: "/fa/ppo/drop3/xs/services/forecast.xsodata"
       }
     },
     routing: {
@@ -144,19 +144,20 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
         view: "plans.Plans",
         viewLevel: 2
       }, {
+        pattern: "state={query}",
+        name: "authenticated",
+        view: "auth.SignIn",
+        viewLevel: 1
+      },{
         pattern: ":tab:",
-        name: "login",
-        view: "Login",
+        name: "auth",
+        view: "auth.SignIn",
         viewLevel: 1
       }, {
         name: "catchallMaster",
         view: "NotFound",
-        subroutes: [{
-          pattern: ":all*:",
-          name: "catchallDetail",
-          view: "NotFound",
-          transition: "show"
-        }]
+        pattern: ":all*:",
+        transition: "show"
       }]
     }
   },
