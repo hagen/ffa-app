@@ -62,6 +62,7 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
      * @param  {object} oEvent Route matched event
      */
     Wizard.prototype._onRouteMatched = function(oEvent) {
+  		this._checkMetaDataLoaded("forecast");
       // Couple of scenarios...
       // (1) arrive here from folders - Create New Forecast; if so, retain
       // parent folder Id

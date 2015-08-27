@@ -37,6 +37,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      * @param  {object} oEvent Route matched event
      */
     Favorites.prototype._onRouteMatched = function(oEvent) {
+  		this._checkMetaDataLoaded("forecast");
       // Firstly, we need to let the master know that the recent forecasts
       // route has been matched. Then it can select the recents list item for us
       // if this hasn't already been done.

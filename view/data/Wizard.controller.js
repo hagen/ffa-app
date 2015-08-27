@@ -44,7 +44,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
      * Route matched handler fires up the Wizard straight away
      */
     Wizard.prototype._onRouteMatched = function(oEvent) {
-
+  		this._checkMetaDataLoaded("dataset");
     };
 
     /***

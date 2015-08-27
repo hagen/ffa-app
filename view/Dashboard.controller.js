@@ -39,6 +39,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
 	 * Route matched handler...
 	 */
 	Dashboard.prototype._onRouteMatched = function(oEvent) {
+		this._checkMetaDataLoaded("forecast");
 		var oParameters = oEvent.getParameters();
 		var oView = this.getView();
 	};

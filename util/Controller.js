@@ -6,7 +6,7 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
     "use strict";
 
     var Controller = MvcController.extend("com.ffa.dash.util.Controller", /** @lends com.ffa.dash.util.Controller */ {
-
+      _loaded : false
     });
 
     /**
@@ -39,20 +39,58 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
      * @param  {[type]} mError [description]
      * @return {[type]}        [description]
      */
-    Controller.prototype._maybeHandleAuthError = function (mError) {
-      if([401, 400].indexOf(mError.response.statusCode) > -1) {
+    Controller.prototype._maybeHandleAuthError = function(mError) {
+      if ([401, 400].indexOf(mError.response.statusCode) > -1) {
         // and now back to log-in
         this.getRouter().navTo("login", {
           tab: "signin",
-          reason : "auth"
+          reason: "auth"
         }, !sap.ui.Device.system.phone);
       }
     };
 
-    Controller.prototype.getUserId = function () {
+    Controller.prototype.getUserId = function() {
       let mModel = this.getView().getModel("user");
       return (mModel ? mModel.getProperty("/userid") : "");
     };
+
+    /***
+     *    ███╗   ███╗███████╗████████╗ █████╗ ██████╗  █████╗ ████████╗ █████╗
+     *    ████╗ ████║██╔════╝╚══██╔══╝██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝██╔══██╗
+     *    ██╔████╔██║█████╗     ██║   ███████║██║  ██║███████║   ██║   ███████║
+     *    ██║╚██╔╝██║██╔══╝     ██║   ██╔══██║██║  ██║██╔══██║   ██║   ██╔══██║
+     *    ██║ ╚═╝ ██║███████╗   ██║   ██║  ██║██████╔╝██║  ██║   ██║   ██║  ██║
+     *    ╚═╝     ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝
+     *
+     */
+
+    /**
+     * Function to be called on all route matches that require login/auth.
+     * This will check if the metadata model has been loaded, and if not redirect to login.
+     * The assumption being that if the meta data model isn't loaded, then
+     * the user is not authorised to continue.
+     * @param  {String} sModel Model name to check meta data of
+     */
+    Controller.prototype._checkMetaDataLoaded = function(sModel) {
+      if(this._loaded) {
+        return;
+      }
+
+      // Collect the model matching that supplied.
+      let mModel = this.getView().getModel(sModel);
+
+      // If there's a metamodel, all good; if not, back to signin
+      if (mModel) {
+        if (!mModel.getServiceMetadata()) {
+          window.location.href = "/#/login";
+        } else {
+          this._loaded = true;
+        }
+      } else {
+        throw new Error("Invalid model name");
+      }
+    };
+
     /***
      *     █████╗ ██╗     ███████╗██████╗ ████████╗███████╗
      *    ██╔══██╗██║     ██╔════╝██╔══██╗╚══██╔══╝██╔════╝
@@ -178,7 +216,7 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
      * @param  {[type]} sValue [description]
      * @return {[type]}        [description]
      */
-    Controller.prototype._put = function (sKey, sValue) {
+    Controller.prototype._put = function(sKey, sValue) {
       let oStore = new jQuery.sap.storage(jQuery.sap.storage.Type.Local);
       oStore.put(sKey, sValue);
     };
@@ -188,7 +226,7 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
      * @param  {[type]} sKey [description]
      * @return {[type]}      [description]
      */
-    Controller.prototype._get = function (sKey) {
+    Controller.prototype._get = function(sKey) {
       let oStore = new jQuery.sap.storage(jQuery.sap.storage.Type.Local);
       return oStore.get(sKey);
     };

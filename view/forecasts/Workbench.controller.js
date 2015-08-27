@@ -50,6 +50,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
 	 * @param  {object} oEvent Route matched event
 	 */
 	Workbench.prototype._onRouteMatched = function(oEvent) {
+		this._checkMetaDataLoaded("forecast");
 		// When the workbench route is matched, just load up recently used
 		// immediately.
 		this.getRouter().navTo("folders", {}, !sap.ui.Device.system.phone);
