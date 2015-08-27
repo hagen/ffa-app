@@ -49,31 +49,6 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
       }
     };
 
-    /**
-     * Sets the bearer auth token to local storage
-     * @param  {[type]} sValue [description]
-     * @return {[type]}        [description]
-     */
-    Controller.prototype._putXBearer = function (sValue) {
-      this._put('x-bearer', sValue);
-
-      // Update all models too?
-      let oView = this.getView();
-      ["forecast", "dataset"].forEach(function(sModel, index) {
-        oView.getModel(sModel).setHeaders({
-          'Authorization' : 'Bearer ' + sValue
-        });
-      });
-    };
-
-    /**
-     * Gets the bearer auth token from local storage
-     * @return {[type]} [description]
-     */
-    Controller.prototype._getXBearer = function () {
-      return this._get('x-bearer');
-    };
-
     Controller.prototype.getUserId = function () {
       let mModel = this.getView().getModel("user");
       return (mModel ? mModel.getProperty("/userid") : "");

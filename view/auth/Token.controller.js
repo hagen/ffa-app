@@ -47,7 +47,6 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
       // First, check if access_token is supplied. If so, we're authed
       // to go to dash
       if(oParameters.arguments.access_token) {
-        this._putXBearer(oParameters.arguments.access_token);
         this.getRouter().navTo("dash", {}, !sap.ui.Device.system.phone);
       } else {
         this.getRouter().navTo("login", {}, !sap.ui.Device.system.phone);
