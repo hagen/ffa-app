@@ -35,6 +35,9 @@ function(jQuery, UtilController) {
           bForecasts = true;
         }
       },
+      error : jQuery.proxy(function(mError) {
+        this._maybeHandleAuthError(mError);
+      }, this),
       async: false
     });
 
@@ -63,6 +66,9 @@ function(jQuery, UtilController) {
       success: function(oData, mResponse) {
         oForecast = oData;
       },
+      error : jQuery.proxy(function(mError) {
+        this._maybeHandleAuthError(mError);
+      }, this),
       async: false
     });
 
@@ -99,6 +105,9 @@ function(jQuery, UtilController) {
             oModel.setProperty(sPath, oFolder);
           }
         },
+        error : jQuery.proxy(function(mError) {
+          this._maybeHandleAuthError(mError);
+        }, this),
         async: false
       });
     }
@@ -126,6 +135,9 @@ function(jQuery, UtilController) {
           oModel.setProperty("/Folders('" + oParent.id + "')", oParent);
         }
       },
+      error : jQuery.proxy(function(mError) {
+        this._maybeHandleAuthError(mError);
+      }, this),
       async: false
     });
 
@@ -140,6 +152,41 @@ function(jQuery, UtilController) {
    */
   Controller.prototype.hasParent = function(sId) {
     return (this.getParent(sId) === false ? false : true);
+  };
+
+  /***
+   *    ██████╗  ██████╗  ██████╗██╗   ██╗███╗   ███╗███████╗███╗   ██╗████████╗███████╗
+   *    ██╔══██╗██╔═══██╗██╔════╝██║   ██║████╗ ████║██╔════╝████╗  ██║╚══██╔══╝██╔════╝
+   *    ██║  ██║██║   ██║██║     ██║   ██║██╔████╔██║█████╗  ██╔██╗ ██║   ██║   ███████╗
+   *    ██║  ██║██║   ██║██║     ██║   ██║██║╚██╔╝██║██╔══╝  ██║╚██╗██║   ██║   ╚════██║
+   *    ██████╔╝╚██████╔╝╚██████╗╚██████╔╝██║ ╚═╝ ██║███████╗██║ ╚████║   ██║   ███████║
+   *    ╚═════╝  ╚═════╝  ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝
+   *
+   */
+
+  /**
+   * [function description]
+   * @param  {[type]} aFilters [description]
+   * @return {[type]}          [description]
+   */
+  Controller.prototype.hasDocuments = function(aFilters) {
+    // Query OData for any forecasts matching the supplied filters
+    var bDocs = false;
+    this.getView().getModel("forecast").read("/Documents", {
+      filters: aFilters,
+      success: function(oData, mResponse) {
+        if (oData.results.length > 0) {
+          bDocs = true;
+        }
+      },
+      error : jQuery.proxy(function(mError) {
+        this._maybeHandleAuthError(mError);
+      }, this),
+      async: false
+    });
+
+    // return result
+    return bDocs;
   };
 
   /***

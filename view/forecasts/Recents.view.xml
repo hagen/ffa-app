@@ -18,11 +18,21 @@
 			<TileContainer
 				id="idRecentForecastsTileContainer"
 				allowAdd="false" />
-			<!-- No forecasts message page -->
-			<core:Fragment
-				id="idRecentsNoForecastsFragment"
-				fragmentName="view.forecasts.NoForecasts"
-				type="XML" />
+				<!-- No forecasts message page -->
+				<MessagePage
+					id="idRecentsMessagePage"
+					icon="sap-icon://FontAwesome/frown-o"
+					showHeader="false"
+					showNavButton="false"
+					text="You haven't run any forecasts! Nooooooooo!!!"
+					title="No forecasts"> <!-- TODO Localisation -->
+					<customDescription>
+						<Link
+							id="idMessagePageLink"
+							text="Run one now"
+							press="onMasterAddButtonPress"/>
+					</customDescription>
+				</MessagePage>
 		</content>
 	</Page>
 </mvc:View>

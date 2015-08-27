@@ -1,53 +1,53 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<meta charset="UTF-8">
-		<meta name="apple-mobile-web-app-capable" content="yes" />
-		<meta name="viewport" content="minimal-ui">
-		<link rel="shortcut icon" href="images/favicon.png"/>
-		<link rel="apple-touch-icon" href="images/touch-icon-ipad.png">
-		<link rel="apple-touch-icon" sizes="76x76" href="images/touch-icon-ipad.png">
-		<link rel="apple-touch-icon" sizes="120x120" href="images/touch-icon-iphone-retina.png">
-		<link rel="apple-touch-icon" sizes="152x152" href="images/touch-icon-ipad-retina.png">
-		<link rel="apple-touch-icon" sizes="180x180" href="images/touch-icon-ipad-plus.png">
 
-		<title>App Portfolio Login</title>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta charset="UTF-8">
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="viewport" content="minimal-ui">
+	<link rel="shortcut icon" href="images/favicon.png" />
+	<link rel="apple-touch-icon" href="images/touch-icon-ipad.png">
+	<link rel="apple-touch-icon" sizes="76x76" href="images/touch-icon-ipad.png">
+	<link rel="apple-touch-icon" sizes="120x120" href="images/touch-icon-iphone-retina.png">
+	<link rel="apple-touch-icon" sizes="152x152" href="images/touch-icon-ipad-retina.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="images/touch-icon-ipad-plus.png">
 
-		<!-- UI5 Bootstrap with SAPUI5 -->
-		<script
-			type="text/javascript"
-			id="sap-ui-bootstrap"
-			src="../openui5-runtime-1.28.11/resources/sap-ui-core.js"
-			data-sap-ui-theme="sap_bluecrystal"
-			data-sap-ui-xx-bindingSyntax="complex"
-			data-sap-ui-libs="sap.m"
-			data-sap-ui-resourceroots='{
+	<title>App Portfolio Login</title>
+
+	<script type="text/javascript">
+		if(window.location.hash.indexOf("/token/")) {
+			var _token = window.location.hash.substring(window.location.hash.indexOf("/token/")+7, window.location.hash.length);
+		}
+	</script>
+
+	<!-- UI5 Bootstrap with SAPUI5 -->
+	<script type="text/javascript" id="sap-ui-bootstrap" src="sdk/openui5-runtime-1.28.11/resources/sap-ui-core.js" data-sap-ui-theme="sap_bluecrystal" data-sap-ui-xx-bindingSyntax="complex" data-sap-ui-libs="sap.m" data-sap-ui-resourceroots='{
 				"com.ffa.dash": "./",
 				"view" : "./view",
 				"util" : "./util",
 				"thirdparty" : "./thirdparty"
 			}'>
-		</script>
+	</script>
 
-		<script>
-			sap.ui.getCore().attachInit(function() {
-				new sap.m.Shell({
-					id: "idAppShell",
-					app: new sap.ui.core.ComponentContainer({
-						id: "idAppComponent",
-						height: "100%",
-						name: "com.ffa.dash"
-					}),
-					appWidthLimited: false
-				}).placeAt("content");
-			});
-		</script>
+	<script>
+		sap.ui.getCore().attachInit(function() {
+			new sap.m.Shell({
+				id: "idAppShell",
+				app: new sap.ui.core.ComponentContainer({
+					id: "idAppComponent",
+					height: "100%",
+					name: "com.ffa.dash"
+				}),
+				appWidthLimited: false
+			}).placeAt("content");
+		});
+	</script>
 
-		<link rel="stylesheet" type="text/css" href="css/screen.css">
-	</head>
+	<link rel="stylesheet" type="text/css" href="css/screen.css">
+</head>
 
-	<body class="sapUiBody" id="content">
-	</body>
+<body class="sapUiBody" id="content">
+</body>
 
 </html>

@@ -56,7 +56,9 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
         // If we found an item, then we can use it
         if (oItem) {
           this._sRunId = oItem.getBindingContext("forecast").getProperty("id");
-          this._oRunsLoadedPromise.resolve();
+          if(this._oRunsLoadedPromise){
+            this._oRunsLoadedPromise.resolve();
+          }
         }
       }, this));
     };

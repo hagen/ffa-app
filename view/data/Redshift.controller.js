@@ -49,7 +49,8 @@ sap.ui.define(["jquery.sap.global", "view/data/NewDataSetController"],
         username: "kermit",
         password: "1h6LW3mI3Ozg50q",
         remember: false,
-        query: ""
+        query: "",
+        created_by : this.getUserId()
       });
 
       this.getView().setModel(this._mRedshift, "redshift");
@@ -284,7 +285,7 @@ sap.ui.define(["jquery.sap.global", "view/data/NewDataSetController"],
      *     ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝ ╚═════╝ ╚══════╝╚══════╝
      *
      */
-    
+
     /**
      * Handles connection error
      * @param  {[type]} mError [description]

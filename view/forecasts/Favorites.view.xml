@@ -20,10 +20,14 @@
 				allowAdd="false" />
 
 			<!-- No favorites message page -->
-			<core:Fragment
-				id="idNoFavoritesFragment"
-				fragmentName="view.forecasts.NoFavorites"
-				type="XML" />
+			<MessagePage
+				id="idMessagePage"
+				icon="sap-icon://favorite"
+				class="ffaNoFavouritesYellowIcon"
+				showHeader="false"
+				showNavButton="false"
+				description="Favourite forecasts you want to find later"
+				text="You don't have any favourites" /> <!-- TODO Localisation -->
 		</content>
 	</Page>
 </mvc:View>

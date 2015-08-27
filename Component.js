@@ -1,5 +1,6 @@
 jQuery.sap.declare("com.ffa.dash.Component");
 jQuery.sap.require("com.ffa.dash.MyRouter");
+jQuery.sap.require("jquery.sap.storage");
 
 sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
   metadata: {
@@ -13,7 +14,8 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
       serviceConfig: {
         name: "OData",
         datasetOdataUrl: "/fa/ppo/drop3/xs/services/dataset.xsodata",
-        forecastOdataUrl: "/fa/ppo/drop3/xs/services/forecast.xsodata"
+        forecastOdataUrl: "/fa/ppo/drop3/xs/services/forecast.xsodata",
+        userJsonUrl: "http://localhost:8080/auth/api/user",
       }
     },
     routing: {
@@ -144,14 +146,14 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
         view: "plans.Plans",
         viewLevel: 2
       }, {
-        pattern: "state={query}",
-        name: "authenticated",
-        view: "auth.SignIn",
+        pattern: "login/:tab:/:reason:",
+        name: "login",
+        view: "auth.Login",
         viewLevel: 1
-      },{
-        pattern: ":tab:",
-        name: "auth",
-        view: "auth.SignIn",
+      }, {
+        pattern: "token/{access_token}",
+        name: "token",
+        view: "auth.Token",
         viewLevel: 1
       }, {
         name: "catchallMaster",
@@ -194,19 +196,31 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
 
     mDeviceModel.setDefaultBindingMode("OneWay");
     this.setModel(mDeviceModel, "device");
-
-    var oDSModel = new sap.ui.model.odata.ODataModel(
-      mConfig.serviceConfig.datasetOdataUrl
-    );
+    var oHeaders = {Authorization : 'Bearer ' + _token };
+    var oDSModel = new sap.ui.model.odata.ODataModel(mConfig.serviceConfig.datasetOdataUrl, {
+      headers : oHeaders
+    });
     oDSModel.setDefaultBindingMode("TwoWay");
     this.setModel(oDSModel, "dataset");
 
     // Create and set datasets domain model to the component
-    var oFModel = new sap.ui.model.odata.ODataModel(
-      mConfig.serviceConfig.forecastOdataUrl
-    );
+    var oFModel = new sap.ui.model.odata.ODataModel(mConfig.serviceConfig.forecastOdataUrl, {
+      headers : oHeaders
+    });
     oFModel.setDefaultBindingMode("TwoWay");
     this.setModel(oFModel, "forecast");
+
+    jQuery.ajax({
+      url : 'auth/api/user',
+      type: 'GET',
+      headers : oHeaders,
+      async : false,
+      success : jQuery.proxy(function(data) {
+        var oUModel = new sap.ui.model.json.JSONModel(data);
+        oUModel.setDefaultBindingMode("OneWay");
+        this.setModel(oUModel, "user");
+      }, this)
+    })
 
     this.getRouter().initialize();
   },

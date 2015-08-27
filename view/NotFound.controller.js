@@ -19,7 +19,6 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
 	 */
 	NotFound.prototype.onInit = function() {
 
-
 		this.getRouter().getRoute("catchallMaster").attachPatternMatched(this._onRouteMatched, this);
 		this.getRouter().getRoute("catchallDetail").attachPatternMatched(this._onRouteMatched, this);
 	};
@@ -44,6 +43,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
 	 */
 	NotFound.prototype._onRouteMatched = function(oEvent) {
 		var oParameters = oEvent.getParameters();
+		this.getRouter().navTo("dash", {}, !sap.ui.Device.system.phone);
 	};
 
 	/**

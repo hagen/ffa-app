@@ -7,7 +7,7 @@ sap.ui.define(['jquery.sap.global', 'sap/ui/core/IconPool'],
     }
 
     // I require the font awesome stylesheet
-    jQuery.sap.includeStyleSheet("thirdparty/font-mfizz/font-mfizz.css");
+    jQuery.sap.includeStyleSheet("/thirdparty/font-mfizz/font-mfizz.css");
 
     var aIconNames = ["3dprint",
       "antenna",

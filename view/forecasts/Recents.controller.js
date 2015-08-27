@@ -1,7 +1,7 @@
 jQuery.sap.declare("view.forecasts.Recents");
 
 // Provides controller forecasts.Recents
-sap.ui.define(["jquery.sap.global", "com/ffa/dash/view/forecasts/Controller"],
+sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
   function(jQuery, Controller) {
     "use strict";
 
@@ -100,7 +100,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/view/forecasts/Controller"],
       }
 
       // Message page
-      var oMessagePage = this.getView().byId(sap.ui.core.Fragment.createId("idRecentsNoForecastsFragment", "idWorkbenchMessagePage"));
+      var oMessagePage = this.getView().byId("idRecentsMessagePage");
       oMessagePage.setVisible(bVisible);
 			oTileContainer.setVisible(!bVisible);
     };

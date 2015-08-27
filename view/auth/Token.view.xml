@@ -1,0 +1,10 @@
+<mvc:View
+	controllerName="view.auth.Token"
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc">
+	<Page
+		enableScrolling="false"
+		showHeader="false">
+		<content>	</content>
+	</Page>
+</mvc:View>

@@ -962,7 +962,7 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
         created: new Date(Date.now()),
         begda: new Date(Date.now()),
         endda: new Date("9999-12-31T23:59:59"),
-        user: "TESTUSER",
+        user: this.getUserId(),
         train_to: new Date(this.getView().byId("idToDatePicker").getValue()),
         train_from: new Date(this.getView().byId("idFromDatePicker").getValue()),
         horizon: parseInt(this.getView().byId("idHorizonInput").getValue(), 10),
@@ -1019,7 +1019,7 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
         id: "",
         forecast_id: this._sForecastId,
         run_at: new Date(Date.now()),
-        user: "TESTUSER"
+        user: this.getUserId()
       };
 
       // When we know the forecast has been created, we can run it...

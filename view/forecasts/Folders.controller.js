@@ -47,6 +47,19 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
       var oParameters = oEvent.getParameters();
       this._sFolderId = (oParameters.arguments.folder_id ? oParameters.arguments.folder_id : "");
 
+      // Show the folder page...
+      this._showFoldersForecasts();
+    };
+
+    /**
+     * Show either or
+     * @return {[type]} [description]
+     */
+    Folders.prototype._showFoldersForecasts = function() {
+
+      var bVisible = false;
+			var oTileContainer = this.getView().byId("idFoldersTileContainer");
+
       // get the folders list and load up the correct folder listing.
       var oTemplate = new sap.m.StandardTile({
         icon: "{= ${forecast>type} === 'folder' ? 'sap-icon://folder-blank' : 'sap-icon://line-chart' }",
@@ -63,12 +76,24 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
       // If the folder Id is populated, we need to go to the forecast page in our
       // nav container.
       if (!this._sFolderId) {
-        this._showFoldersPage(
-          this.getView().byId("idFoldersNavContainer") /* nav container */ ,
-          this.getView().byId("idFoldersPage") /* root page */ ,
-          this.getView().byId("idFoldersTileContainer") /* tile container */ ,
-          oTemplate
-        );
+        if(this._hasTopLevel()) {
+          this._showFoldersPage(
+            this.getView().byId("idFoldersNavContainer") /* nav container */ ,
+            this.getView().byId("idFoldersPage") /* root page */ ,
+            this.getView().byId("idFoldersTileContainer") /* tile container */ ,
+            oTemplate
+          );
+          // hide message page
+          bVisible = false;
+        } else {
+          // Show the no forecasts page
+          bVisible = true;
+        }
+
+        // Message page
+        var oMessagePage = this.getView().byId("idFoldersMessagePage");
+        oMessagePage.setVisible(bVisible);
+  			oTileContainer.setVisible(!bVisible);
       } else {
         this._showForecastsPage(
           this.getView().byId("idFoldersNavContainer") /* nav container */ ,
@@ -78,6 +103,31 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
           this._sFolderId
         );
       }
+    };
+
+    /**
+     * To test for top-level documents, we must filter on both the username
+     * and on the parent_id. Remember, the username will be populated in the
+     * proxy server.
+     * @return {Boolean} [description]
+     */
+    Folders.prototype._hasTopLevel = function () {
+      let aFilters = [new sap.ui.model.Filter({
+        path: "endda",
+        operator: sap.ui.model.FilterOperator.EQ,
+        value1: "9999-12-31"
+      }), new sap.ui.model.Filter({
+        path: "parent_id",
+        operator: sap.ui.model.FilterOperator.EQ,
+        value1: "" // must be blank for top-level Documents
+      }), new sap.ui.model.Filter({
+        path: "user",
+        operator: sap.ui.model.FilterOperator.EQ,
+        value1: "TESTUSER" // this will be replaced in reverse proxy
+      })];
+
+      // now call the documents query, and return its result
+      return this.hasDocuments(aFilters);
     };
 
     /**
@@ -112,6 +162,10 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
             path: "parent_id",
             operator: sap.ui.model.FilterOperator.EQ,
             value1: "" // must be blank for top-level Documents
+          }), new sap.ui.model.Filter({
+            path: "user",
+            operator: sap.ui.model.FilterOperator.EQ,
+            value1: "TESTUSER" // this will be replaced in reverse proxy
           })],
           template: oTemplate
         });
@@ -155,6 +209,10 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
           path: "parent_id",
           operator: sap.ui.model.FilterOperator.EQ,
           value1: sFolderId
+        }), new sap.ui.model.Filter({
+          path: "user",
+          operator: sap.ui.model.FilterOperator.EQ,
+          value1: this.getUserId() // this will be replaced in reverse proxy
         })],
         template: oTemplate
       });
@@ -226,6 +284,16 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
           }, this),
           true /* bImport */ );
       }
+    };
+
+    /**
+     * Simulates press of the folders/forecasts add button
+     * @param  {[type]} oEvent [description]
+     * @return {[type]}        [description]
+     */
+    Folders.prototype.onFoldersLinkPress = function (oEvent) {
+      // Fire the button press event for the add button
+      this.getView().byId("idNewFolderButton").firePress();
     };
 
     /**
@@ -303,7 +371,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
         created: new Date(0),
         begda: new Date(0),
         endda: "9999-12-31",
-        user: "TESTUSER"
+        user:  this.getUserId()
       };
 
       // The current folder becomes our parent

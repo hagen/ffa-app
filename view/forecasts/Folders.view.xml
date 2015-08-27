@@ -35,6 +35,22 @@
 						tileMove="onTileMove"
 						tileDelete="onTileDelete"
 						allowAdd="false" />
+
+					<!-- No forecasts message page -->
+					<MessagePage
+						id="idFoldersMessagePage"
+						icon="sap-icon://FontAwesome/frown-o"
+						showHeader="false"
+						showNavButton="false"
+						text="You haven't any folders or forecasts. This is a travesty!"
+						title="No forecasts"> <!-- TODO Localisation -->
+						<customDescription>
+							<Link
+								id="idMessagePageLink"
+								text="Get cracking..."
+								press="onFoldersLinkPress"/>
+						</customDescription>
+					</MessagePage>
 				</content>
 			</Page>
 

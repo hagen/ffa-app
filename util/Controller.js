@@ -33,10 +33,51 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
      *
      */
 
-    Controller.prototype.getUsername = function() {
-
+    /**
+     * Generic auth handler for all Odata requests. If a 401 is returned,
+     * user must log in again.
+     * @param  {[type]} mError [description]
+     * @return {[type]}        [description]
+     */
+    Controller.prototype._maybeHandleAuthError = function (mError) {
+      if([401, 400].indexOf(mError.response.statusCode) > -1) {
+        // and now back to log-in
+        this.getRouter().navTo("login", {
+          tab: "signin",
+          reason : "auth"
+        }, !sap.ui.Device.system.phone);
+      }
     };
-    
+
+    /**
+     * Sets the bearer auth token to local storage
+     * @param  {[type]} sValue [description]
+     * @return {[type]}        [description]
+     */
+    Controller.prototype._putXBearer = function (sValue) {
+      this._put('x-bearer', sValue);
+
+      // Update all models too?
+      let oView = this.getView();
+      ["forecast", "dataset"].forEach(function(sModel, index) {
+        oView.getModel(sModel).setHeaders({
+          'Authorization' : 'Bearer ' + sValue
+        });
+      });
+    };
+
+    /**
+     * Gets the bearer auth token from local storage
+     * @return {[type]} [description]
+     */
+    Controller.prototype._getXBearer = function () {
+      return this._get('x-bearer');
+    };
+
+    Controller.prototype.getUserId = function () {
+      let mModel = this.getView().getModel("user");
+      return (mModel ? mModel.getProperty("/userid") : "");
+    };
     /***
      *     █████╗ ██╗     ███████╗██████╗ ████████╗███████╗
      *    ██╔══██╗██║     ██╔════╝██╔══██╗╚══██╔══╝██╔════╝
@@ -85,6 +126,16 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
         styleClass: bCompact ? "sapUiSizeCompact" : ""
       });
     };
+
+    /***
+     *    ██████╗  █████╗ ████████╗███████╗███████╗
+     *    ██╔══██╗██╔══██╗╚══██╔══╝██╔════╝██╔════╝
+     *    ██║  ██║███████║   ██║   █████╗  ███████╗
+     *    ██║  ██║██╔══██║   ██║   ██╔══╝  ╚════██║
+     *    ██████╔╝██║  ██║   ██║   ███████╗███████║
+     *    ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚══════╝╚══════╝
+     *
+     */
 
     /**
      * Returns a utc date
@@ -135,5 +186,35 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
         pattern: sPattern
       });
       return dateFormat.format(new Date(dDate.getTime()));
+    };
+
+    /***
+     *    ███████╗████████╗ ██████╗ ██████╗  █████╗  ██████╗ ███████╗
+     *    ██╔════╝╚══██╔══╝██╔═══██╗██╔══██╗██╔══██╗██╔════╝ ██╔════╝
+     *    ███████╗   ██║   ██║   ██║██████╔╝███████║██║  ███╗█████╗
+     *    ╚════██║   ██║   ██║   ██║██╔══██╗██╔══██║██║   ██║██╔══╝
+     *    ███████║   ██║   ╚██████╔╝██║  ██║██║  ██║╚██████╔╝███████╗
+     *    ╚══════╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝
+     *
+     */
+    /**
+     * [_put description]
+     * @param  {[type]} sKey   [description]
+     * @param  {[type]} sValue [description]
+     * @return {[type]}        [description]
+     */
+    Controller.prototype._put = function (sKey, sValue) {
+      let oStore = new jQuery.sap.storage(jQuery.sap.storage.Type.Local);
+      oStore.put(sKey, sValue);
+    };
+
+    /**
+     * [_get description]
+     * @param  {[type]} sKey [description]
+     * @return {[type]}      [description]
+     */
+    Controller.prototype._get = function (sKey) {
+      let oStore = new jQuery.sap.storage(jQuery.sap.storage.Type.Local);
+      return oStore.get(sKey);
     };
   });

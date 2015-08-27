@@ -223,7 +223,7 @@ sap.ui.define(["jquery.sap.global", "view/data/NewDataSetController"],
 
           // Timed close.
           jQuery.sap.delayedCall(1500, this, function() {
-            
+
             // NOt busy any more
             this.closeBusyDialog();
 
@@ -295,7 +295,8 @@ sap.ui.define(["jquery.sap.global", "view/data/NewDataSetController"],
         id: ShortId.generate(10),
         key: this.getView().byId("idKeyInput").getValue(),
         title: this.getView().byId("idNameInput").getValue(),
-        headers: (this.getView().byId("idHeadersCheckbox").getSelected() ? "X" : " ")
+        headers: (this.getView().byId("idHeadersCheckbox").getSelected() ? "X" : " "),
+        created_by: this.getUserId()
       };
     };
 

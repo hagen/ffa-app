@@ -1,7 +1,7 @@
 jQuery.sap.declare("view.forecasts.Favorites");
 
 // Provides controller forecasts.Favorites
-sap.ui.define(["jquery.sap.global", "com/ffa/dash/view/forecasts/Controller"],
+sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
   function(jQuery, Controller) {
     "use strict";
 
@@ -106,7 +106,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/view/forecasts/Controller"],
       }
 
       // Message page
-      var oMessagePage = this.getView().byId(sap.ui.core.Fragment.createId("idNoFavoritesFragment", "idNoFavoritesMessagePage"));
+      var oMessagePage = this.getView().byId("idMessagePage");
       oMessagePage.setVisible(bVisible);
 			oTileContainer.setVisible(!bVisible);
     };
