@@ -106,18 +106,12 @@
 				sorter : [{
 					path : 'order',
 					descending : false
-				}],
-				filters : [{
-					path : 'endda',
-					operator : 'EQ',
-					value1: '9999-12-31'
 				}]
 			}">
 			<StandardTile
 				icon="sap-icon://{settings>icon}"
 				title="{settings>name}"
-				number="{= ${settings>linked} === 'X' ? '✓' : ''}"
-				info="{= ${settings>linked} === 'X' ? 'Click to unlink' : 'Click to link'}"
+				info="{= ${settings>linked} === 'X' ? 'Connected' : 'Connect'}"
 				infoState="{= ${settings>linked} === 'X' ? 'Success' : 'None'}"
 				press="onSocialTilePress" />
 		</TileContainer>

@@ -69,6 +69,8 @@ sap.ui.define(["jquery.sap.global", "view/data/NewDataSetController"],
         if (typeof this[fn] === "function") {
           this[fn].apply(this, []);
         }
+        // Set the tile to be NOT linked (refresh TC binding)
+        oTile.getParent().getBinding("tiles").refresh();
       } else {
         // store link request Id
         let sLinkId = jQuery.sap.uid();
@@ -138,7 +140,7 @@ sap.ui.define(["jquery.sap.global", "view/data/NewDataSetController"],
      * @return {[type]}       [description]
      */
     Profile.prototype._delimitHana = function(sPath) {
-      this.getView().getModel("settings").delete(sPath, {
+      this.getView().getModel("settings").remove(sPath, {
         success: jQuery.proxy(function(oData, mResponse) {
           let sMessage = 1;
         }, this),

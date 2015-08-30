@@ -41,18 +41,22 @@ sap.ui.define(['jquery.sap.global', 'view/auth/Controller'],
     Token.prototype._onRouteMatched = function(oEvent) {
       let oDialog = this.getView().byId("idBusyDialog");
       oDialog.open();
+      
       // When the route is matched, we either want the login tab or
       // the register tab
       var oParameters = oEvent.getParameters();
-      var oView = this.getView();
+      let sRoute = "";
 
       // First, check if access_token is supplied. If so, we're authed
       // to go to dash
       if (oParameters.arguments.access_token) {
         this._handleTokenAuth(oParameters.arguments.access_token, oParameters.arguments.provider);
+        sRoute = "dash";
       } else {
-        this.getRouter().navTo("login", {}, !sap.ui.Device.system.phone);
+        sRoute = "login";
       }
+
+      this.getRouter().navTo(sRoute, {}, !sap.ui.Device.system.phone);
       oDialog.close();
     };
 
@@ -71,9 +75,6 @@ sap.ui.define(['jquery.sap.global', 'view/auth/Controller'],
 
       // and connect it to social
       this._connect(sToken, sProvider);
-
-      // We need to check if this user has the related social profile
-      this.getRouter().navTo("dash", {}, !sap.ui.Device.system.phone);
     };
 
     /**

@@ -45,14 +45,19 @@ sap.ui.define(['jquery.sap.global', 'view/auth/Controller'],
       // When the route is matched, we either want the login tab or
       // the register tab
       var oParameters = oEvent.getParameters();
-
+      let sRoute = "";
+      
       // First, check if access_token is supplied. If so, we're authed
       // to go to dash
       if (oParameters.arguments.access_token) {
         this._handleConnectAuth(oParameters.arguments.access_token, oParameters.arguments.provider);
+        sRoute = "profile";
       } else {
-        this.getRouter().navTo("login", {}, !sap.ui.Device.system.phone);
+        sRoute = "login";
       }
+
+      // We need to check if this user has the related social profile
+      this.getRouter().navTo(sRoute, {}, !sap.ui.Device.system.phone);
       oDialog.close();
     };
 
@@ -66,9 +71,6 @@ sap.ui.define(['jquery.sap.global', 'view/auth/Controller'],
 
       // If nothing is returned, then we need to create the user.
       this._link(sToken, sProvider);
-
-      // We need to check if this user has the related social profile
-      this.getRouter().navTo("dash", {}, !sap.ui.Device.system.phone);
     };
 
     return Connect;

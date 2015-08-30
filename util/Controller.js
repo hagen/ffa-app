@@ -49,11 +49,20 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
       }
     };
 
+    /**
+     * Returns the Node User Id hash, which is stored in the 'user' JSON model
+     * on app initialisation.
+     * @return {String} User ID from Node
+     */
     Controller.prototype.getUserId = function() {
       let mModel = this.getView().getModel("user");
       return (mModel ? mModel.getProperty("/userid") : "");
     };
 
+    /**
+     * Returns the bearer auth token stored in local storage.
+     * @return {String} Bearer auth token
+     */
     Controller.prototype.getBearerToken = function() {
       if(_token) {
         return _token;
@@ -64,6 +73,11 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
       }
     };
 
+    /**
+     * Stores the supplied link token in local storage, so that upon page
+     * refresh, it is not lost.
+     * @return {String} Link token
+     */
     Controller.prototype.getLinkToken = function() {
       if (window.localStorage) {
         return window.localStorage.getItem('_link');
@@ -72,6 +86,14 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
       }
     };
 
+    /**
+     * Removes the previously stored link token.
+     */
+    Controller.prototype.clearLinkToken = function() {
+      if (window.localStorage) {
+        window.localStorage.removeItem('_link');
+      }
+    };
     /***
      *    ███╗   ███╗███████╗████████╗ █████╗ ██████╗  █████╗ ████████╗ █████╗
      *    ████╗ ████║██╔════╝╚══██╔══╝██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝██╔══██╗

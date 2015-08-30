@@ -54,9 +54,6 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
     if (typeof this[fn] === "function") {
       this[fn].apply(this, [oModel, oProfiles]);
     }
-
-    // return to profile page...
-    this.getRouter().navTo("profile", {}, !sap.ui.Device.system.phone);
   };
 
   /**
@@ -71,9 +68,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
       id: oProfiles.google.id,
       name: oProfiles.google.name,
       email: oProfiles.google.email,
-      linked: 'X',
-      begda: new Date(Date.now()),
-      endda: new Date("9999-12-31T23:59:59")
+      linked: 'X'
     };
 
     // Do the create
@@ -100,11 +95,9 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
     let oProfile = {
       profile_id: this.getUserId(),
       id: oProfiles.twitter.id,
-      display_name: oProfiles.twitter.display_name,
+      display_name: oProfiles.twitter.displayName,
       username: oProfiles.twitter.username,
-      linked: 'X',
-      begda: new Date(Date.now()),
-      endda: new Date("9999-12-31T23:59:59")
+      linked: 'X'
     };
 
     // Do the create
@@ -135,9 +128,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
       first_name: oProfiles.linkedin.firstname,
       last_name: oProfiles.linkedin.lastname,
       headline: oProfiles.linkedin.headline,
-      linked: 'X',
-      begda: new Date(Date.now()),
-      endda: new Date("9999-12-31T23:59:59")
+      linked: 'X'
     };
 
     // Do the create
@@ -201,6 +192,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
        async: false,
        success: jQuery.proxy(function(oData, mResponse) {
          bContinue = true;
+         this.clearLinkToken();
        }, this),
        error: jQuery.proxy(function(mError) {
          bContinue = false;
@@ -209,8 +201,5 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
 
      // Reuse the connect function to link the social profile
      this._connect(sToken, sProvider);
-
-     // return to profile page...
-     this.getRouter().navTo("profile", {}, !sap.ui.Device.system.phone);
    };
 });
