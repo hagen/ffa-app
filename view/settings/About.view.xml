@@ -1,0 +1,22 @@
+<mvc:View
+	controllerName="view.settings.About"
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc"
+  xmlns:l="sap.ui.layout"
+  xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core">
+	<Page
+		id="idAboutPage"
+		enableScrolling="false"
+		showHeader="true">
+		<customHeader>
+			<Toolbar>
+				<Title
+					width="100%"
+					textAlign="Center"
+					text="About" />
+			</Toolbar>
+		</customHeader>
+		<Text text="Heaps of information about the Forefront App release, including bug fixes/enhancements" />
+	</Page>
+</mvc:View>

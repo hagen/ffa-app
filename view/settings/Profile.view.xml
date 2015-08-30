@@ -1,0 +1,125 @@
+<mvc:View
+	controllerName="view.settings.Profile"
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc"
+  xmlns:l="sap.ui.layout"
+  xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core">
+	<Page
+		id="idProfilePage"
+		enableScrolling="false"
+		showHeader="true">
+		<customHeader>
+			<Toolbar>
+				<Text
+					text="" />
+				<ToolbarSpacer />
+				<Title
+					textAlign="Center"
+					text="Profile" />
+				<ToolbarSpacer />
+				<Button
+					id="idEditButton"
+					text="Edit"
+					press="onEditPress" />
+			</Toolbar>
+		</customHeader>
+		<l:Grid
+			defaultSpan="L12 M12 S12"
+			width="auto">
+			<l:content>
+				<f:SimpleForm
+					id="idProfileForm"
+					maxContainerCols="2"
+					editable="true"
+					layout="ResponsiveGridLayout"
+					labelSpanL="3"
+					labelSpanM="3"
+					emptySpanL="4"
+					emptySpanM="4"
+					columnsL="2"
+					columnsM="2"
+					class="editableForm sapUiMediumMarginTop">
+					<f:content>
+						<Label
+							text="First name"
+							required="true">
+							<layoutData>
+								<l:GridData
+									span="L2 M2 S12" />
+							</layoutData>
+						</Label>
+						<Input
+							id="idFirstNameInput"
+							value="{settings>first_name}"
+							enabled="false">
+							<layoutData>
+								<l:GridData
+									span="L4 M4 S12" />
+							</layoutData>
+						</Input>
+
+						<Label
+							text="Last name"
+							required="true">
+							<layoutData>
+								<l:GridData
+									span="L2 M2 S12" />
+							</layoutData>
+						</Label>
+						<Input
+							id="idLastNameInput"
+							value="{settings>last_name}"
+							enabled="false">
+							<layoutData>
+								<l:GridData
+									span="L4 M4 S12" />
+							</layoutData>
+						</Input>
+
+						<Label
+							text="E-mail"
+							required="true">
+							<layoutData>
+								<l:GridData
+									span="L2 M2 S12" />
+							</layoutData>
+						</Label>
+						<Input
+							id="idEmailInput"
+							value="{settings>email}"
+							enabled="false">
+							<layoutData>
+								<l:GridData
+									span="L10 M10 S12" />
+							</layoutData>
+						</Input>
+					</f:content>
+				</f:SimpleForm>
+			</l:content>
+		</l:Grid>
+		<TileContainer
+			id="idSocialTileContainer"
+			allowAdd="false"
+			tiles="{
+				path: 'settings>SocialProfiles',
+				sorter : [{
+					path : 'order',
+					descending : false
+				}],
+				filters : [{
+					path : 'endda',
+					operator : 'EQ',
+					value1: '9999-12-31'
+				}]
+			}">
+			<StandardTile
+				icon="sap-icon://{settings>icon}"
+				title="{settings>name}"
+				number="{= ${settings>linked} === 'X' ? '✓' : ''}"
+				info="{= ${settings>linked} === 'X' ? 'Click to unlink' : 'Click to link'}"
+				infoState="{= ${settings>linked} === 'X' ? 'Success' : 'None'}"
+				press="onSocialTilePress" />
+		</TileContainer>
+	</Page>
+</mvc:View>

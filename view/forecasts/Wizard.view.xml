@@ -161,6 +161,10 @@
 									path : 'endda',
 									operator : 'EQ',
 									value1: '9999-12-31'
+								}, {
+									path : 'created_by',
+									operator : 'EQ',
+									value1: 'TESTUSER'
 								}]
 							}">
 	            <StandardTile

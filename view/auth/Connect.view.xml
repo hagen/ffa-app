@@ -1,9 +1,9 @@
 <mvc:View
-	controllerName="view.auth.Token"
+	controllerName="view.auth.Connect"
 	xmlns="sap.m"
 	xmlns:mvc="sap.ui.core.mvc">
 	<Page
-		id="idTokenPage">
+		id="idConnectPage">
 		<BusyDialog id="idBusyDialog" />
 	</Page>
 </mvc:View>

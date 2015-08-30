@@ -1,44 +1,41 @@
-jQuery.sap.declare("view.forecasts.Workbench");
+jQuery.sap.declare("view.settings.Menu");
 
-// Provides controller forecasts.Workbench
+// Provides controller view.DataSets
 sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
   function(jQuery, Controller) {
     "use strict";
 
-    var Workbench = Controller.extend("view.forecasts.Workbench", /** @lends view.forecasts.Workbench.prototype */ {
+    var Menu = Controller.extend("view.settings.Menu", /** @lends view.settings.Menu.prototype */ {
 
     });
 
     /**
      * On init handler
      */
-    Workbench.prototype.onInit = function() {
-      // Subscribe to the recents view event - we do this because if the user
-      // has navigated directly to the recents listing without coming first to
-      // the workbench, we need to make sure the Recents list item is selected.
-      this.getEventBus().subscribe("Recents", "RouteMatched", this._handleRecentsRouteMatched, this);
-      this.getEventBus().subscribe("Folders", "RouteMatched", this._handleFoldersRouteMatched, this);
-      this.getEventBus().subscribe("Favorites", "RouteMatched", this._handleFavoritesRouteMatched, this);
-      this.getEventBus().subscribe("Search", "RouteMatched", this._handleSearchRouteMatched, this);
+    Menu.prototype.onInit = function() {
+      this.getEventBus().subscribe("Profile", "RouteMatched", this._handleProfileRouteMatched, this);
+      this.getEventBus().subscribe("Account", "RouteMatched", this._handleAccountRouteMatched, this);
+      this.getEventBus().subscribe("Support", "RouteMatched", this._handleSupportRouteMatched, this);
+      this.getEventBus().subscribe("About", "RouteMatched", this._handleAboutRouteMatched, this);
 
       // handle route matched
-      this.getRouter().getRoute("workbench").attachPatternMatched(this._onRouteMatched, this);
+      this.getRouter().getRoute("settings").attachPatternMatched(this._onRouteMatched, this);
     };
 
     /**
      *
      */
-    Workbench.prototype.onExit = function() {};
-
-    /**
-     * Before rendering, set up required icons
-     */
-    Workbench.prototype.onBeforeRendering = function() {};
+    Menu.prototype.onExit = function() {};
 
     /**
      *
      */
-    Workbench.prototype.onAfterRendering = function() {;
+    Menu.prototype.onBeforeRendering = function() {};
+
+    /**
+     *
+     */
+    Menu.prototype.onAfterRendering = function() {;
     };
 
 		/***
@@ -50,15 +47,16 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
 		 *    ╚═╝  ╚═══╝╚═╝  ╚═╝  ╚═══╝
 		 *
 		 */
+
 		/**
-		 * Handles nav back press
-		 * @param  {object} oEvent Button press event
-		 */
-		Workbench.prototype.onNavBackPress = function(oEvent) {
-			this.getRouter().myNavBack("dash");
-		};
-		
-    /***
+     * Handles nav back press
+     * @param  {object} oEvent Button press event
+     */
+    Menu.prototype.onNavHomePress = function(oEvent) {
+      this.getRouter().myNavBack("dash");
+    };
+
+		/***
      *    ██████╗  ██████╗ ██╗   ██╗████████╗███████╗███████╗
      *    ██╔══██╗██╔═══██╗██║   ██║╚══██╔══╝██╔════╝██╔════╝
      *    ██████╔╝██║   ██║██║   ██║   ██║   █████╗  ███████╗
@@ -69,29 +67,24 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
      */
 
     /**
-     * Route matched handler for the workbench proper
-     * There's a couple of cases to handle here:
-     * (1) the user has no forecasts; show a message page.
-     * (2) the user has forecasts - show the recent forecasts page
-     * All other scenarios are handled by other routes
-     * @param  {object} oEvent Route matched event
+     * Route matched handler...
+     * When matching the route of a data set, we only need to know the data set
+     * Id in order to figure out what type of dataset it is.
      */
-    Workbench.prototype._onRouteMatched = function(oEvent) {
-      this._checkMetaDataLoaded("forecast");
-      // When the workbench route is matched, just load up recently used
-      // immediately.
-      this.getRouter().navTo("folders", {}, !sap.ui.Device.system.phone);
+    Menu.prototype._onRouteMatched = function(oEvent) {
+      this._checkMetaDataLoaded("settings");
+      var oParameters = oEvent.getParameters();
     };
 
-    /**
+		/**
      * Handles route matched for the recents view. This is only done so that the
      * correct Master List Item can be selected, if not already done.
      * @param  {string} sChannel Event channel
      * @param  {string} sEvent   Event description
      * @param  {object} oData    Object data payload
      */
-    Workbench.prototype._handleRecentsRouteMatched = function(sChannel, sEvent, oData) {
-      this.selectListItem("idRecentsListItem");
+    Menu.prototype._handleProfileRouteMatched = function(sChannel, sEvent, oData) {
+      this.selectListItem("idProfileListItem");
     };
 
     /**
@@ -101,8 +94,8 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
      * @param  {string} sEvent   Event description
      * @param  {object} oData    Object data payload
      */
-    Workbench.prototype._handleFoldersRouteMatched = function(sChannel, sEvent, oData) {
-      this.selectListItem("idFoldersListItem");
+    Menu.prototype._handleAccountRouteMatched = function(sChannel, sEvent, oData) {
+      this.selectListItem("idAccountListItem");
     };
 
     /**
@@ -112,8 +105,8 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
      * @param  {string} sEvent   Event description
      * @param  {object} oData    Object data payload
      */
-    Workbench.prototype._handleFavoritesRouteMatched = function(sChannel, sEvent, oData) {
-      this.selectListItem("idFavoritesListItem");
+    Menu.prototype._handleSupportRouteMatched = function(sChannel, sEvent, oData) {
+      this.selectListItem("idSupportListItem");
     };
 
     /**
@@ -123,11 +116,11 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
      * @param  {string} sEvent   Event description
      * @param  {object} oData    Object data payload
      */
-    Workbench.prototype._handleSearchRouteMatched = function(sChannel, sEvent, oData) {
-      this.selectListItem("idSearchListItem");
+    Menu.prototype._handleAboutRouteMatched = function(sChannel, sEvent, oData) {
+      this.selectListItem("idAboutListItem");
     };
 
-    /***
+		/***
      *    ██╗     ██╗███████╗████████╗
      *    ██║     ██║██╔════╝╚══██╔══╝
      *    ██║     ██║███████╗   ██║
@@ -137,28 +130,49 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
      *
      */
 
+		 /**
+		  * Selects the static supplied list item
+		  * @param  {string} sId List item id
+		  */
+		 Menu.prototype.selectListItem = function(sId) {
+		 	var oItem = this.getView().byId(sId);
+		 	if (!oItem.getSelected()) {
+		 		oItem.setSelected(true);
+		 	}
+		 };
+
     /**
-     * When the All Forecasts list item is pressed, we nav to that. There is only
-     * one recents list item, so it has a dedicated press handler.
+     * When a list item is pressed, we'll navigate to the route embedded in
+     * it's 'route' custom data
      * @param  {object} oEvent Item pressed event
      */
-    Workbench.prototype.onMasterListItemPress = function(oEvent) {
-      var oItem = oEvent.getParameter("listItem");
-      // Navigate to all forecasts
-      this.getRouter().navTo(oItem.data("route"), {}, !sap.ui.Device.system.phone);
+    Menu.prototype.onListItemPress = function(oEvent) {
+      // If the oItem is already selected, then don't re-select/and re navigate
+      let sRoute = oEvent.getParameter("listItem").data("route");
+
+      // Nav
+      this.getRouter().navTo(sRoute, {}, !sap.ui.Device.system.phone);
     };
 
     /**
-     * Selects the static supplied list item
-     * @param  {string} sId List item id
+     * On press, the user will be logged out and their bearer token will
+     * be destroyed.
+     * @param  {[type]} oEvent [description]
      */
-    Workbench.prototype.selectListItem = function(sId) {
-      var oItem = this.getView().byId(sId);
-      if (!oItem.getSelected()) {
-        oItem.setSelected(true);
+    Menu.prototype.onLogoutPress = function(oEvent) {
+      // destroy bearer token
+      _token = "";
+      if (window.localStorage) {
+        try {
+          window.localStorage.removeItem("_token");
+        } catch (e) {
+          // dunno. Can't access localStorage
+        }
       }
+      // redirect to logout
+      window.location.href = "/auth/logout";
     };
 
-    return Workbench;
+    return Menu;
 
   }, /* bExport= */ true);

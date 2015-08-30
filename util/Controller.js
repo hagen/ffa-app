@@ -54,6 +54,24 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
       return (mModel ? mModel.getProperty("/userid") : "");
     };
 
+    Controller.prototype.getBearerToken = function() {
+      if(_token) {
+        return _token;
+      } else if (window.localStorage) {
+        return window.localStorage.getItem('_token');
+      } else {
+        return "";
+      }
+    };
+
+    Controller.prototype.getLinkToken = function() {
+      if (window.localStorage) {
+        return window.localStorage.getItem('_link');
+      } else {
+        return "";
+      }
+    };
+
     /***
      *    ███╗   ███╗███████╗████████╗ █████╗ ██████╗  █████╗ ████████╗ █████╗
      *    ████╗ ████║██╔════╝╚══██╔══╝██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝██╔══██╗

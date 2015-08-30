@@ -24,12 +24,6 @@
 							textAlign="Center"
 							text="Data sets"
 							width="100%"/>
-						<!-- This button is only activated when navigating through folders -->
-						<Button
-							id="idDataSetsMasterUpButton"
-							icon=""
-							text=""
-							press="onMasterUpPress" />
 					</Toolbar>
 				</customHeader>
 				<footer>
@@ -73,6 +67,10 @@
 								path : 'endda',
 								operator : 'EQ',
 								value1: '9999-12-31'
+							}, {
+								path : 'created_by',
+								operator : 'EQ',
+								value1: 'TESTUSER'
 							}],
 							groupHeaderFactory : '.getDataSetGroupHeader'
 						}"

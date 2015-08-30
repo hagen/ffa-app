@@ -16,8 +16,14 @@
 	<title>App Portfolio Login</title>
 
 	<script type="text/javascript">
-		if(window.location.hash.indexOf("/token/")) {
-			var _token = window.location.hash.substring(window.location.hash.indexOf("/token/")+7, window.location.hash.length);
+		var _token = "";
+		if(window.location.hash.indexOf("/token/") > -1) {
+			_token = window.location.hash.substring(window.location.hash.indexOf("/token/")+7, window.location.hash.length);
+			if (window.localStorage) {
+				window.localStorage.setItem("_token", _token);
+			}
+		} else if (window.localStorage) {
+			_token = window.localStorage.getItem("_token");
 		}
 	</script>
 

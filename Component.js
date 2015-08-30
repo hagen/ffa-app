@@ -15,6 +15,7 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
         name: "OData",
         datasetOdataUrl: "/fa/ppo/drop3/xs/services/dataset.xsodata",
         forecastOdataUrl: "/fa/ppo/drop3/xs/services/forecast.xsodata",
+        settingsOdataUrl: "/fa/ppo/drop3/xs/services/settings.xsodata",
         userJsonUrl: "http://localhost:8080/auth/api/user",
       }
     },
@@ -136,6 +137,40 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
           viewLevel: 5
         }]
       }, {
+        pattern: "settings",
+        name: "settings",
+        view: "settings.Menu",
+        viewLevel: 2,
+        subroutes : [{
+          pattern: "settings/profile",
+          name: "profile",
+          view: "settings.Profile",
+          viewLevel: 3,
+          targetControl: "idSettingsSplitContainer",
+          targetAggregation: "detailPages"
+        }, {
+          pattern: "settings/account",
+          name: "account",
+          view: "settings.Account",
+          viewLevel: 3,
+          targetControl: "idSettingsSplitContainer",
+          targetAggregation: "detailPages"
+        }, {
+          pattern: "settings/support",
+          name: "support",
+          view: "settings.Support",
+          viewLevel: 3,
+          targetControl: "idSettingsSplitContainer",
+          targetAggregation: "detailPages"
+        }, {
+          pattern: "settings/about",
+          name: "about",
+          view: "settings.About",
+          viewLevel: 3,
+          targetControl: "idSettingsSplitContainer",
+          targetAggregation: "detailPages"
+        }]
+      }, {
         pattern: "dash",
         name: "dash",
         view: "Dashboard",
@@ -151,9 +186,14 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
         view: "auth.Login",
         viewLevel: 1
       }, {
-        pattern: "token/{access_token}",
+        pattern: "auth/{provider}/token/{access_token}",
         name: "token",
         view: "auth.Token",
+        viewLevel: 1
+      }, {
+        pattern: "connect/{provider}/token/{access_token}",
+        name: "connect",
+        view: "auth.Connect",
         viewLevel: 1
       }, {
         name: "catchallMaster",
@@ -196,6 +236,7 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
 
     mDeviceModel.setDefaultBindingMode("OneWay");
     this.setModel(mDeviceModel, "device");
+
     var oHeaders = {Authorization : 'Bearer ' + _token };
     var oDSModel = new sap.ui.model.odata.ODataModel(mConfig.serviceConfig.datasetOdataUrl, {
       headers : oHeaders
@@ -209,6 +250,13 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
     });
     oFModel.setDefaultBindingMode("TwoWay");
     this.setModel(oFModel, "forecast");
+
+    // Create and set datasets domain model to the component
+    var oSModel = new sap.ui.model.odata.ODataModel(mConfig.serviceConfig.settingsOdataUrl, {
+      headers : oHeaders
+    });
+    oSModel.setDefaultBindingMode("TwoWay");
+    this.setModel(oSModel, "settings");
 
     jQuery.ajax({
       url : 'auth/api/user',

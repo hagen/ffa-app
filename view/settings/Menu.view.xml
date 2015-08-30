@@ -1,0 +1,102 @@
+<mvc:View
+	controllerName="view.settings.Menu"
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:mvc="sap.ui.core.mvc">
+	<SplitContainer
+		id="idSettingsSplitContainer">
+    <masterPages>
+      <Page
+        id="idMasterPage"
+				title="Data sets"
+				showHeader="true">
+				<customHeader>
+					<Toolbar
+						id="idMasterToolbar">
+						<Button
+							id="idMasterHomeButton"
+							icon="sap-icon://home"
+							press="onNavHomePress" />
+						<Title
+							id="idMasterTitle"
+							textAlign="Center"
+							text="Settings"
+							width="100%"/>
+						<!-- Spacer -->
+						<Text text="" />
+					</Toolbar>
+				</customHeader>
+				<footer>
+					<Toolbar>
+						<Button
+							id="idLogoutButton"
+							text="Log out"
+							press="onLogoutPress"
+							width="100%" />
+					</Toolbar>
+				</footer>
+				<content>
+					<!-- TODO Localisation for no data text -->
+					<List
+						id="idMasterList"
+						mode="SingleSelectMaster"
+						itemPress="onListItemPress">
+						<StandardListItem
+							id="idProfileListItem"
+							adaptTitleSize="true"
+							icon=""
+							title="Profile"
+							type="Active">
+							<customData>
+								<core:CustomData key="route" value="profile" />
+							</customData>
+						</StandardListItem>
+						<StandardListItem
+							id="idAccountListItem"
+							adaptTitleSize="true"
+							icon=""
+							title="Account &amp; Billing"
+							type="Active">
+							<customData>
+								<core:CustomData key="route" value="account" />
+							</customData>
+						</StandardListItem>
+						<StandardListItem
+							id="idSupportListItem"
+							adaptTitleSize="true"
+							icon=""
+							title="Support"
+							type="Active">
+							<customData>
+								<core:CustomData key="route" value="support" />
+							</customData>
+						</StandardListItem>
+						<StandardListItem
+							id="idAboutListItem"
+							adaptTitleSize="true"
+							icon=""
+							title="About"
+							info="(v0.0.4)"
+							type="Active">
+							<customData>
+								<core:CustomData key="route" value="about" />
+							</customData>
+						</StandardListItem>
+					</List>
+				</content>
+      </Page>
+    </masterPages>
+    <detailPages>
+			<!-- TODO localisation of text -->
+			<MessagePage
+				id="idMessagePage"
+				icon="sap-icon://message-information"
+				showHeader="false"
+				showNavButton="false"
+				text="Select a settings option from the menu"
+				description="Manage your profile settings from here"
+				title="Profile settings">
+			</MessagePage>
+    </detailPages>
+	</SplitContainer>
+</mvc:View>
