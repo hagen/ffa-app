@@ -14,6 +14,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
      */
     Menu.prototype.onInit = function() {
       this.getEventBus().subscribe("Profile", "RouteMatched", this._handleProfileRouteMatched, this);
+      this.getEventBus().subscribe("Social", "RouteMatched", this._handleSocialRouteMatched, this);
       this.getEventBus().subscribe("Account", "RouteMatched", this._handleAccountRouteMatched, this);
       this.getEventBus().subscribe("Support", "RouteMatched", this._handleSupportRouteMatched, this);
       this.getEventBus().subscribe("About", "RouteMatched", this._handleAboutRouteMatched, this);
@@ -77,8 +78,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
     };
 
 		/**
-     * Handles route matched for the recents view. This is only done so that the
-     * correct Master List Item can be selected, if not already done.
+     *
      * @param  {string} sChannel Event channel
      * @param  {string} sEvent   Event description
      * @param  {object} oData    Object data payload
@@ -88,8 +88,17 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
     };
 
     /**
-     * Handles route matched for the Folders view. This is only done so that the
-     * correct Master List Item can be selected, if not already done.
+     *
+     * @param  {string} sChannel Event channel
+     * @param  {string} sEvent   Event description
+     * @param  {object} oData    Object data payload
+     */
+    Menu.prototype._handleSocialRouteMatched = function(sChannel, sEvent, oData) {
+      this.selectListItem("idSocialListItem");
+    };
+
+    /**
+     *
      * @param  {string} sChannel Event channel
      * @param  {string} sEvent   Event description
      * @param  {object} oData    Object data payload
@@ -99,8 +108,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
     };
 
     /**
-     * Handles route matched for the Favorites view. This is only done so that the
-     * correct Master List Item can be selected, if not already done.
+     * .
      * @param  {string} sChannel Event channel
      * @param  {string} sEvent   Event description
      * @param  {object} oData    Object data payload
@@ -110,8 +118,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
     };
 
     /**
-     * Handles route matched for the Search view. This is only done so that the
-     * correct Master List Item can be selected, if not already done.
+     * 
      * @param  {string} sChannel Event channel
      * @param  {string} sEvent   Event description
      * @param  {object} oData    Object data payload

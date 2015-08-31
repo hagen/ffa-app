@@ -46,12 +46,12 @@ sap.ui.define(['jquery.sap.global', 'view/auth/Controller'],
       // the register tab
       var oParameters = oEvent.getParameters();
       let sRoute = "";
-      
+
       // First, check if access_token is supplied. If so, we're authed
       // to go to dash
       if (oParameters.arguments.access_token) {
         this._handleConnectAuth(oParameters.arguments.access_token, oParameters.arguments.provider);
-        sRoute = "profile";
+        sRoute = "social";
       } else {
         sRoute = "login";
       }

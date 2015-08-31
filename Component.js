@@ -145,6 +145,15 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
           pattern: "settings/profile",
           name: "profile",
           view: "settings.Profile",
+          transition: "show",
+          viewLevel: 3,
+          targetControl: "idSettingsSplitContainer",
+          targetAggregation: "detailPages"
+        }, {
+          pattern: "settings/social",
+          name: "social",
+          view: "settings.Social",
+          transition: "show",
           viewLevel: 3,
           targetControl: "idSettingsSplitContainer",
           targetAggregation: "detailPages"
@@ -152,6 +161,7 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
           pattern: "settings/account",
           name: "account",
           view: "settings.Account",
+          transition: "show",
           viewLevel: 3,
           targetControl: "idSettingsSplitContainer",
           targetAggregation: "detailPages"
@@ -159,6 +169,7 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
           pattern: "settings/support",
           name: "support",
           view: "settings.Support",
+          transition: "show",
           viewLevel: 3,
           targetControl: "idSettingsSplitContainer",
           targetAggregation: "detailPages"
@@ -166,6 +177,7 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
           pattern: "settings/about",
           name: "about",
           view: "settings.About",
+          transition: "show",
           viewLevel: 3,
           targetControl: "idSettingsSplitContainer",
           targetAggregation: "detailPages"
@@ -179,7 +191,28 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
         pattern: "plans",
         name: "plans",
         view: "plans.Plans",
-        viewLevel: 2
+        viewLevel: 2,
+        subroutes: [{
+          pattern: "plans/free",
+          name: "plan-free",
+          view: "plans.Free",
+          viewLevel: 3
+        }, {
+          pattern: "plans/lite",
+          name: "plan-lite",
+          view: "plans.Lite",
+          viewLevel: 3
+        }, {
+          pattern: "plans/pro",
+          name: "plan-pro",
+          view: "plans.Pro",
+          viewLevel: 3
+        }, {
+          pattern: "plans/enterprise",
+          name: "plan-enterprise",
+          view: "plans.Enterprise",
+          viewLevel: 3
+        }]
       }, {
         pattern: "login/:tab:/:reason:",
         name: "login",

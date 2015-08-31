@@ -76,6 +76,51 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
       }, !sap.ui.Device.system.phone);
     };
 
+    /***
+     *    ██╗      ██████╗  ██████╗ ██╗███╗   ██╗
+     *    ██║     ██╔═══██╗██╔════╝ ██║████╗  ██║
+     *    ██║     ██║   ██║██║  ███╗██║██╔██╗ ██║
+     *    ██║     ██║   ██║██║   ██║██║██║╚██╗██║
+     *    ███████╗╚██████╔╝╚██████╔╝██║██║ ╚████║
+     *    ╚══════╝ ╚═════╝  ╚═════╝ ╚═╝╚═╝  ╚═══╝
+     *
+     */
+
+    /**
+     * When login is pressed, we validate the username and password
+     * combination, and navigate to the dash.
+     * @param  {object} oEvent button press event
+     */
+    Login.prototype.onSignInButtonPress = function(oEvent) {
+
+      // Validate the user-entered conditions
+      let oEmailInput = this.getView().byId("idLoginEmail");
+      let oPasswordInput = this.getView().byId("idLoginPassword");
+      let bContinue = false;
+
+      // Email validation...
+      if (!(this._validateEmail(oEmailInput) && this._validatePassword(oPasswordInput))) {
+        return;
+      }
+
+      // The rest of this code assumes you are not using a library.
+      // It can be made less wordy if you use one.
+      this._submitForm("http://localhost:8080/auth/local/login", "post", {
+        email: oEmailInput.getValue(),
+        password: oPasswordInput.getValue()
+      });
+    };
+
+    /***
+     *    ██████╗ ███████╗ ██████╗ ██╗███████╗████████╗███████╗██████╗
+     *    ██╔══██╗██╔════╝██╔════╝ ██║██╔════╝╚══██╔══╝██╔════╝██╔══██╗
+     *    ██████╔╝█████╗  ██║  ███╗██║███████╗   ██║   █████╗  ██████╔╝
+     *    ██╔══██╗██╔══╝  ██║   ██║██║╚════██║   ██║   ██╔══╝  ██╔══██╗
+     *    ██║  ██║███████╗╚██████╔╝██║███████║   ██║   ███████╗██║  ██║
+     *    ╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═╝╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═╝
+     *
+     */
+    
     /**
      * Register tab, email notification/checking. This is used as a proxy
      * to remind the user thay they must supply a valid email address. It will
@@ -83,23 +128,36 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
      */
     Login.prototype.onRegisterEmailChange = function(oEvent) {
       var oInput = oEvent.getSource();
-      var sEmail = oEvent.getParameter("value");
-      var sState = sap.ui.core.ValueState.Warning;
+      this._validateEmail(oInput);
+    };
 
-      // TODO Localisation
-      var sText = "An account activation e-mail will be sent to this email";
+    /**
+     * Register button. Wait a second, someone wants to register?!?! Yippee!!!
+     * @param  {object} oEvent button event
+     */
+    Login.prototype.onRegisterButtonPress = function(oEvent) {
+
+      // Validate the user-entered conditions
+      let oEmailInput = this.getView().byId("idRegisterEmail");
+      let oPasswordInput = this.getView().byId("idRegisterPassword");
+      let bContinue = false;
 
       // Email validation...
-      var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
-      if (!re.test(sEmail)) {
-        sState = sap.ui.core.ValueState.Error;
-        // TODO Localisation
-        sText = "Yikes! This e-mail appears to be invalid!";
+      if (!(this._validateEmail(oEmailInput) && this._validatePassword(oPasswordInput))) {
+        return;
       }
 
-      // Update input, to either show a reminder, or... show an error
-      oInput.setValueState(sState);
-      oInput.setValueStateText(sText);
+      // Check the email is not being used
+      if (this._emailExists(oEmailInput)) {
+        return;
+      }
+
+      // The rest of this code assumes you are not using a library.
+      // It can be made less wordy if you use one.
+      this._submitForm("http://localhost:8080auth/local/register", "post", {
+        email: oEmailInput.getValue(),
+        password: oPasswordInput.getValue()
+      });
     };
 
     /**
@@ -119,24 +177,6 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
       }
     };
 
-    /**
-     * [_maybeShowReason description]
-     * @param  {[type]} reason [description]
-     * @return {[type]}        [description]
-     */
-    Login.prototype._maybeShowReason = function (sReason) {
-      switch(sReason) {
-        case "auth":
-          jQuery.sap.delayedCall(500, this, jQuery.proxy(function() {
-            this.showErrorAlert(
-              "Woah. Looks like your session expired. Please log in again to get back to it.",
-              "Session expired",
-              sap.ui.Device.system.phone
-            );
-          }, this), []);
-          break;
-      }
-    };
     /***
      *     █████╗ ██╗   ██╗████████╗██╗  ██╗
      *    ██╔══██╗██║   ██║╚══██╔══╝██║  ██║
@@ -148,30 +188,27 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
      */
 
     /**
-     * When login is pressed, we validate the username and password
-     * combination, and navigate to the dash.
-     * @param  {object} oEvent button press event
+     * Submit a form as the means of sending to back end
+     * @param  {[type]} sAction [description]
+     * @param  {[type]} sMethod [description]
+     * @param  {[type]} oParams [description]
+     * @return {[type]}         [description]
      */
-    Login.prototype.onSignInButtonPress = function(oEvent) {
+    Login.prototype._submitForm = function(sAction, sMethod, oParams) {
       // The rest of this code assumes you are not using a library.
       // It can be made less wordy if you use one.
-      var form = document.createElement("form");
-      form.setAttribute("method", "post");
-      form.setAttribute("action", "http://localhost:8080/auth/login");
-      var params = {
-        email : this.getView().byId("idLoginEmail").getValue(),
-        password : this.getView().byId("idLoginPassword").getValue()
-      };
+      let form = document.createElement("form");
+      form.setAttribute("method", sMethod.toLowerCase());
+      form.setAttribute("action", sAction);
 
-      for(var key in params) {
-          if(params.hasOwnProperty(key)) {
-              var hiddenField = document.createElement("input");
-              hiddenField.setAttribute("type", "hidden");
-              hiddenField.setAttribute("name", key);
-              hiddenField.setAttribute("value", params[key]);
-
-              form.appendChild(hiddenField);
-           }
+      for (let key in oParams) {
+        if (oParams.hasOwnProperty(key)) {
+          let hiddenField = document.createElement("input");
+          hiddenField.setAttribute("type", "hidden");
+          hiddenField.setAttribute("name", key);
+          hiddenField.setAttribute("value", oParams[key]);
+          form.appendChild(hiddenField);
+        }
       }
 
       document.body.appendChild(form);
@@ -179,34 +216,94 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
     };
 
     /**
-     * Register button. Wait a second, someone wants to register?!?! Yippee!!!
-     * @param  {object} oEvent button event
+     * [_maybeShowReason description]
+     * @param  {[type]} reason [description]
+     * @return {[type]}        [description]
      */
-    Login.prototype.onRegisterButtonPress = function(oEvent) {
-      // The rest of this code assumes you are not using a library.
-      // It can be made less wordy if you use one.
-      var form = document.createElement("form");
-      form.setAttribute("method", "post");
-      form.setAttribute("action", "http://localhost:8080/auth/signup");
-      var params = {
-        email : this.getView().byId("idRegisterEmail").getValue(),
-        password : this.getView().byId("idRegisterPassword").getValue()
-      };
+    Login.prototype._maybeShowReason = function(sReason) {
+      switch (sReason) {
+        case "auth":
+          jQuery.sap.delayedCall(500, this, jQuery.proxy(function() {
+            this.showErrorAlert(
+              "Woah. Looks like your session expired. Please log in again to get back to it.",
+              "Session expired",
+              sap.ui.Device.system.phone
+            );
+          }, this), []);
+          break;
+      }
+    };
 
-      for(var key in params) {
-          if(params.hasOwnProperty(key)) {
-              var hiddenField = document.createElement("input");
-              hiddenField.setAttribute("type", "hidden");
-              hiddenField.setAttribute("name", key);
-              hiddenField.setAttribute("value", params[key]);
+    /***
+     *    ██╗   ██╗ █████╗ ██╗     ██╗██████╗  █████╗ ████████╗███████╗
+     *    ██║   ██║██╔══██╗██║     ██║██╔══██╗██╔══██╗╚══██╔══╝██╔════╝
+     *    ██║   ██║███████║██║     ██║██║  ██║███████║   ██║   █████╗
+     *    ╚██╗ ██╔╝██╔══██║██║     ██║██║  ██║██╔══██║   ██║   ██╔══╝
+     *     ╚████╔╝ ██║  ██║███████╗██║██████╔╝██║  ██║   ██║   ███████╗
+     *      ╚═══╝  ╚═╝  ╚═╝╚══════╝╚═╝╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚══════╝
+     *
+     */
 
-              form.appendChild(hiddenField);
-           }
+    /**
+     * Validate the supplied email input control's value; additionally, set
+     * the input control's state and message
+     * @param  {[type]} oInput [description]
+     * @return {[type]}        [description]
+     */
+    Login.prototype._validateEmail = function(oInput) {
+
+      // Validate
+      let bValid = false;
+      let pattern = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+
+      // Test
+      if (!pattern.test(oInput.getValue())) {
+        oInput.setValueState(sap.ui.core.ValueState.Error);
+        oInput.setValueStateText("Yikes! This e-mail appears to be invalid!");
+        bValid = false;
+      } else {
+        oInput.setValueState(sap.ui.core.ValueState.Success);
+        bValid = true;
       }
 
-      document.body.appendChild(form);
-      form.submit();
+      // return result
+      return bValid;
     };
+
+    /**
+     * Validate the supplied password input control's value; additionally, set
+     * the input control's state and message
+     * @param  {[type]} oInput [description]
+     * @return {[type]}        [description]
+     */
+    Login.prototype._validatePassword = function(oInput) {
+
+      // Validate
+      let bValid = false;
+
+      // Password validation
+      if ("" === oInput.getValue()) {
+        oInput.setValueState(sap.ui.core.ValueState.Error);
+        oInput.setValueStateText("Blank-ity blank blank. You'll need to supply a password.");
+        bValid = false;
+      } else {
+        oInput.setValueState(sap.ui.core.ValueState.Success);
+        bValid = true;
+      }
+
+      // return result
+      return bValid;
+    };
+
+    /***
+     *    ███████╗ ██████╗  ██████╗██╗ █████╗ ██╗
+     *    ██╔════╝██╔═══██╗██╔════╝██║██╔══██╗██║
+     *    ███████╗██║   ██║██║     ██║███████║██║
+     *    ╚════██║██║   ██║██║     ██║██╔══██║██║
+     *    ███████║╚██████╔╝╚██████╗██║██║  ██║███████╗
+     *    ╚══════╝ ╚═════╝  ╚═════╝╚═╝╚═╝  ╚═╝╚══════╝
+     *
+     */
 
     /**
      * Authenticate the user, by sending them to Google OAuth

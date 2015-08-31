@@ -98,22 +98,5 @@
 				</f:SimpleForm>
 			</l:content>
 		</l:Grid>
-		<TileContainer
-			id="idSocialTileContainer"
-			allowAdd="false"
-			tiles="{
-				path: 'settings>SocialProfiles',
-				sorter : [{
-					path : 'order',
-					descending : false
-				}]
-			}">
-			<StandardTile
-				icon="sap-icon://{settings>icon}"
-				title="{settings>name}"
-				info="{= ${settings>linked} === 'X' ? 'Connected' : 'Connect'}"
-				infoState="{= ${settings>linked} === 'X' ? 'Success' : 'None'}"
-				press="onSocialTilePress" />
-		</TileContainer>
 	</Page>
 </mvc:View>

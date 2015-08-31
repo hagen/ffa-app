@@ -5,7 +5,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
   function(jQuery, UtilController) {
   "use strict";
 
-  var Controller = UtilController.extend("view.auth.Controller", /** @lends view.forecasts.Controller */ {
+  var Controller = UtilController.extend("view.auth.Controller", /** @lends view.auth.Controller */ {
 
   });
 
@@ -54,6 +54,16 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
     if (typeof this[fn] === "function") {
       this[fn].apply(this, [oModel, oProfiles]);
     }
+  };
+
+  /**
+   * Connect up the Linkedin account
+   * @param  {[type]} oModel    [description]
+   * @param  {[type]} oProfiles [description]
+   * @return {[type]}           [description]
+   */
+  Controller.prototype._connectLocal = function(oModel, oProfiles) {
+    // stub
   };
 
   /**

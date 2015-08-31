@@ -1,7 +1,7 @@
 jQuery.sap.declare("view.settings.Account");
 
 // Provides controller view.Wizard
-sap.ui.define(["jquery.sap.global", "view/data/NewDataSetController"],
+sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
   function(jQuery, Controller) {
     "use strict";
 

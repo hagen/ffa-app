@@ -2,6 +2,7 @@
 	controllerName="view.plans.Plans"
 	xmlns="sap.m"
 	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:core="sap.ui.core"
 	xmlns:l="sap.ui.layout"
 	xmlns:html="http://www.w3.org/1999/xhtml">
 	<Page
@@ -21,18 +22,65 @@
 					id="idPlansTileContainer"
 					allowAdd="false"
 					editable="false"
-					tiles="{plans>/}">
+					tiles="{
+						path: 'settings>/PlanTypes',
+						sorter: {
+							path : 'order',
+							descending: false
+						}
+					}">
 					<StandardTile
-						icon="sap-icon://{plans>icon}"
-						info="{plans>plan}"
-						infoState="None"
-						type="{plans>tile}"
-						number="{plans>price}"
-						numberUnit="{plans>unit}"
-						title="{plans>title}"
+						icon="sap-icon://{settings>icon}"
+						info="{settings>info}"
+						infoState="{settings>info_state}"
+						type="{settings>type}"
+						number="{settings>number}"
+						numberUnit="{settings>unit}"
+						title="{settings>title}"
 						press="onPlansTilePress"/>
 				</TileContainer>
 			</html:div>
 		</content>
+		<dependents>
+			<Dialog
+				id="idPlanDetailsDialog"
+				horizontalScrolling="false"
+				title="{settings>info}">
+				<beginButton>
+					<Button
+						id="idPlansBeginButton"
+						text="{settings>action}"
+						press="onPlanDetailsGoPress">
+						<customData>
+							<core:CustomData key="planType" value="{settings>plan_type_id}" />
+						</customData>
+				</beginButton>
+				<endButton>
+					<Button
+						id="idPlansFreeBeginButton"
+						text="Close"
+						press="onPlansFreeClosePress"/>
+				</endButton>
+				<content>
+					<List
+						id="idPlanDetailsList"
+						listMode="None"
+						items="{
+							path : 'settings>Details',
+							sorter: {
+								path : 'order',
+								descending: false
+							}
+						}">
+						<StandardListItem
+							title="{settings>title}"
+							icon="sap-icon://{plans>icon}"
+							info="{settings>info}"
+							infoState="{settings>info_state}"
+							type="Inactive" />
+					</List>
+				</content>
+			</Dialog>
+		</dependents>
 	</Page>
 </mvc:View>

@@ -52,6 +52,17 @@
 							</customData>
 						</StandardListItem>
 						<StandardListItem
+							id="idSocialListItem"
+							adaptTitleSize="true"
+							icon=""
+							title="Social"
+							info="3rd party login"
+							type="Active">
+							<customData>
+								<core:CustomData key="route" value="social" />
+							</customData>
+						</StandardListItem>
+						<StandardListItem
 							id="idAccountListItem"
 							adaptTitleSize="true"
 							icon=""

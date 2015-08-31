@@ -1,0 +1,109 @@
+<mvc:View
+	controllerName="view.settings.Social"
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc"
+  xmlns:l="sap.ui.layout"
+  xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core">
+	<Page
+		id="idSocialPage"
+		enableScrolling="false"
+		showHeader="true">
+		<customHeader>
+			<Toolbar>
+				<Title
+					width="100%"
+					textAlign="Center"
+					text="Social" />
+			</Toolbar>
+		</customHeader>
+		<TileContainer
+			id="idSocialTileContainer"
+			allowAdd="false"
+			tiles="{
+				path: 'settings>SocialProfiles',
+				sorter : [{
+					path : 'order',
+					descending : false
+				}]
+			}">
+			<StandardTile
+				icon="sap-icon://{settings>icon}"
+				title="{settings>name}"
+				info="{= ${settings>linked} === 'X' ? 'Connected' : 'Connect'}"
+				infoState="{= ${settings>linked} === 'X' ? 'Success' : 'None'}"
+				press="onSocialTilePress" />
+		</TileContainer>
+		<dependents>
+			<Dialog
+				id="idConnectDialog"
+				horizontalScrolling="false"
+				title="Create a local account">
+				<beginButton>
+					<Button
+						id="idConnectCancelButon"
+						text="Cancel"
+						press="onLocalConnectCancelPress" />
+				</beginButton>
+				<endButton>
+					<Button
+						id="idConnectOkButon"
+						text="Connect"
+						press="onLocalConnectOkPress" />
+				</endButton>
+				<l:Grid
+					defaultSpan="L12 M12 S12"
+					width="auto">
+					<l:content>
+						<f:SimpleForm
+							id="idProfileForm"
+							maxContainerCols="2"
+							editable="true"
+							layout="ResponsiveGridLayout"
+							labelSpanL="3"
+							labelSpanM="3"
+							emptySpanL="4"
+							emptySpanM="4"
+							columnsL="2"
+							columnsM="2"
+							class="editableForm">
+							<f:content>
+								<Input
+									id="idConnectEmail"
+									value=""
+									type="Email"
+									placeholder="E-mail"
+									change="onConnectEmailChange">
+									<layoutData>
+										<l:GridData
+											span="L12 M12 S12" />
+									</layoutData>
+								</Input>
+								<Input
+									id="idConnectPassword"
+									type="Password"
+									value=""
+									placeholder="Password">
+									<layoutData>
+										<l:GridData
+											span="L12 M12 S12" />
+									</layoutData>
+								</Input>
+								<CheckBox
+									id="idShowPasswordCheckbox"
+									text="Show password"
+									textAlign="Begin"
+									select="onShowPasswordCheckBoxSelect">
+									<layoutData>
+										<l:GridData
+											span="L6 M6 S6" />
+									</layoutData>
+								</CheckBox>
+							</f:content>
+						</f:SimpleForm>
+					</l:content>
+				</l:Grid>
+			</Dialog>
+		</dependents>
+	</Page>
+</mvc:View>

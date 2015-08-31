@@ -40,8 +40,8 @@ sap.ui.define(['jquery.sap.global', 'view/auth/Controller'],
      */
     Token.prototype._onRouteMatched = function(oEvent) {
       let oDialog = this.getView().byId("idBusyDialog");
-      oDialog.open();
-      
+      jQuery.sap.delayedCall(0, this, function() {oDialog.open()}, []);
+
       // When the route is matched, we either want the login tab or
       // the register tab
       var oParameters = oEvent.getParameters();
@@ -51,7 +51,11 @@ sap.ui.define(['jquery.sap.global', 'view/auth/Controller'],
       // to go to dash
       if (oParameters.arguments.access_token) {
         this._handleTokenAuth(oParameters.arguments.access_token, oParameters.arguments.provider);
-        sRoute = "dash";
+        if(this._hasPlan()) {
+          sRoute = "dash";
+        } else {
+          sRoute = "plans";
+        }
       } else {
         sRoute = "login";
       }
@@ -59,6 +63,16 @@ sap.ui.define(['jquery.sap.global', 'view/auth/Controller'],
       this.getRouter().navTo(sRoute, {}, !sap.ui.Device.system.phone);
       oDialog.close();
     };
+
+    /***
+     *     █████╗ ██╗   ██╗████████╗██╗  ██╗
+     *    ██╔══██╗██║   ██║╚══██╔══╝██║  ██║
+     *    ███████║██║   ██║   ██║   ███████║
+     *    ██╔══██║██║   ██║   ██║   ██╔══██║
+     *    ██║  ██║╚██████╔╝   ██║   ██║  ██║
+     *    ╚═╝  ╚═╝ ╚═════╝    ╚═╝   ╚═╝  ╚═╝
+     *
+     */
 
     /**
      * Decides whether we need to create a user in the back-end; this is all
@@ -139,6 +153,42 @@ sap.ui.define(['jquery.sap.global', 'view/auth/Controller'],
       }
     };
 
+    /***
+     *    ██████╗ ██╗      █████╗ ███╗   ██╗███████╗
+     *    ██╔══██╗██║     ██╔══██╗████╗  ██║██╔════╝
+     *    ██████╔╝██║     ███████║██╔██╗ ██║███████╗
+     *    ██╔═══╝ ██║     ██╔══██║██║╚██╗██║╚════██║
+     *    ██║     ███████╗██║  ██║██║ ╚████║███████║
+     *    ╚═╝     ╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝
+     *
+     */
+
+    /**
+     * Checks if this user has a valid usage plan
+     * @return {Boolean} [description]
+     */
+    Token.prototype._hasPlan = function () {
+
+      let bValid = false;
+
+      this.getView().getModel("settings").read("/Plans('TESTUSER')", {
+        success : jQuery.proxy(function(oData, mResponse) {
+          if (oData.id) {
+            bValid = true;
+          } else {
+            bValid = false;
+          }
+        }, this),
+        error : jQuery.proxy(function(mError) {
+          this._maybeHandleAuthError(mError);
+          bValid = false;
+        }, this),
+        async : false
+      });
+
+      return bValid;
+    };
+    
     return Token;
 
   }, /* bExport= */ true);
