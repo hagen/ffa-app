@@ -1,7 +1,7 @@
 jQuery.sap.declare("view.plans.Free");
 
 // Provides controller view.Plans
-sap.ui.define(['jquery.sap.global', 'view.plans.Controller'],
+sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
 	function(jQuery, Controller) {
 	"use strict";
 
@@ -14,7 +14,7 @@ sap.ui.define(['jquery.sap.global', 'view.plans.Controller'],
 	 */
 	Free.prototype.onInit = function() {
 		// Handle route matching.
-		this.getRouter().getRoute("plans-free").attachPatternMatched(this._onRouteMatched, this);
+		this.getRouter().getRoute("plan-free").attachPatternMatched(this._onRouteMatched, this);
 	};
 
 	/**

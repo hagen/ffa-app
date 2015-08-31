@@ -2,10 +2,6 @@
   xmlns="sap.m"
   xmlns:core="sap.ui.core">
   <BusyDialog
-    id="idBusyDialog"
-    cancelButtonText="Cancel"
-    showCancelButton="false"
-    text=""
-    title="">
+    id="idBusyDialog">
   </BusyDialog>
 </core:FragmentDefinition>

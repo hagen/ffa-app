@@ -200,12 +200,12 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
         }, {
           pattern: "plans/lite",
           name: "plan-lite",
-          view: "plans.Lite",
+          view: "plans.Paid",
           viewLevel: 3
         }, {
           pattern: "plans/pro",
           name: "plan-pro",
-          view: "plans.Pro",
+          view: "plans.Paid",
           viewLevel: 3
         }, {
           pattern: "plans/enterprise",

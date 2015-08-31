@@ -6,7 +6,7 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
     "use strict";
 
     var Controller = MvcController.extend("com.ffa.dash.util.Controller", /** @lends com.ffa.dash.util.Controller */ {
-      _loaded : false
+      _loaded: false
     });
 
     /**
@@ -64,7 +64,7 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
      * @return {String} Bearer auth token
      */
     Controller.prototype.getBearerToken = function() {
-      if(_token) {
+      if (_token) {
         return _token;
       } else if (window.localStorage) {
         return window.localStorage.getItem('_token');
@@ -112,7 +112,7 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
      * @param  {String} sModel Model name to check meta data of
      */
     Controller.prototype._checkMetaDataLoaded = function(sModel) {
-      if(this._loaded) {
+      if (this._loaded) {
         return;
       }
 
@@ -179,6 +179,77 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
         styleClass: bCompact ? "sapUiSizeCompact" : ""
       });
     };
+
+
+    /***
+     *    ██████╗ ██╗   ██╗███████╗██╗   ██╗
+     *    ██╔══██╗██║   ██║██╔════╝╚██╗ ██╔╝
+     *    ██████╔╝██║   ██║███████╗ ╚████╔╝
+     *    ██╔══██╗██║   ██║╚════██║  ╚██╔╝
+     *    ██████╔╝╚██████╔╝███████║   ██║
+     *    ╚═════╝  ╚═════╝ ╚══════╝   ╚═╝
+     *
+     */
+
+    /**
+     * Opens a busy dialog WITH title and text
+     * @param  {object} oParams Object of parameters
+     */
+    Controller.prototype.openBusyDialog = function(oParams) {
+      // Create the fragment and open!
+      if (!this._oBusyDialog) {
+        this._oBusyDialog = sap.ui.xmlfragment("idBusyDialogFragment", "view.BusyDialog", this);
+        this.getView().addDependent(this._oBusyDialog);
+      }
+
+      // Set title, text and cancel event
+      if(oParams) {
+        this._oBusyDialog.setTitle(oParams.title);
+        this._oBusyDialog.setText(oParams.text);
+        if (typeof oParams.onCancel === 'function') {
+          this._oBusyDialog.attachEvent('close', function(oEvent) {
+            if (oEvent.getParameter("cancelPressed")) {
+              oParams.onCancel();
+            }
+          });
+        }
+
+        // And cancel button?
+        if (oParams.showCancelButton === undefined) {
+          this._oBusyDialog.setShowCancelButton(false);
+        } else {
+          this._oBusyDialog.setShowCancelButton(oParams.showCancelButton);
+        }
+      }
+
+      // now show the dialog
+      this._oBusyDialog.open();
+    };
+    Controller.prototype.showBusyDialog = function(oParams) {
+      this.openBusyDialog(oParams);
+    };
+
+    /**
+     * Updates the open busy dialog with new text.
+     * @param  {object} oParams Params containing only text
+     */
+    Controller.prototype.updateBusyDialog = function(oParams) {
+      this._oBusyDialog.setText(oParams.text);
+    };
+
+    /**
+     * Closes the busy dialog
+     */
+    Controller.prototype.closeBusyDialog = function(oParams) {
+      if (this._oBusyDialog) {
+        // now show the dialog
+        this._oBusyDialog.close();
+      }
+    };
+    Controller.prototype.hideBusyDialog = function(oParams) {
+      this.closeBusyDialog(oParams);
+    };
+
 
     /***
      *    ██████╗  █████╗ ████████╗███████╗███████╗

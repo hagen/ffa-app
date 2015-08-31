@@ -35,7 +35,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
       Authorization: 'Bearer ' + sToken
     };
     jQuery.ajax({
-      url: 'auth/api/profile',
+      url: '/auth/api/profile',
       type: 'GET',
       headers: oHeaders,
       async: false,
@@ -46,7 +46,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
       error: jQuery.proxy(function(mError) {
 
       }, this)
-    })
+    });
 
     // Now, update their social profile
     // oProfiles should have a named array, matching the provider

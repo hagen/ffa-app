@@ -1,7 +1,7 @@
 jQuery.sap.declare("view.plans.Plans");
 
 // Provides controller view.Plans
-sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
+sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
 	function(jQuery, Controller) {
 	"use strict";
 
@@ -75,7 +75,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
 	 */
 	Plans.prototype.onPlanDetailsGoPress = function(oEvent) {
 		let sType = oEvent.getSource().data("planType");
-		this.getRouter().navTo("plans-" + sType, {}, !sap.ui.Device.system.phone);
+		this.getRouter().navTo("plan-" + sType, {}, !sap.ui.Device.system.phone);
 	};
 
 	return Plans;

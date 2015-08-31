@@ -52,8 +52,9 @@
 						text="{settings>action}"
 						press="onPlanDetailsGoPress">
 						<customData>
-							<core:CustomData key="planType" value="{settings>plan_type_id}" />
+							<core:CustomData key="planType" value="{settings>id}" />
 						</customData>
+					</Button>
 				</beginButton>
 				<endButton>
 					<Button
@@ -74,7 +75,7 @@
 						}">
 						<StandardListItem
 							title="{settings>title}"
-							icon="sap-icon://{plans>icon}"
+							icon="sap-icon://{settings>icon}"
 							info="{settings>info}"
 							infoState="{settings>info_state}"
 							type="Inactive" />
