@@ -236,6 +236,9 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
 
 		// Now we do the updates
 		try {
+			// Update payments will try and move the user on to the new subscription.
+			// Of course, this behaviour will change depending on the down/upgrade
+			// path
 			this._updatePayments(sOld, sNew);
 		} catch (e) {
 
@@ -245,6 +248,90 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
 		// Not busy any more
 		this.hideBusyDialog();
 	};
+
+	/**
+	 * Makes a decision about what down/upgrade is taking place, then calls Node
+	 * to perform the Braintree update.
+	 * @param  {[type]} sOldPlan [description]
+	 * @param  {[type]} sNewPlan [description]
+	 * @return {[type]}          [description]
+	 */
+	Plans.prototype._updatePayments = function (sOldPlan, sNewPlan) {
+
+		// Collect the model
+		let oModel = this.getView().getModel("settings");
+		let sPath = "/Profiles('TESTUSER')";
+
+		// We will need to collect the user's current subscription.
+		let sSubscriptionId = oModel.getProperty(sPath + "/subscription_id");
+		if(!sSubscriptionId) {
+			oModel.read(sPath, {
+				async : false,
+				success : jQuery.proxy(function (oData, mRepsonse){
+					// take the subscription id from the profile
+					sSubscriptionId = oData.subscription_id;
+				}, this),
+				error : jQuery.proxy(function (mError){
+					this._maybeHandleAuthError(mError);
+
+					// throw an error to get out of here
+					throw new Error({
+						message : "There was a problem reading your profile",
+						error : mError
+					});
+				}, this)
+			});
+		}
+
+		// Call Node to perform the subscription change; note that subscriptionId
+		// may be blank. This means that the user was previously on free plan.
+		jQuery.ajax({
+			url: '/payments/upgrade/' + sNewPlan,
+			type: 'POST',
+			headers: this.getJqueryHeaders(),
+			data : { subscriptionId : sSubscriptionId },
+			async: false,
+			success: jQuery.proxy(function(oData, mResponse) {
+				// Plan has been upgraded, so let's update the profile
+				// with the new subscription Id
+				sSubscriptionId = oData.id; // the new subscription
+			}, this),
+			error: jQuery.proxy(function(mError) {
+				// handle auth error as normal
+				this._maybeHandleAuthError(mError);
+
+				// throw an error to get out of here
+				throw new Error({
+					message : "Couldn't update your subscription details",
+					error : mError
+				});
+			}, this)
+		});
+
+		// Now we can update the user's profile to plans listing by inserting
+		// a new record. This has the effect of delimiting the old record, and creating
+		let oPayload = {
+			id : "",
+			profile_id : this.getProfileId(),
+			plan_type_id : sNewPlan,
+			subscription_id : sSubscriptionId,
+			begda : new Date(Date.now()), // Doesn't matter
+			endda : new Data(0) // Doesn't matter
+		};
+
+		// And create the record
+		oModel.create("/ProfilePlans", oPaylod, {
+			async : false,
+			success : jQuery.proxy(function(oData, mResponse) {
+				// Huz-zah, the record has been created, and the user is now bumped up
+				// to another subscription.
+			}),
+			error : jQuery.proxy(function (mError) {
+				this._maybeHandleAuthError(mError);
+			})
+		});
+	};
+
 	return Plans;
 
 }, /* bExport= */ true);
