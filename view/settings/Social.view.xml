@@ -8,7 +8,8 @@
 	<Page
 		id="idSocialPage"
 		enableScrolling="false"
-		showHeader="true">
+		showHeader="true"
+		class="sapUiContentPadding">
 		<customHeader>
 			<Toolbar>
 				<Title
@@ -17,6 +18,13 @@
 					text="Social" />
 			</Toolbar>
 		</customHeader>
+		<Panel
+			expandable="false"
+			class="">
+			<Text text="Social and thirdparty login allows you to log in to the app using
+				your external social accounts. No need to remember a pesky username and password combo!
+				Listed below are the 3rd party providers you can connect with. Click to connect, or disconnect." />
+		</Panel>
 		<TileContainer
 			id="idSocialTileContainer"
 			allowAdd="false"

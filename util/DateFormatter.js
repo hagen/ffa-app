@@ -27,7 +27,6 @@ util.DateFormatter = {
 		var dateFormat = sap.ui.core.format.DateFormat.getDateInstance({
 			pattern : sPattern
 		});
-		dDate.setDate(dDate.getDate())
 		return dateFormat.format(new Date(dDate.getTime()));
 	},
 

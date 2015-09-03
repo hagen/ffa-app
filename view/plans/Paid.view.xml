@@ -1,0 +1,377 @@
+<mvc:View
+	controllerName="view.plans.Paid"
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:core="sap.ui.core"
+  xmlns:f="sap.ui.layout.form"
+  xmlns:l="sap.ui.layout"
+	xmlns:html="http://www.w3.org/1999/xhtml">
+	<SplitContainer
+		id="idPaidPlanSplitContainer">
+		<masterPages>
+			<Page
+				id="idPaidMasterPage"
+				showNavButton="false">
+				<customHeader>
+					<Toolbar>
+						<Button
+							id="idCancelButton"
+							icon="sap-icon://sys-cancel"
+							press="onCancelPress" />
+					</Toolbar>
+				</customHeader>
+				<List
+					id="idCheckoutList"
+					listMode="None"
+					items="{
+						path : 'settings>CheckoutDetails',
+						sorter: [{
+							path : 'category',
+							descending: false,
+							group : true
+						}],
+						groupHeaderFactory : '.getCheckoutGroupHeader'
+					}">
+					<StandardListItem
+						title="{settings>title}"
+						info="{= ${settings>category} === 'Pricing' ? ${settings>info} : '' }"
+						infoState="{= ${settings>category} === 'Pricing' ? ${settings>info_state} : 'None' }"
+						type="Inactive" />
+				</List>
+			</Page>
+		</masterPages>
+		<detailPages>
+			<!-- Billing details -->
+			<Page
+				id="idBillingDetailsPage"
+				enableScrolling="true"
+				showHeader="true"
+				showNavButton="false"
+				class="sapUiContentPadding">
+				<customHeader>
+					<Toolbar>
+						<Button
+							id="idBillingClearButton"
+							text="Clear"
+							press="onClearPress" />
+						<ToolbarSpacer />
+						<Title
+							text="Subscribe" />
+						<ToolbarSpacer />
+						<Text text="" />
+					</Toolbar>
+				</customHeader>
+				<footer>
+					<Toolbar>
+						<ToolbarSpacer />
+						<Text text="Site secured with RapidSSL" />
+						<core:Icon size="1.5rem" src="sap-icon://FontAwesome/expeditedssl" />
+						<ToolbarSpacer />
+					</Toolbar>
+				</footer>
+				<content>
+					<l:Grid
+		        defaultSpan="L12 M12 S12"
+		        width="auto">
+		        <l:content>
+		          <f:SimpleForm
+		            id="idBillingDetailsForm"
+		            maxContainerCols="2"
+		            editable="true"
+		            layout="ResponsiveGridLayout"
+		            labelSpanL="3"
+		            labelSpanM="3"
+		            emptySpanL="4"
+		            emptySpanM="4"
+		            columnsL="1"
+		            columnsM="1"
+		            class="editableForm">
+								<f:title>
+									<core:Title text="Billing details" />
+								</f:title>
+		            <f:content>
+									<Label text="Contact">
+										<layoutData>
+											<l:GridData span="L12 M12 S12" />
+										</layoutData>
+									</Label>
+
+									<Input
+		                id="idFirstNameInput"
+										placeholder="First name (required)"
+										name="firstName"
+										value="{settings>first_name}"
+										change="onChangeValidatePopulated">
+										<customData>
+											<core:CustomData key="required" value="true" />
+										</customData>
+										<layoutData>
+											<l:GridData span="L6 M6 S12" />
+										</layoutData>
+		              </Input>
+
+		              <Input
+		                id="idLastNameInput"
+										placeholder="Last name (required)"
+										name="lastName"
+										value="{settings>last_name}"
+										change="onChangeValidatePopulated">
+										<customData>
+											<core:CustomData key="required" value="true" />
+										</customData>
+										<layoutData>
+											<l:GridData span="L6 M6 S12" />
+										</layoutData>
+		              </Input>
+
+		              <Input
+		                id="idEmailInput"
+										placeholder="me@email.com (required)"
+										name="email"
+										type="Email"
+										value="{settings>email}"
+										change="onChangeValidateEmail">
+										<customData>
+											<core:CustomData key="required" value="true" />
+										</customData>
+										<layoutData>
+											<l:GridData span="L8 M8 S12" />
+										</layoutData>
+		              </Input>
+
+		              <Input
+		                id="idPhoneInput"
+										placeholder="+61 407 987 321"
+										name="phone"
+										type="Tel"
+										value="">
+										<customData>
+											<core:CustomData key="required" value="false" />
+										</customData>
+										<layoutData>
+											<l:GridData span="L4 M4 S12" />
+										</layoutData>
+		              </Input>
+
+									<Label text="Address">
+										<layoutData>
+											<l:GridData span="L12 M12 S12" />
+										</layoutData>
+									</Label>
+
+									<Input
+										id="idCompanyInput"
+										placeholder="Company"
+										name="company"
+										value="">
+										<customData>
+											<core:CustomData key="required" value="false" />
+										</customData>
+										<layoutData>
+											<l:GridData span="L12 M12 S12" />
+										</layoutData>
+									</Input>
+
+									<Input
+										id="idStreet1Input"
+										placeholder="Street address line 1(required)"
+										name="streetAddress"
+										value=""
+										change="onChangeValidatePopulated">
+										<customData>
+											<core:CustomData key="required" value="true" />
+										</customData>
+										<layoutData>
+											<l:GridData span="L12 M12 S12" />
+										</layoutData>
+									</Input>
+
+									<Input
+										id="idStreet2Input"
+										placeholder="Street address line 2"
+										name="extendedAddress"
+										value="">
+										<customData>
+											<core:CustomData key="required" value="false" />
+										</customData>
+										<layoutData>
+											<l:GridData span="L12 M12 S12" />
+										</layoutData>
+									</Input>
+
+									<Input
+		                id="idRegionInput"
+										placeholder="Region/state (required)"
+										name="region"
+										value=""
+										change="onChangeValidatePopulated">
+										<customData>
+											<core:CustomData key="required" value="true" />
+										</customData>
+										<layoutData>
+											<l:GridData span="L8 M8 S12" />
+										</layoutData>
+		              </Input>
+
+									<Input
+		                id="idPostCodeInput"
+										placeholder="Postal code (required)"
+										name="postalCode"
+										value=""
+										change="onChangeValidatePopulated">
+										<customData>
+											<core:CustomData key="required" value="true" />
+										</customData>
+										<layoutData>
+											<l:GridData span="L4 M4 S12" />
+										</layoutData>
+		              </Input>
+
+									<Label text="Country">
+										<layoutData>
+											<l:GridData span="L2 M2 S12" />
+										</layoutData>
+									</Label>
+									<ComboBox
+		                id="idCountryCodeComboBox"
+										name="countryCodeAlpha2"
+										selectionChange="onChangeValidateCountry"
+										items="{
+											path: 'settings>/Countries',
+											sorter: {
+												path: 'order'
+											}
+										}">
+										<core:Item key="{settings>code}" text="{settings>name}" />
+										<customData>
+											<core:CustomData key="required" value="true" />
+										</customData>
+										<layoutData>
+											<l:GridData span="L10 M10 S12" />
+										</layoutData>
+		              </ComboBox>
+		            </f:content>
+		          </f:SimpleForm>
+
+							<Button
+								id="idNextButton"
+								text="Next"
+								type="Emphasized"
+								width="100%"
+								press="onNextPress" />
+		        </l:content>
+		      </l:Grid>
+				</content>
+			</Page>
+
+			<Page
+				id="idPaymentDetailsPage"
+				enableScrolling="true"
+				showHeader="true"
+				showNavButton="false"
+				class="sapUiContentPadding">
+				<customHeader>
+					<Toolbar>
+						<Button
+							id="idBackButton"
+							text="Back"
+							press="onBackPress" />
+						<ToolbarSpacer />
+						<Title
+							text="Payment Details" />
+						<ToolbarSpacer />
+						<Text text=" " />
+					</Toolbar>
+				</customHeader>
+				<footer>
+					<Toolbar>
+						<ToolbarSpacer />
+						<Text text="Site secured with RapidSSL" />
+						<core:Icon size="1.5rem" src="sap-icon://FontAwesome/expeditedssl" />
+						<ToolbarSpacer />
+					</Toolbar>
+				</footer>
+				<content>
+					<l:Grid
+		        defaultSpan="L12 M12 S12"
+		        width="auto">
+		        <l:content>
+							<HBox>
+								<core:Icon
+									src="sap-icon://FontAwesome/cc-visa"
+									size="3rem"
+									width="20%"
+									class="sapUiLargeMarginBegin sapUiLargeMarginEnd"/>
+								<core:Icon
+									src="sap-icon://FontAwesome/cc-mastercard"
+									size="3rem"
+									width="20%"
+									class="sapUiLargeMarginEnd"/>
+								<core:Icon
+									src="sap-icon://FontAwesome/cc-discover"
+									size="3rem"
+									width="20%"
+									class="sapUiLargeMarginEnd"/>
+								<core:Icon
+									src="sap-icon://FontAwesome/cc-amex"
+									size="3rem"
+									width="20%"
+									class="sapUiLargeMarginEnd"/>
+								<core:Icon
+									src="sap-icon://FontAwesome/cc-paypal"
+									size="3rem"
+									width="20%"
+									class="sapUiLargeMarginEnd"/>
+								<layoutData>
+									<l:GridData span="L12 M12 S12" />
+								</layoutData>
+							</HBox>
+
+							<f:SimpleForm
+		            id="idPaymentDetailsForm"
+		            maxContainerCols="1"
+		            editable="true"
+		          	layout="ResponsiveGridLayout"
+		            labelSpanL="3"
+		            labelSpanM="3"
+		            emptySpanL="4"
+		            emptySpanM="4"
+		            columnsL="1"
+		            columnsM="1"
+		            class="editableForm">
+								<f:title>
+									<core:Title text="Payment details" />
+								</f:title>
+		            <f:content>
+									<l:FixFlex
+										class="sapUiSmallMarginTop"
+										fixContentSize="{= ${device>/isPhone} ? '100%' : '1000px' }"
+										vertical="false">
+										<l:fixContent>
+											<html:form width="100%" id="idBraintreeDropInForm" method="post" action="/payments/plan">
+												<html:div id="idBrainTreeDropInDiv" />
+												<html:input id="idBraintreeDropInSubmit" type="submit" style="display:none;" value="Subscribe" />
+											</html:form>
+										</l:fixContent>
+										<l:layoutData>
+											<l:GridData span="L12 M12 S12" />
+										</l:layoutData>
+									</l:FixFlex>
+
+		            </f:content>
+		          </f:SimpleForm>
+
+							<Button
+								id="idSubmitPaymentButton"
+								text="Subscribe to {settings>number} {settings>unit}"
+								type="Emphasized"
+								width="100%"
+								press="onSubmitPaymentPress" />
+		        </l:content>
+		      </l:Grid>
+
+				</content>
+			</Page>
+		</detailPages>
+	</SplitContainer>
+</mvc:View>

@@ -21,24 +21,7 @@
 				<TileContainer
 					id="idPlansTileContainer"
 					allowAdd="false"
-					editable="false"
-					tiles="{
-						path: 'settings>/PlanTypes',
-						sorter: {
-							path : 'order',
-							descending: false
-						}
-					}">
-					<StandardTile
-						icon="sap-icon://{settings>icon}"
-						info="{settings>info}"
-						infoState="{settings>info_state}"
-						type="{settings>type}"
-						number="{settings>number}"
-						numberUnit="{settings>unit}"
-						title="{settings>title}"
-						press="onPlansTilePress"/>
-				</TileContainer>
+					editable="false" />
 			</html:div>
 		</content>
 		<dependents>
@@ -60,7 +43,7 @@
 					<Button
 						id="idPlansFreeBeginButton"
 						text="Close"
-						press="onPlansFreeClosePress"/>
+						press="onPlansDetailsClosePress"/>
 				</endButton>
 				<content>
 					<List

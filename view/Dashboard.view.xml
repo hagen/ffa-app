@@ -11,7 +11,7 @@
 			<Toolbar
 				id="idDashFooterToolbar">
 				<Button
-					icon="sap-icon://settings"
+					icon="sap-icon://customer"
 					press="onSettingsPress"/>
 			</Toolbar>
 		</footer>

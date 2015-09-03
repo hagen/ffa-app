@@ -74,7 +74,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
      */
     Menu.prototype._onRouteMatched = function(oEvent) {
       this._checkMetaDataLoaded("settings");
-      var oParameters = oEvent.getParameters();
+      this.getRouter().navTo("profile", {}, !sap.ui.Device.system.phone);
     };
 
 		/**
@@ -118,7 +118,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
     };
 
     /**
-     * 
+     *
      * @param  {string} sChannel Event channel
      * @param  {string} sEvent   Event description
      * @param  {object} oData    Object data payload

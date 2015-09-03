@@ -164,7 +164,13 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
           transition: "show",
           viewLevel: 3,
           targetControl: "idSettingsSplitContainer",
-          targetAggregation: "detailPages"
+          targetAggregation: "detailPages",
+          subroutes : [{
+            pattern: "settings/account/change",
+            name: "change-plan",
+            view: "plans.Plans",
+            viewLevel: 4
+          }]
         }, {
           pattern: "settings/support",
           name: "support",

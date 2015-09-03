@@ -24,6 +24,7 @@
 							textAlign="Center"
 							text="Data sets"
 							width="100%"/>
+						<Text text=" " />
 					</Toolbar>
 				</customHeader>
 				<footer>

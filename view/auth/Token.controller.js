@@ -40,7 +40,7 @@ sap.ui.define(['jquery.sap.global', 'view/auth/Controller'],
      */
     Token.prototype._onRouteMatched = function(oEvent) {
       let oDialog = this.getView().byId("idBusyDialog");
-      jQuery.sap.delayedCall(0, this, function() {oDialog.open()}, []);
+      oDialog.open();
 
       // When the route is matched, we either want the login tab or
       // the register tab
@@ -50,7 +50,15 @@ sap.ui.define(['jquery.sap.global', 'view/auth/Controller'],
       // First, check if access_token is supplied. If so, we're authed
       // to go to dash
       if (oParameters.arguments.access_token) {
+
+        // Firstly we handle authentication by checking if this user has the provider's
+        // social profile listed against their name. If so, great move on.
+        // If not, create the social profile then connect it to the user's
+        // profile.
         this._handleTokenAuth(oParameters.arguments.access_token, oParameters.arguments.provider);
+
+        // Now check if they have an active plan. If not, they will need to sign
+        // up.
         if(this._hasPlan()) {
           sRoute = "dash";
         } else {
@@ -60,8 +68,8 @@ sap.ui.define(['jquery.sap.global', 'view/auth/Controller'],
         sRoute = "login";
       }
 
-      this.getRouter().navTo(sRoute, {}, !sap.ui.Device.system.phone);
       oDialog.close();
+      this.getRouter().navTo(sRoute, {}, !sap.ui.Device.system.phone);
     };
 
     /***
@@ -124,18 +132,48 @@ sap.ui.define(['jquery.sap.global', 'view/auth/Controller'],
      * @return {[type]}        [description]
      */
     Token.prototype._create = function(sToken, sProvider) {
+
+      let bContinue = false;
+      let sCustomerId = "";
+
+      // Create braintree customer
+      let oHeaders = {
+        Authorization: 'Bearer ' + this.getBearerToken()
+      };
+      jQuery.ajax({
+        url: '/payments/customer',
+        type: 'POST',
+        headers: oHeaders,
+        data : { profileId : this.getUserId() },
+        async: false,
+        success: jQuery.proxy(function(oData, mResponse) {
+          sCustomerId = oData.customerId;
+          bContinue = true;
+        }, this),
+        error: jQuery.proxy(function(mError) {
+          this._maybeHandleAuthError(mError);
+          bContinue = false;
+        }, this)
+      });
+
+      // Continue?
+      if (!bContinue) {
+        return;
+      }
+
+      // Create HANA profile, with Braintree customerId
       let oModel = this.getView().getModel("settings");
       let oData = {
         id: this.getUserId(), // Controller function
         first_name: "",
         last_name: "",
         email: "",
+        customerId : sCustomerId,
         begda: new Date(Date.now()),
         endda: new Date("9999-12-31T23:59:59")
       };
 
       // Create the user
-      let bContinue = false;
       oModel.create("/Profiles", oData, {
         success: jQuery.proxy(function(oData, mResponse) {
           // Now we continue on to the Social stuff.
@@ -146,11 +184,6 @@ sap.ui.define(['jquery.sap.global', 'view/auth/Controller'],
         }, this),
         async: false
       });
-
-      // Continue?
-      if (!bContinue) {
-        return;
-      }
     };
 
     /***
@@ -171,9 +204,9 @@ sap.ui.define(['jquery.sap.global', 'view/auth/Controller'],
 
       let bValid = false;
 
-      this.getView().getModel("settings").read("/Plans('TESTUSER')", {
+      this.getView().getModel("settings").read("/CurrentProfilePlans('TESTUSER')", {
         success : jQuery.proxy(function(oData, mResponse) {
-          if (oData.id) {
+          if (oData.profile_id) {
             bValid = true;
           } else {
             bValid = false;
@@ -188,7 +221,7 @@ sap.ui.define(['jquery.sap.global', 'view/auth/Controller'],
 
       return bValid;
     };
-    
+
     return Token;
 
   }, /* bExport= */ true);

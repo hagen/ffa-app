@@ -2,13 +2,12 @@
 	controllerName="view.settings.Account"
 	xmlns="sap.m"
 	xmlns:mvc="sap.ui.core.mvc"
-  xmlns:l="sap.ui.layout"
-  xmlns:f="sap.ui.layout.form"
-	xmlns:core="sap.ui.core">
+  xmlns:l="sap.ui.layout">
 	<Page
 		id="idAccountPage"
 		enableScrolling="false"
-		showHeader="true">
+		showHeader="true"
+		class="sapUiContentPadding">
 		<customHeader>
 			<Toolbar>
 				<Title
@@ -17,6 +16,97 @@
 					text="Account" />
 			</Toolbar>
 		</customHeader>
-		<Text text="Account details (billing)" />
+		<footer>
+			<Toolbar>
+				<ToolbarSpacer />
+				<Button
+					id="idTerminateButton"
+					text="Terminate account"
+					type="Reject"
+					press="onTerminatePress" />
+			</Toolbar>
+		</footer>
+
+		<!-- Plans -->
+		<Panel
+			expandable="false">
+			<headerToolbar>
+				<Toolbar>
+					<Title
+						text="Plan"
+						titleStyle="H3"
+						level="H3" />
+					<ToolbarSpacer />
+					<Link
+						text="Change"
+						press="onChangePlanPress"
+						enabled="{= ${settings>/CurrentProfilePlan('TESTUSER')/plan_type_id} === 'enterprise' ? false : true }"/>
+				</Toolbar>
+			</headerToolbar>
+			<content>
+				<List
+					id="idPlansList"
+					mode="None"
+					noDataText="You've not subscribed to any plans"
+					items="{
+						path : 'settings>Plans',
+						parameters : {
+							expand : 'Plan'
+						},
+						sorter : {
+							path: 'endda',
+							descending : true
+						}
+					}">
+					<StandardListItem
+						icon="{= ${settings>endda}.getFullYear() !== 9999 ? 'sap-icon://status-inactive' : 'sap-icon://accept' }"
+						title="{settings>Plan/info}"
+						info="{= ${settings>endda}.getFullYear() !== 9999 ? ${ path: 'settings>begda',	formatter : 'util.DateFormatter.ddMMyyyy'} + ' to ' + ${ path: 'settings>endda', formatter : 'util.DateFormatter.ddMMyyyy'} : 'Commenced ' + ${ path : 'settings>begda', formatter : 'util.DateFormatter.ddMMyyyy'} }" />
+				</List>
+			</content>
+		</Panel>
+
+		<!-- Usage -->
+		<Panel
+			expandable="false"
+			class="sapUiTinyMarginTop">
+			<headerToolbar>
+				<Toolbar>
+					<Title
+						text="Usage"
+						titleStyle="H3"
+						level="H3" />
+				</Toolbar>
+			</headerToolbar>
+			<content>
+				<l:Grid
+					defaultSpan="L12 M12 S12"
+					width="auto">
+					<l:content>
+						<ObjectNumber
+							emphasized="true"
+							class="ffaObjectNumberFontSize3rem"
+							unit="MB data"
+							state="None"
+							number="{= ${settings>CacheTotal/mb} ? ${settings>CacheTotal/mb} : '0.00' }">
+							<layoutData>
+								<l:GridData span="L8 M8 S12" />
+							</layoutData>
+						</ObjectNumber>
+
+						<ObjectNumber
+							emphasized="true"
+							class="ffaObjectNumberFontSize3rem"
+							unit="{= ${settings>ForecastCount/count} === 1 ? 'forecast' : 'forecasts' }"
+							state="Success"
+							number="{= ${settings>ForecastCount/count} ? ${settings>ForecastCount/count} : 0 }">
+							<layoutData>
+								<l:GridData span="L4 M4 S12" />
+							</layoutData>
+						</ObjectNumber>
+					</l:content>
+				</l:Grid>
+			</content>
+		</Panel>
 	</Page>
 </mvc:View>

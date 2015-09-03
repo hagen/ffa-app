@@ -54,24 +54,40 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
      * on app initialisation.
      * @return {String} User ID from Node
      */
-    Controller.prototype.getUserId = function() {
-      let mModel = this.getView().getModel("user");
-      return (mModel ? mModel.getProperty("/userid") : "");
-    };
+    Controller.prototype.getUserId =
+      Controller.prototype.getProfileId = function() {
+        let mModel = this.getView().getModel("user");
+        return (mModel ? mModel.getProperty("/userid") : "");
+      };
 
     /**
      * Returns the bearer auth token stored in local storage.
      * @return {String} Bearer auth token
      */
     Controller.prototype.getBearerToken = function() {
+      let sToken = "";
       if (_token) {
-        return _token;
+        sToken = _token;
       } else if (window.localStorage) {
-        return window.localStorage.getItem('_token');
+        sToken = window.localStorage.getItem('_token');
       } else {
-        return "";
+        sToken = "";
       }
+      return sToken;
     };
+
+    /**
+     * We Use jQuery GET/POST regularly, so let's ensure the header is globally
+     * available to all inheriting Controllers.
+     * @param {[type]} sToken [description]
+     */
+    Controller.prototype.getJqueryHeader =
+      Controller.prototype.getJqueryHeaders = function(sToken) {
+        // Set up GEt request
+        return {
+          Authorization: 'Bearer ' + this.getBearerToken()
+        };
+      };
 
     /**
      * Stores the supplied link token in local storage, so that upon page
@@ -195,61 +211,62 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
      * Opens a busy dialog WITH title and text
      * @param  {object} oParams Object of parameters
      */
-    Controller.prototype.openBusyDialog = function(oParams) {
-      // Create the fragment and open!
-      if (!this._oBusyDialog) {
-        this._oBusyDialog = sap.ui.xmlfragment("idBusyDialogFragment", "view.BusyDialog", this);
-        this.getView().addDependent(this._oBusyDialog);
-      }
-
-      // Set title, text and cancel event
-      if(oParams) {
-        this._oBusyDialog.setTitle(oParams.title);
-        this._oBusyDialog.setText(oParams.text);
-        if (typeof oParams.onCancel === 'function') {
-          this._oBusyDialog.attachEvent('close', function(oEvent) {
-            if (oEvent.getParameter("cancelPressed")) {
-              oParams.onCancel();
-            }
-          });
+    Controller.prototype.openBusyDialog =
+      Controller.prototype.showBusyDialog = function(oParams) {
+        // Create the fragment and open!
+        if (!this._oBusyDialog) {
+          this._oBusyDialog = sap.ui.xmlfragment("idBusyDialogFragment", "view.BusyDialog", this);
+          this.getView().addDependent(this._oBusyDialog);
         }
 
-        // And cancel button?
-        if (oParams.showCancelButton === undefined) {
-          this._oBusyDialog.setShowCancelButton(false);
-        } else {
-          this._oBusyDialog.setShowCancelButton(oParams.showCancelButton);
-        }
-      }
+        // Set title, text and cancel event
+        if (oParams) {
+          this._oBusyDialog.setTitle(oParams.title);
+          this._oBusyDialog.setText(oParams.text);
+          if (typeof oParams.onCancel === 'function') {
+            this._oBusyDialog.attachEvent('close', function(oEvent) {
+              if (oEvent.getParameter("cancelPressed")) {
+                oParams.onCancel();
+              }
+            });
+          }
 
-      // now show the dialog
-      this._oBusyDialog.open();
-    };
-    Controller.prototype.showBusyDialog = function(oParams) {
-      this.openBusyDialog(oParams);
-    };
+          // And cancel button?
+          if (oParams.showCancelButton === undefined) {
+            this._oBusyDialog.setShowCancelButton(false);
+          } else {
+            this._oBusyDialog.setShowCancelButton(oParams.showCancelButton);
+          }
+        }
+
+        // now show the dialog
+        this._oBusyDialog.open();
+      };
 
     /**
      * Updates the open busy dialog with new text.
      * @param  {object} oParams Params containing only text
      */
     Controller.prototype.updateBusyDialog = function(oParams) {
-      this._oBusyDialog.setText(oParams.text);
+      if (oParams.title) {
+        this._oBusyDialog.setTitle(oParams.title);
+      }
+
+      if (oParams.text) {
+        this._oBusyDialog.setText(oParams.text);
+      }
     };
 
     /**
      * Closes the busy dialog
      */
-    Controller.prototype.closeBusyDialog = function(oParams) {
-      if (this._oBusyDialog) {
-        // now show the dialog
-        this._oBusyDialog.close();
-      }
-    };
-    Controller.prototype.hideBusyDialog = function(oParams) {
-      this.closeBusyDialog(oParams);
-    };
-
+    Controller.prototype.closeBusyDialog =
+      Controller.prototype.hideBusyDialog = function(oParams) {
+        if (this._oBusyDialog) {
+          // now show the dialog
+          this._oBusyDialog.close();
+        }
+      };
 
     /***
      *    ██████╗  █████╗ ████████╗███████╗███████╗
@@ -340,5 +357,33 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
     Controller.prototype._get = function(sKey) {
       let oStore = new jQuery.sap.storage(jQuery.sap.storage.Type.Local);
       return oStore.get(sKey);
+    };
+
+    /***
+     *    ██╗   ██╗ █████╗ ██╗     ██╗██████╗  █████╗ ████████╗██╗ ██████╗ ███╗   ██╗
+     *    ██║   ██║██╔══██╗██║     ██║██╔══██╗██╔══██╗╚══██╔══╝██║██╔═══██╗████╗  ██║
+     *    ██║   ██║███████║██║     ██║██║  ██║███████║   ██║   ██║██║   ██║██╔██╗ ██║
+     *    ╚██╗ ██╔╝██╔══██║██║     ██║██║  ██║██╔══██║   ██║   ██║██║   ██║██║╚██╗██║
+     *     ╚████╔╝ ██║  ██║███████╗██║██████╔╝██║  ██║   ██║   ██║╚██████╔╝██║ ╚████║
+     *      ╚═══╝  ╚═╝  ╚═╝╚══════╝╚═╝╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝
+     *
+     */
+    
+    /**
+     * Validate en email
+     * @param  {[type]} sEmail [description]
+     * @return {[type]}        [description]
+     */
+    Controller.prototype._validateEmail = function(sEmail) {
+      let pattern = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+
+      // Test
+      if (sEmail)
+        if (pattern.test(sEmail))
+          return true;
+        else
+          return false;
+      else
+        return false;
     };
   });
