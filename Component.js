@@ -15,7 +15,8 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
         name: "OData",
         datasetOdataUrl: "/fa/ppo/drop3/xs/services/dataset.xsodata",
         forecastOdataUrl: "/fa/ppo/drop3/xs/services/forecast.xsodata",
-        settingsOdataUrl: "/fa/ppo/drop3/xs/services/settings.xsodata",
+        profileOdataUrl: "/fa/ppo/drop3/xs/services/profile.xsodata",
+        staticsOdataUrl: "/fa/ppo/drop3/xs/services/static.xsodata",
         userJsonUrl: "http://localhost:8080/auth/api/user",
       }
     },
@@ -168,8 +169,24 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
           subroutes : [{
             pattern: "settings/account/change",
             name: "change-plan",
-            view: "plans.Plans",
-            viewLevel: 4
+            view: "plans.Change",
+            viewLevel: 4,
+            subroutes: [{
+              pattern: "settings/account/change/free",
+              name: "change-plan-free",
+              view: "plans.Free",
+              viewLevel: 5
+            }, {
+              pattern: "settings/account/change/lite",
+              name: "change-plan-lite",
+              view: "plans.Paid",
+              viewLevel: 5
+            }, {
+              pattern: "settings/account/change/pro",
+              name: "change-plan-pro",
+              view: "plans.Paid",
+              viewLevel: 5
+            }]
           }]
         }, {
           pattern: "settings/support",
@@ -291,11 +308,18 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
     this.setModel(oFModel, "forecast");
 
     // Create and set datasets domain model to the component
-    var oSModel = new sap.ui.model.odata.ODataModel(mConfig.serviceConfig.settingsOdataUrl, {
+    var oPModel = new sap.ui.model.odata.ODataModel(mConfig.serviceConfig.profileOdataUrl, {
       headers : oHeaders
     });
-    oSModel.setDefaultBindingMode("TwoWay");
-    this.setModel(oSModel, "settings");
+    oPModel.setDefaultBindingMode("TwoWay");
+    this.setModel(oPModel, "profile");
+
+    var oSModel = new sap.ui.model.odata.ODataModel(mConfig.serviceConfig.staticsOdataUrl, {
+      headers : oHeaders
+    });
+    oSModel.setDefaultBindingMode("OneWay");
+    oSModel.setSizeLimit(300);
+    this.setModel(oSModel, "static");
 
     jQuery.ajax({
       url : 'auth/api/user',

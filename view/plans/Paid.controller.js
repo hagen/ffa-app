@@ -8,6 +8,7 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
     var Paid = Controller.extend("view.plans.Paid", /** @lends view.plans.Lite.prototype */ {
       _sPlanId: "",
       _initd: false,
+      _isChange: false,
       _oPromise: jQuery.Deferred()
     });
 
@@ -18,6 +19,9 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
       // Handle route matching.
       this.getRouter().getRoute("plan-lite").attachPatternMatched(this._onRouteMatched, this);
       this.getRouter().getRoute("plan-pro").attachPatternMatched(this._onRouteMatched, this);
+
+      this.getRouter().getRoute("change-plan-lite").attachPatternMatched(this._onChangeRouteMatched, this);
+      this.getRouter().getRoute("change-plan-pro").attachPatternMatched(this._onChangeRouteMatched, this);
     };
 
     /**
@@ -45,12 +49,12 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
 
       // bind the nav container to a particular checkout item
       let sPath = "";
-      if ("plan-lite" === oParams.name) {
+      if (oParams.name.indexOf("plan-lite") > -1) {
         this._sPlanId = 'lite';
-        sPath = "settings>/PlanTypes('lite')";
-      } else if ("plan-pro" === oParams.name) {
+        sPath = "profile>/PlanTypes('lite')";
+      } else if (oParams.name.indexOf("plan-pro") > -1) {
         this._sPlanId = 'pro'
-        sPath = "settings>/PlanTypes('pro')";
+        sPath = "profile>/PlanTypes('pro')";
       }
 
       // Bind split container to our plan type
@@ -58,9 +62,18 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
 
       // Try and bind to some of the basic form fields.
       let oView = this.getView();
-      oView.byId("idBillingDetailsForm").bindElement("settings>/Profiles('TESTUSER')", {
+      oView.byId("idBillingDetailsForm").bindElement("profile>/Profiles('TESTUSER')", {
         mode: "OneWay"
       });
+    };
+
+    /**
+     * Route matched handler...
+     */
+    Paid.prototype._onChangeRouteMatched = function(oEvent) {
+
+      this._isChange = true;
+      this._onRouteMatched(oEvent);
     };
 
     /***
@@ -79,7 +92,11 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
      * @return {[type]}        [description]
      */
     Paid.prototype.onCancelPress = function(oEvent) {
-      this.getRouter().navTo("plans", {}, !sap.ui.Device.system.phone);
+
+      // If this is a change to an existing account, then nav back to the plans
+      // change screen, not the plans new screen
+      let sRoute = (this._isChange ? "change-plan" : "plans");
+      this.getRouter().navTo(sRoute, {}, !sap.ui.Device.system.phone);
       this.onClearPress(null);
     };
 
@@ -88,7 +105,7 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
      * @param  {[type]} oEvent [description]
      * @return {[type]}        [description]
      */
-    Paid.prototype.onBackPress = function (oEvent) {
+    Paid.prototype.onBackPress = function(oEvent) {
       this.getView().byId("idPaidPlanSplitContainer").backDetail();
     };
 
@@ -172,7 +189,7 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
 
       // attach to the after detail navigate event of the split container and
       // Load up the payment form, if necessary
-      oSplit.attachAfterDetailNavigate({}, this.afterDetailNavigate,  this);
+      oSplit.attachAfterDetailNavigate({}, this.afterDetailNavigate, this);
       oSplit.toDetail(this.getView().byId("idPaymentDetailsPage"));
     };
 
@@ -183,7 +200,7 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
      * @param  {[type]} oEvent  [description]
      * @return {[type]}         [description]
      */
-    Paid.prototype.afterDetailNavigate = function (oEvent) {
+    Paid.prototype.afterDetailNavigate = function(oEvent) {
       this.showBusyDialog();
       this._maybeInitPayment();
       oEvent.getSource().detachAfterDetailNavigate(this.afterDetailNavigate, this);
@@ -225,7 +242,7 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
             // submit the payment to Node
             this._submitPayment(
               nonce,
-              this.getView().getModel("settings").getProperty("/Profiles('" + this.getUserId() + "')/customer_id"),
+              this.getView().getModel("profile").getProperty("/Profiles('" + this.getUserId() + "')/customer_id"),
               event.srcElement.action || event.target.action /* Form action URL */
             );
           }, this),
@@ -314,13 +331,13 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
       jQuery.ajax({
         url: sUrl,
         type: 'POST',
-        headers: this.getJqueryHeader(),
+        headers: this.getJqueryHeaders(),
         data: oPayload,
         async: false,
         success: jQuery.proxy(function(oData, mResponse) {
 
           // Create the link in our model (Controller)
-          this._createProfilePlanLink(this.getProfileId(), this._sPlanId);
+          this._createProfilePlanLink(this.getProfileId(), oData.subscription.id, this._sPlanId);
 
           // We're now busy! This dialog must be closed once the Payment form has
           // completed processing.
@@ -331,7 +348,8 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
 
           // nav to dash page
           jQuery.sap.delayedCall(1500, this, function() {
-            this.getRouter().navTo("dash", {}, !sap.ui.Device.system.phone);
+            this.getRouter().navTo(this._isChange ? "account" : "dash", {}, !sap.ui.Device.system.phone);
+            this.hideBusyDialog();
           }, []);
         }, this),
         error: jQuery.proxy(function(mError) {
@@ -410,7 +428,7 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
       let oControl = oEvent.getSource();
       let sValue = oEvent.getParameter("value");
       if (sValue) {
-        if (this._validateEmail(sValue) && oControl.getValueState() === sap.ui.core.ValueState.Error) {
+        if (this._validateEmail(sValue)) {
           oControl.setValueState(sap.ui.core.ValueState.None);
         } else {
           oControl.setValueState(sap.ui.core.ValueState.Error);

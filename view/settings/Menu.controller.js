@@ -20,7 +20,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
       this.getEventBus().subscribe("About", "RouteMatched", this._handleAboutRouteMatched, this);
 
       // handle route matched
-      this.getRouter().getRoute("settings").attachPatternMatched(this._onRouteMatched, this);
+      this.getRouter().getRoute("profile").attachPatternMatched(this._onRouteMatched, this);
     };
 
     /**
@@ -73,7 +73,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
      * Id in order to figure out what type of dataset it is.
      */
     Menu.prototype._onRouteMatched = function(oEvent) {
-      this._checkMetaDataLoaded("settings");
+      this._checkMetaDataLoaded("profile");
       this.getRouter().navTo("profile", {}, !sap.ui.Device.system.phone);
     };
 

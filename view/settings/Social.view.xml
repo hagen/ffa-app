@@ -29,17 +29,17 @@
 			id="idSocialTileContainer"
 			allowAdd="false"
 			tiles="{
-				path: 'settings>SocialProfiles',
+				path: 'profile>SocialProfiles',
 				sorter : [{
 					path : 'order',
 					descending : false
 				}]
 			}">
 			<StandardTile
-				icon="sap-icon://{settings>icon}"
-				title="{settings>name}"
-				info="{= ${settings>linked} === 'X' ? 'Connected' : 'Connect'}"
-				infoState="{= ${settings>linked} === 'X' ? 'Success' : 'None'}"
+				icon="sap-icon://{profile>icon}"
+				title="{profile>name}"
+				info="{= ${profile>linked} === 'X' ? 'Connected' : 'Connect'}"
+				infoState="{= ${profile>linked} === 'X' ? 'Success' : 'None'}"
 				press="onSocialTilePress" />
 		</TileContainer>
 		<dependents>

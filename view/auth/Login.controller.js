@@ -120,7 +120,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
      *    ╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═╝╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═╝
      *
      */
-    
+
     /**
      * Register tab, email notification/checking. This is used as a proxy
      * to remind the user thay they must supply a valid email address. It will
@@ -128,7 +128,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
      */
     Login.prototype.onRegisterEmailChange = function(oEvent) {
       var oInput = oEvent.getSource();
-      this._validateEmail(oInput);
+      this.validateEmail(oInput);
     };
 
     /**
@@ -140,23 +140,28 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
       // Validate the user-entered conditions
       let oEmailInput = this.getView().byId("idRegisterEmail");
       let oPasswordInput = this.getView().byId("idRegisterPassword");
-      let bContinue = false;
 
       // Email validation...
-      if (!(this._validateEmail(oEmailInput) && this._validatePassword(oPasswordInput))) {
+      if (!(this.validateEmail(oEmailInput) && this._validatePassword(oPasswordInput))) {
         return;
       }
 
-      // Check the email is not being used
-      if (this._emailExists(oEmailInput)) {
-        return;
+      // Name validation
+      let oFirstnameInput = this.getView().byId("idFirstNameInput");
+      let oLastnameInput = this.getView().byId("idLastNameInput");
+
+      if (!(this._isNotEmpty(oFirstnameInput, "I'm not a fan of my name either, but we'll need yours")
+            && this._isNotEmpty(oLastnameInput, "Derp. We'll need your last name. Formalities, you know..."))) {
+
       }
 
       // The rest of this code assumes you are not using a library.
       // It can be made less wordy if you use one.
-      this._submitForm("http://localhost:8080auth/local/register", "post", {
+      this._submitForm("http://localhost:8080/auth/local/register", "post", {
         email: oEmailInput.getValue(),
-        password: oPasswordInput.getValue()
+        password: oPasswordInput.getValue(),
+        lastname: oLastnameInput.getValue(),
+        firstname: oFirstnameInput.getValue()
       });
     };
 
@@ -250,14 +255,13 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
      * @param  {[type]} oInput [description]
      * @return {[type]}        [description]
      */
-    Login.prototype._validateEmail = function(oInput) {
+    Login.prototype.validateEmail = function(oInput) {
 
       // Validate
       let bValid = false;
-      let pattern = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
 
       // Test
-      if (!pattern.test(oInput.getValue())) {
+      if (!this._validateEmail(oInput.getValue())) {
         oInput.setValueState(sap.ui.core.ValueState.Error);
         oInput.setValueStateText("Yikes! This e-mail appears to be invalid!");
         bValid = false;
@@ -266,8 +270,54 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
         bValid = true;
       }
 
+      if (!bValid) {
+        return bValid;
+      }
+
+      // Check the email is not being used
+      bValid = !this._emailExists(oInput);
+
       // return result
       return bValid;
+    };
+
+    /**
+     * Validate the supplied email input control's value; additionally, set
+     * the input control's state and message
+     * @param  {[type]} oInput [description]
+     * @return {[type]}        [description]
+     */
+    Login.prototype._emailExists = function(oInput) {
+
+      // Validate
+      let bExists = true;
+
+      // Call unauthenticated GET end point in Node to check if an email exists.
+      jQuery.ajax({
+        type: 'GET',
+        url: '/register/check/' + oInput.getValue(),
+        async: false,
+        success: function(oData, mResonse) {
+          if (oData.in_use !== undefined) {
+            bExists = oData.in_use;
+          } else {
+            bExists = true;
+          }
+        },
+        error: function(mError) {
+          bExists = true;
+        },
+      });
+
+      if (bExists) {
+        oInput.setValueState(sap.ui.core.ValueState.Error);
+        oInput.setValueStateText("Alas, this email is already in use. Please use another.");
+      } else {
+        oInput.setValueState(sap.ui.core.ValueState.Success);
+      }
+
+      // return result
+      return bExists;
     };
 
     /**
@@ -293,6 +343,37 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
 
       // return result
       return bValid;
+    };
+
+    /**
+     * Checks that the supplied input base control is not empty. If empty,
+     * error state is set, and supplied error message is set.
+     * @param  {InputBase} oInput  The input base control
+     * @param  {String}    ?sError The error message to use (optional)
+     * @return {boolean}           Is not empty
+     */
+    Login.prototype._isNotEmpty = function(oInput, sError) {
+
+      // Do we have an error message?
+      if(sError === undefined) {
+        sError = "This field cannot be empty"
+      }
+
+      // Validate
+      let bEmpty = false;
+
+      // Password validation
+      if ("" === oInput.getValue()) {
+        oInput.setValueState(sap.ui.core.ValueState.Error);
+        oInput.setValueStateText(sError);
+        bEmpty = true;
+      } else {
+        oInput.setValueState(sap.ui.core.ValueState.Success);
+        bEmpty = false;
+      }
+
+      // return result
+      return !bEmpty;
     };
 
     /***

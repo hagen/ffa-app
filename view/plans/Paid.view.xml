@@ -24,7 +24,7 @@
 					id="idCheckoutList"
 					listMode="None"
 					items="{
-						path : 'settings>CheckoutDetails',
+						path : 'profile>CheckoutDetails',
 						sorter: [{
 							path : 'category',
 							descending: false,
@@ -33,9 +33,9 @@
 						groupHeaderFactory : '.getCheckoutGroupHeader'
 					}">
 					<StandardListItem
-						title="{settings>title}"
-						info="{= ${settings>category} === 'Pricing' ? ${settings>info} : '' }"
-						infoState="{= ${settings>category} === 'Pricing' ? ${settings>info_state} : 'None' }"
+						title="{profile>title}"
+						info="{= ${profile>category} === 'Pricing' ? ${profile>info} : '' }"
+						infoState="{= ${profile>category} === 'Pricing' ? ${profile>info_state} : 'None' }"
 						type="Inactive" />
 				</List>
 			</Page>
@@ -100,7 +100,7 @@
 		                id="idFirstNameInput"
 										placeholder="First name (required)"
 										name="firstName"
-										value="{settings>first_name}"
+										value="{profile>first_name}"
 										change="onChangeValidatePopulated">
 										<customData>
 											<core:CustomData key="required" value="true" />
@@ -114,7 +114,7 @@
 		                id="idLastNameInput"
 										placeholder="Last name (required)"
 										name="lastName"
-										value="{settings>last_name}"
+										value="{profile>last_name}"
 										change="onChangeValidatePopulated">
 										<customData>
 											<core:CustomData key="required" value="true" />
@@ -129,7 +129,7 @@
 										placeholder="me@email.com (required)"
 										name="email"
 										type="Email"
-										value="{settings>email}"
+										value="{profile>email}"
 										change="onChangeValidateEmail">
 										<customData>
 											<core:CustomData key="required" value="true" />
@@ -237,12 +237,12 @@
 										name="countryCodeAlpha2"
 										selectionChange="onChangeValidateCountry"
 										items="{
-											path: 'settings>/Countries',
+											path: 'static>/Countries',
 											sorter: {
 												path: 'order'
 											}
 										}">
-										<core:Item key="{settings>code}" text="{settings>name}" />
+										<core:Item key="{static>code}" text="{static>name}" />
 										<customData>
 											<core:CustomData key="required" value="true" />
 										</customData>
@@ -363,7 +363,7 @@
 
 							<Button
 								id="idSubmitPaymentButton"
-								text="Subscribe to {settings>number} {settings>unit}"
+								text="Subscribe to {profile>number} {profile>unit}"
 								type="Emphasized"
 								width="100%"
 								press="onSubmitPaymentPress" />

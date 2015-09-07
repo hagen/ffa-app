@@ -49,7 +49,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
      */
     Dashboard.prototype.onSettingsPress = function(oEvent) {
       // Nav.
-      this.getRouter().navTo("settings", {}, !sap.ui.Device.system.phone);
+      this.getRouter().navTo("profile", {}, !sap.ui.Device.system.phone);
     };
 
     /**

@@ -107,7 +107,7 @@ sap.ui.define(['jquery.sap.global', 'view/auth/Controller'],
       let oProfile = {};
 
       // Testuser will be replaced by proxy
-      this.getView().getModel("settings").read("/SocialProfiles", {
+      this.getView().getModel("profile").read("/SocialProfiles", {
         filters : [new sap.ui.model.Filter({
           path : 'profile_id',
           operator : sap.ui.model.FilterOperator.EQ,
@@ -162,13 +162,13 @@ sap.ui.define(['jquery.sap.global', 'view/auth/Controller'],
       }
 
       // Create HANA profile, with Braintree customerId
-      let oModel = this.getView().getModel("settings");
+      let oModel = this.getView().getModel("profile");
       let oData = {
         id: this.getUserId(), // Controller function
         first_name: "",
         last_name: "",
         email: "",
-        customerId : sCustomerId,
+        customer_id : sCustomerId,
         begda: new Date(Date.now()),
         endda: new Date("9999-12-31T23:59:59")
       };
@@ -204,7 +204,7 @@ sap.ui.define(['jquery.sap.global', 'view/auth/Controller'],
 
       let bValid = false;
 
-      this.getView().getModel("settings").read("/CurrentProfilePlans('TESTUSER')", {
+      this.getView().getModel("profile").read("/CurrentSubscriptions('TESTUSER')", {
         success : jQuery.proxy(function(oData, mResponse) {
           if (oData.profile_id) {
             bValid = true;

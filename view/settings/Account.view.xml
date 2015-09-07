@@ -40,7 +40,7 @@
 					<Link
 						text="Change"
 						press="onChangePlanPress"
-						enabled="{= ${settings>/CurrentProfilePlan('TESTUSER')/plan_type_id} === 'enterprise' ? false : true }"/>
+						enabled="{= ${profile>/CurrentProfilePlan('TESTUSER')/plan_type_id} === 'enterprise' ? false : true }"/>
 				</Toolbar>
 			</headerToolbar>
 			<content>
@@ -49,7 +49,7 @@
 					mode="None"
 					noDataText="You've not subscribed to any plans"
 					items="{
-						path : 'settings>Plans',
+						path : 'profile>Subscriptions',
 						parameters : {
 							expand : 'Plan'
 						},
@@ -59,9 +59,9 @@
 						}
 					}">
 					<StandardListItem
-						icon="{= ${settings>endda}.getFullYear() !== 9999 ? 'sap-icon://status-inactive' : 'sap-icon://accept' }"
-						title="{settings>Plan/info}"
-						info="{= ${settings>endda}.getFullYear() !== 9999 ? ${ path: 'settings>begda',	formatter : 'util.DateFormatter.ddMMyyyy'} + ' to ' + ${ path: 'settings>endda', formatter : 'util.DateFormatter.ddMMyyyy'} : 'Commenced ' + ${ path : 'settings>begda', formatter : 'util.DateFormatter.ddMMyyyy'} }" />
+						icon="{= ${profile>endda}.getFullYear() !== 9999 ? 'sap-icon://status-inactive' : 'sap-icon://accept' }"
+						title="{profile>Plan/info}"
+						info="{= ${profile>endda}.getFullYear() !== 9999 ? ${ path: 'profile>begda',	formatter : 'util.DateFormatter.ddMMyyyy'} + ' to ' + ${ path: 'profile>endda', formatter : 'util.DateFormatter.ddMMyyyy'} : 'Commenced ' + ${ path : 'profile>begda', formatter : 'util.DateFormatter.ddMMyyyy'} }" />
 				</List>
 			</content>
 		</Panel>
@@ -88,7 +88,7 @@
 							class="ffaObjectNumberFontSize3rem"
 							unit="MB data"
 							state="None"
-							number="{= ${settings>CacheTotal/mb} ? ${settings>CacheTotal/mb} : '0.00' }">
+							number="{= ${profile>CacheTotal/mb} > 0 ? ${profile>CacheTotal/mb} : '0.00' }">
 							<layoutData>
 								<l:GridData span="L8 M8 S12" />
 							</layoutData>
@@ -97,9 +97,9 @@
 						<ObjectNumber
 							emphasized="true"
 							class="ffaObjectNumberFontSize3rem"
-							unit="{= ${settings>ForecastCount/count} === 1 ? 'forecast' : 'forecasts' }"
+							unit="{= ${profile>ForecastCount/count} === 1 ? 'forecast' : 'forecasts' }"
 							state="Success"
-							number="{= ${settings>ForecastCount/count} ? ${settings>ForecastCount/count} : 0 }">
+							number="{= ${profile>ForecastCount/count} ? ${profile>ForecastCount/count} : 0 }">
 							<layoutData>
 								<l:GridData span="L4 M4 S12" />
 							</layoutData>

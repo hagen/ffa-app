@@ -26,7 +26,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
    * @return {[type]}           [description]
    */
   Controller.prototype._connect = function(sToken, sProvider) {
-    let oModel = this.getView().getModel("settings");
+    let oModel = this.getView().getModel("profile");
 
     // Read social stuff from node
     let bContinue = false;
@@ -63,7 +63,26 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
    * @return {[type]}           [description]
    */
   Controller.prototype._connectLocal = function(oModel, oProfiles) {
-    // stub
+    let oProfile = {
+      profile_id: this.getUserId(),
+      email: oProfiles.local.email,
+      first_name: oProfiles.local.firstname,
+      last_name: oProfiles.local.lastname,
+      linked: 'X'
+    };
+
+    // Do the create
+    oModel.update("/LocalProfiles('TESTUSER')", oProfile, {
+      success: jQuery.proxy(function(oData, mResponse) {
+        // Now we continue on to the Social stuff.
+        let bContinue = true;
+      }, this),
+      error: jQuery.proxy(function(mError) {
+        this._maybeHandleAuthError(mError);
+      }, this),
+      async: false,
+      merge : true
+    });
   };
 
   /**
@@ -183,7 +202,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
     * @return {[type]}           [description]
     */
    Controller.prototype._link = function(sToken, sProvider) {
-     let oModel = this.getView().getModel("settings");
+     let oModel = this.getView().getModel("profile");
 
      // Read social stuff from node
      let bContinue = false;

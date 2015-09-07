@@ -1,5 +1,5 @@
 <mvc:View
-	controllerName="view.plans.Plans"
+	controllerName="view.plans.Change"
 	xmlns="sap.m"
 	xmlns:mvc="sap.ui.core.mvc"
 	xmlns:core="sap.ui.core"
@@ -8,12 +8,16 @@
 	<Page
 		id="idPlansPage"
 		enableScrolling="false"
-		showHeader="false"
-		showNavButton="false"
+		showHeader="true"
+		showNavButton="true"
+		navButtonPress="onNavBack"
+		title="Change plan"
 		class="ffaPlansPageDashBg">
 		<content>
+			
 			<!-- Spiders animation by GreenSock.com -->
 			<html:canvas id="idSpiders" class="spiders" />
+
 			<!-- Main login content -->
 			<html:div
 				id="idDivPlansPanelWrapper"
@@ -21,24 +25,7 @@
 				<TileContainer
 					id="idPlansTileContainer"
 					allowAdd="false"
-					editable="false"
-					tiles="{
-						path : 'profile>/PlanTypes',
-						sorter : {
-							path : 'order',
-							descending: false
-						}
-					}">
-					<StandardTile
-						icon="sap-icon://{profile>icon}"
-						info="{profile>info}"
-						infoState="{profile>info_state}"
-						type="{profile>type}"
-						number="{profile>number}"
-						numberUnit="{profile>unit}"
-						title="{profile>title}"
-						press="onTilePress" />
-				</TileContainer>
+					editable="false" />
 			</html:div>
 		</content>
 		<dependents>

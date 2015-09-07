@@ -13,8 +13,10 @@
 		showNavButton="false"
 		class="ffaLoginPageDashBg">
 		<content>
+
 			<!-- Spiders animation by GreenSock.com -->
 			<html:canvas id="idSpiders" class="spiders" />
+
 			<!-- Main login content -->
 			<html:div
 				id="idDivLoginPanelWrapper"
@@ -105,7 +107,7 @@
 											<Input
 												id="idFirstNameInput"
 												value=""
-												placeholder="First name">
+												placeholder="First name (required)">
 												<layoutData>
 													<l:GridData
 														span="L6 M6 S6" />
@@ -114,7 +116,7 @@
 											<Input
 												id="idLastNameInput"
 												value=""
-												placeholder="Last name">
+												placeholder="Last name (required)">
 												<layoutData>
 													<l:GridData
 														span="L6 M6 S6" />
@@ -124,7 +126,7 @@
 												id="idRegisterEmail"
 												value=""
 												type="Email"
-												placeholder="E-mail"
+												placeholder="E-mail (required)"
 												change="onRegisterEmailChange">
 												<layoutData>
 													<l:GridData
@@ -135,7 +137,7 @@
 												id="idRegisterPassword"
 												type="Password"
 												value=""
-												placeholder="Password">
+												placeholder="Password (required)">
 												<layoutData>
 													<l:GridData
 														span="L12 M12 S12" />

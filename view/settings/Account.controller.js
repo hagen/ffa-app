@@ -44,7 +44,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
 
       // Bind this page to the Social Id...
       let oPage = this.getView().byId("idAccountPage");
-      oPage.bindElement("settings>/Profiles('TESTUSER')", {
+      oPage.bindElement("profile>/Profiles('TESTUSER')", {
         expand : 'CacheTotal,ForecastCount',
         select : 'CacheTotal/mb,ForecastCount/count'
       });
@@ -70,7 +70,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
      */
     Account.prototype.onChangePlanPress = function (oEvent) {
       // If Enterprise, no changes are allowed
-      let oModel = this.getView().getModel("settings");
+      let oModel = this.getView().getModel("profile");
 
       // Show prompt to get user action
       let sMessage = "Please note, if your current plan is non-free, your new subscription price (if any) will take effect immediately. All prices are pro-rated to the day. Continue and change your plan?";
@@ -98,7 +98,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
      */
     Account.prototype._isEnterprise = function (oModel) {
       if(!oModel) {
-        oModel = this.getView().getModel("settings");
+        oModel = this.getView().getModel("profile");
       }
 
       // Try to determine the Current profile plan type
@@ -141,6 +141,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
     Account.prototype.onTerminatePress = function (oEvent) {
       // body...
     };
+    
     return Account;
 
   }, /* bExport= */ true);

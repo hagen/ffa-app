@@ -42,7 +42,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      */
     Folders.prototype._onRouteMatched = function(oEvent) {
   		this._checkMetaDataLoaded("forecast");
-      
+
       // Let the master list know I'm on this Folders view.
       this.getEventBus().publish("Folders", "RouteMatched", {} /* payload */ );
 
@@ -385,8 +385,13 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
       this.getView().getModel("forecast").create("/Folders", oData, {
         success: jQuery.proxy(function(oData, mResponse) {
           // Rebind the tile container.
-          var oTileContainer = this.getView().byId("idFoldersTileContainer");
-          var oBinding = oTileContainer.getModel("forecast").refresh();
+          let oTileContainer = this.getView().byId("idFoldersTileContainer");
+          let oBinding = oTileContainer.getBinding("tiles");
+          if(oBinding) {
+            oBinding.refresh();
+          } else {
+            this._showFoldersForecasts();
+          }
         }, this),
         error: jQuery.proxy(function(mResponse) {
           jQuery.sap.require("sap.m.MessageBox");

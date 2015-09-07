@@ -38,14 +38,14 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
      */
     Profile.prototype._onRouteMatched = function(oEvent) {
       // Make sure we have a meta data document
-      this._checkMetaDataLoaded("settings");
+      this._checkMetaDataLoaded("profile");
 
       // Let the master list know I'm on this Folders view.
       this.getEventBus().publish("Profile", "RouteMatched", {} /* payload */ );
 
       // Bind this page to the Profile Id...
       let oPage = this.getView().byId("idProfilePage");
-      oPage.bindElement("settings>/Profiles('TESTUSER')");
+      oPage.bindElement("profile>/Profiles('TESTUSER')");
     };
 
     return Profile;

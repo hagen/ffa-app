@@ -2,83 +2,126 @@ jQuery.sap.declare("view.plans.Free");
 
 // Provides controller view.Plans
 sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
-	function(jQuery, Controller) {
-	"use strict";
+  function(jQuery, Controller) {
+    "use strict";
 
-	var Free = Controller.extend("view.plans.Free", /** @lends view.plans.Free.prototype */ {
+    var Free = Controller.extend("view.plans.Free", /** @lends view.plans.Free.prototype */ {
 
-	});
+    });
 
-	/**
-	 * On init handler
-	 */
-	Free.prototype.onInit = function() {
-		// Handle route matching.
-		this.getRouter().getRoute("plan-free").attachPatternMatched(this._onRouteMatched, this);
-	};
+    /**
+     * On init handler
+     */
+    Free.prototype.onInit = function() {
+      // Handle route matching.
+      this.getRouter().getRoute("plan-free").attachPatternMatched(this._onRouteMatched, this);
+      this.getRouter().getRoute("change-plan-free").attachPatternMatched(this._onChangeRouteMatched, this);
+    };
 
-	/**
-	 * On exit handler
-	 */
-	Free.prototype.onExit = function() {};
+    /**
+     * On exit handler
+     */
+    Free.prototype.onExit = function() {};
 
-	/**
-	 * On before rendering; add in our 'New region' tile
-	 * at the beginning of the tile container
-	 */
-	Free.prototype.onBeforeRendering = function() {	};
+    /**
+     * On before rendering; add in our 'New region' tile
+     * at the beginning of the tile container
+     */
+    Free.prototype.onBeforeRendering = function() {};
 
-	/**
-	 * On after rendering - the DOM is now built. Add in our 'New region' tile
-	 * at the beginning of the tile container
-	 */
-	Free.prototype.onAfterRendering = function() {	};
+    /**
+     * On after rendering - the DOM is now built. Add in our 'New region' tile
+     * at the beginning of the tile container
+     */
+    Free.prototype.onAfterRendering = function() {};
 
-	/**
-	 * Route matched handler...
-	 */
-	Free.prototype._onRouteMatched = function(oEvent) {
-		let oUpdatePromise = jQuery.Deferred();
-		let oTimerPromise = jQuery.Deferred();
-		let self = this;
+    /**
+     * Route matched handler...
+     */
+    Free.prototype._onRouteMatched = function(oEvent) {
+      let oCreatePromise = jQuery.Deferred();
+      let oTimerPromise = jQuery.Deferred();
+      let self = this;
 
-		// When our promises return, we can close the busy dialog and nav
-		jQuery.when(oTimerPromise).then(function() {
-			jQuery.when(oUpdatePromise).then(function() {
-				self.hideBusyDialog();
-				self.getRouter().navTo("dash", {}, !sap.ui.Device.system.phone);
-			});
-		});
+      // Busy!
+      this.showBusyDialog({
+        title: "Preparing",
+        text: "Creating your Free account. Be with you in a jiffy.",
+        showCancelButton: false
+      });
 
-		// Busy!
-		this.showBusyDialog({
-			title : "Preparing",
-			text : "Creating your Free account. Be with you in a jiffy.",
-			showCancelButton : false
-		});
+      // When our promises return, we can close the busy dialog and nav
+      jQuery.when(oTimerPromise).then(function() {
+        jQuery.when(oCreatePromise).then(function() {
+          self.hideBusyDialog();
+          self.getRouter().navTo("dash", {}, !sap.ui.Device.system.phone);
+        });
+      });
 
-		// Resolve timer promise after 1.5 seconds
-		jQuery.sap.delayedCall(3000, this, function() {
-			oTimerPromise.resolve();
-		}, []);
+      // Create the subscriotion
+      this._create(oTimerPromise, oCreatePromise);
+    };
 
-		// Update the user's account
-		let oModel = this.getView().getModel("settings");
-		oModel.update("/Profiles('TESTUSER')", {
-			plan_type_id : 'free',
-			customer_id : 'none'
-		}, {
-			success : function(oData, mResponse) {
-				oUpdatePromise.resolve();
-			},
-			error : function(mError) {
-				oUpdatePromise.resolve();
-			},
-			async : false,
-			merge : true
-		});
-	};
+    /**
+     * Route matched handler...
+     */
+    Free.prototype._onChangeRouteMatched = function(oEvent) {
+      let oCreatePromise = jQuery.Deferred();
+      let oTimerPromise = jQuery.Deferred();
+      let self = this;
 
-	return Free;
+      // Busy!
+      this.showBusyDialog({
+        title: "Switching",
+        text: "Changing your subscription to a Free account. Be with you in a jiffy.",
+        showCancelButton: false
+      });
 
-}, /* bExport= */ true);
+      // When our promises return, we can close the busy dialog and nav
+      jQuery.when(oTimerPromise).then(function() {
+        jQuery.when(oCreatePromise).then(function() {
+          self.hideBusyDialog();
+          self.getRouter().navTo("account", {}, !sap.ui.Device.system.phone);
+        });
+      });
+
+      // Create the subscriotion
+      this._create(oTimerPromise, oCreatePromise);
+    };
+
+		/**
+		 * Create the Free subscription
+		 * @param  {[type]} oTimerPromise  [description]
+		 * @param  {[type]} oCreatePromise [description]
+		 * @return {[type]}                [description]
+		 */
+    Free.prototype._create = function(oTimerPromise, oCreatePromise) {
+
+      // Resolve timer promise after 1.5 seconds
+      jQuery.sap.delayedCall(3000, this, function() {
+        oTimerPromise.resolve();
+      }, []);
+
+      // Update the user's account
+      let oModel = this.getView().getModel("profile");
+      oModel.create("/Subscriptions", {
+        id : "", // Will be updated
+				subscription_id : "",
+				profile_id : this.getProfileId(),
+        plan_type_id: 'free',
+        begda : new Date(Date.now()),
+				endda : new Date(0), // Will be updated
+      }, {
+				async: false,
+        success: function(oData, mResponse) {
+          oCreatePromise.resolve();
+        },
+        error: function(mError) {
+          oCreatePromise.resolve();
+        }
+      });
+    };
+
+    return Free;
+
+  }, /* bExport= */ true);

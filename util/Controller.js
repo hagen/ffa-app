@@ -41,6 +41,9 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
      */
     Controller.prototype._maybeHandleAuthError = function(mError) {
       if ([401, 400].indexOf(mError.response.statusCode) > -1) {
+        // SOmetimes, the busy dialog is up when this happens.
+        this.hideBusyDialog();
+
         // and now back to log-in
         this.getRouter().navTo("login", {
           tab: "signin",
@@ -215,7 +218,7 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
       Controller.prototype.showBusyDialog = function(oParams) {
         // Create the fragment and open!
         if (!this._oBusyDialog) {
-          this._oBusyDialog = sap.ui.xmlfragment("idBusyDialogFragment", "view.BusyDialog", this);
+          this._oBusyDialog = sap.ui.xmlfragment("view.BusyDialog", this);
           this.getView().addDependent(this._oBusyDialog);
         }
 
@@ -368,7 +371,7 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
      *      ╚═══╝  ╚═╝  ╚═╝╚══════╝╚═╝╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝
      *
      */
-    
+
     /**
      * Validate en email
      * @param  {[type]} sEmail [description]

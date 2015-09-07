@@ -38,14 +38,14 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
      */
     Social.prototype._onRouteMatched = function(oEvent) {
       // Make sure we have a meta data document
-      this._checkMetaDataLoaded("settings");
+      this._checkMetaDataLoaded("profile");
 
       // Let the master list know I'm on this Folders view.
       this.getEventBus().publish("Social", "RouteMatched", {} /* payload */ );
 
       // Bind this page to the Social Id...
       let oPage = this.getView().byId("idSocialPage");
-      oPage.bindElement("settings>/Profiles('TESTUSER')");
+      oPage.bindElement("profile>/Profiles('TESTUSER')");
     };
 
     /**
@@ -58,7 +58,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
      */
     Social.prototype.onSocialTilePress = function(oEvent) {
       let oTile = oEvent.getSource();
-      let oContext = oTile.getBindingContext("settings");
+      let oContext = oTile.getBindingContext("profile");
       let sType = oContext.getProperty("type");
 
       // if this tile is linked, we are unlinking, and vice versa.
@@ -168,7 +168,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
      * @return {[type]}       [description]
      */
     Social.prototype._delimitHana = function(sPath) {
-      this.getView().getModel("settings").remove(sPath, {
+      this.getView().getModel("profile").remove(sPath, {
         success: jQuery.proxy(function(oData, mResponse) {
           let sMessage = 1;
         }, this),
@@ -307,7 +307,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
       let oHeaders = {
         Authorization: 'Bearer ' + this.getBearerToken()
       };
-      this.getView().getModel("settings").update("/LocalProfiles('TESTUSER')", oProfile, {
+      this.getView().getModel("profile").update("/LocalProfiles('TESTUSER')", oProfile, {
         headers : oHeaders,
         success: jQuery.proxy(function(oData, mResponse) {
           // Now we continue on to the Social stuff.
