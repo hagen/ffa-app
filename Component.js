@@ -55,10 +55,18 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
             targetAggregation: "pages",
             transition : "flip",
             viewLevel: 5
-          },{
+          }, {
             pattern: "datasets/new/sheets",
             name: "sheets",
             view: "data.GoogleSheets",
+            targetControl: "idContainer",
+            targetAggregation: "pages",
+            transition : "flip",
+            viewLevel: 5
+          }, {
+            pattern: "datasets/new/hana",
+            name: "hana",
+            view: "data.Hana",
             targetControl: "idContainer",
             targetAggregation: "pages",
             transition : "flip",

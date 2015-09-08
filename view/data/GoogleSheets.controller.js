@@ -1,7 +1,7 @@
 jQuery.sap.declare("view.data.GoogleSheets");
 
 // Provides controller view.Wizard
-sap.ui.define(["jquery.sap.global", "view/data/NewDataSetController"],
+sap.ui.define(["jquery.sap.global", "view/data/Controller"],
   function(jQuery, Controller) {
     "use strict";
 

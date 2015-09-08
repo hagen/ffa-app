@@ -1,7 +1,7 @@
 jQuery.sap.declare("view.settings.Menu");
 
 // Provides controller view.DataSets
-sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
+sap.ui.define(["jquery.sap.global", "view/settings/Controller"],
   function(jQuery, Controller) {
     "use strict";
 

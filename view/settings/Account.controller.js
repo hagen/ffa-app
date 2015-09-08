@@ -3,7 +3,7 @@ jQuery.sap.require("util.DateFormatter");
 jQuery.sap.require("util.Collection");
 
 // Provides controller view.Wizard
-sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
+sap.ui.define(["jquery.sap.global", "view/settings/Controller"],
   function(jQuery, Controller) {
     "use strict";
 
@@ -141,7 +141,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
     Account.prototype.onTerminatePress = function (oEvent) {
       // body...
     };
-    
+
     return Account;
 
   }, /* bExport= */ true);

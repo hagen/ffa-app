@@ -18,7 +18,7 @@
           class="sapUiSmallMarginTop">
           <l:content>
             <ObjectListItem
-              id="idDataSetWizardHanaCloudObjectListItem"
+              id="idHanaObjectListItem"
               title="SAP HANA"
               icon="sap-icon://sap-logo-shape"
               type="Active"
@@ -37,29 +37,31 @@
               id="idHadoopObjectListItem"
               title="Hadoop"
               icon="sap-icon://FontMfizz/hadoop"
-              type="Active">
+              type="Active"
+              press="onHadoopItemPress">
             </ObjectListItem>
             <ObjectListItem
-              id="idDataSetWizardExcelObjectListItem"
+              id="idExcelObjectListItem"
               title="Excel"
               icon="sap-icon://excel-attachment"
               type="Active"
-              class="ffaDataSourceIconExcel">
+              class="ffaDataSourceIconExcel"
+              press="onExcelItemPress">
             </ObjectListItem>
             <ObjectListItem
-              id="idDataSetWizardGoogleDocObjectListItem"
+              id="idSheetsObjectListItem"
               title="Google Docs Spreadsheet"
               icon="sap-icon://FontAwesome/google"
               type="Active"
-              press="onGoogleSheetsPress"
+              press="onSheetsItemPress"
               class="ffaDataSourceIconGoogle">
             </ObjectListItem>
 						<ObjectListItem
-              id="idDataSetWizardCsvObjectListItem"
+              id="idCsvObjectListItem"
               title="CSV file"
               icon="sap-icon://FontAwesome/file-text-o"
               type="Active"
-              press="onCsvPress">
+              press="onCsvItemPress">
             </ObjectListItem>
           </l:content>
         </l:Grid>

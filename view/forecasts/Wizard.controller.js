@@ -44,8 +44,7 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
     /**
      *
      */
-    Wizard.prototype.onAfterRendering = function() {;
-    };
+    Wizard.prototype.onAfterRendering = function() {};
 
     /***
      *    ███╗   ██╗ █████╗ ██╗   ██╗
@@ -165,8 +164,10 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
 
       // and page
       var sPage = "idNewForecastWizardPage" + this._iStep;
+      
       // set page Title
       this._setPageTitle("Step " + this._iStep);
+
       // set back button activation
       if (this._iStep > 1) {
         this.getView().byId("idBackButton").setEnabled(true);

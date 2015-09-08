@@ -44,7 +44,7 @@
 				<Page
 					id="idPage1"
 					showHeader="false"
-					enableScrolling="false">
+					enableScrolling="true">
 					<l:Grid
 		        defaultSpan="L12 M12 S12"
 		        width="auto">
@@ -56,8 +56,8 @@
 		            layout="ResponsiveGridLayout"
 		            labelSpanL="3"
 		            labelSpanM="3"
-		            emptySpanL="4"
-		            emptySpanM="4"
+		            emptySpanL="3"
+		            emptySpanM="3"
 		            columnsL="1"
 		            columnsM="1"
 		            class="editableForm sapUiMediumMarginTop">
@@ -67,7 +67,11 @@
 										required="true" />
 		              <Input
 		                id="idRedshiftNameInput"
-										value="{redshift>/name}">
+										value="{redshift>/name}"
+										change="onInputChange">
+										<customData>
+											<core:CustomData key="error" value="Please supply a data set name" />
+										</customData>
 		              </Input>
 
 		              <Label
@@ -76,15 +80,11 @@
 		              <Input
 		                id="idRedshiftEndpointInput"
 										value="{redshift>/endpoint}"
-										placeholder="e.g. cluster.c63cnbrlgreen.ap-southeast-3.redshift.amazonaws.com">
-		              </Input>
-
-									<Label
-		                text="Database"
-										required="true" />
-		              <Input
-		                id="idRedshiftDatabaseInput"
-										value="{redshift>/database}">
+										placeholder="e.g. cluster.c63cnbrlgreen.ap-southeast-3.redshift.amazonaws.com"
+										change="onInputChange">
+										<customData>
+											<core:CustomData key="error" value="Please supply the Redshift endpoint (hostname)" />
+										</customData>
 		              </Input>
 
 									<Label
@@ -94,7 +94,23 @@
 		                id="idRedshiftPortInput"
 										value="{redshift>/port}"
 										type="Number"
-										placeholder="e.g. 5439">
+										placeholder="e.g. 5439"
+										change="onInputChange">
+										<customData>
+											<core:CustomData key="error" value="Please supply the endpoint port number" />
+										</customData>
+		              </Input>
+
+									<Label
+		                text="Database"
+										required="true" />
+		              <Input
+		                id="idRedshiftDatabaseInput"
+										value="{redshift>/database}"
+										change="onInputChange">
+										<customData>
+											<core:CustomData key="error" value="Please supply a Redshift database name" />
+										</customData>
 		              </Input>
 
 									<Label
@@ -118,6 +134,31 @@
 										id="idRedshiftRememberPasswordCheckBox"
 										selected="{redshift>/remember}"
 										text="Save username &amp; password?"/>
+
+									<Label
+										text="Query method" />
+									<Select
+										id="idQueryMethodSelect"
+										value="{redshift>/query_type}">
+										<items>
+											<core:Item key="views" text="Redshift View" />
+											<core:Item key="tables" text="Redshift Table" />
+											<core:Item key="query" text="Write custom SQL query" />
+										</items>
+									</Select>
+									<core:Icon
+										id="idHelpIcon"
+										src="sap-icon://question-mark"
+										size="1.5rem"
+										activeColor="#007cc0"
+										hoverColor="#007cc0"
+										press="onHelpIconPress"
+										class="ffaIconTinyMarginTop">
+										<core:layoutData>
+											<l:GridData
+												span="L1 M1 S1" />
+										</core:layoutData>
+									</core:Icon>
 		            </f:content>
 		          </f:SimpleForm>
 
@@ -152,8 +193,17 @@
 		      </l:Grid>
 				</Page>
 
+				<!--
+				██████╗ ██╗   ██╗███████╗██████╗ ██╗   ██╗
+			 ██╔═══██╗██║   ██║██╔════╝██╔══██╗╚██╗ ██╔╝
+			 ██║   ██║██║   ██║█████╗  ██████╔╝ ╚████╔╝
+			 ██║▄▄ ██║██║   ██║██╔══╝  ██╔══██╗  ╚██╔╝
+			 ╚██████╔╝╚██████╔╝███████╗██║  ██║   ██║
+			  ╚══▀▀═╝  ╚═════╝ ╚══════╝╚═╝  ╚═╝   ╚═╝
+			  -->
+
 				<Page
-					id="idPage2"
+					id="idPageQuery"
 					enableScrolling="false"
 					showHeader="false">
 					<l:Grid
@@ -230,6 +280,128 @@
 												span="L12 M12 S12" />
 										</layoutData>
 									</TextArea>
+		            </f:content>
+		          </f:SimpleForm>
+		        </l:content>
+		      </l:Grid>
+				</Page>
+
+				<!--
+				██╗   ██╗██╗███████╗██╗    ██╗███████╗
+				██║   ██║██║██╔════╝██║    ██║██╔════╝
+				██║   ██║██║█████╗  ██║ █╗ ██║███████╗
+				╚██╗ ██╔╝██║██╔══╝  ██║███╗██║╚════██║
+				 ╚████╔╝ ██║███████╗╚███╔███╔╝███████║
+				  ╚═══╝  ╚═╝╚══════╝ ╚══╝╚══╝ ╚══════╝
+				-->
+
+				<Page
+					id="idPageViews"
+					enableScrolling="false"
+					showHeader="false">
+					<l:Grid
+		        defaultSpan="L12 M12 S12"
+		        width="auto">
+						<l:content>
+							<Panel
+								expandable="false"
+								headerText="">
+								<Text
+									text="Select a database view from those listed below. Either begin typing the name of the view
+									or select from the drop-down. It's important to ensure your	database user has privileges to read
+									from the view you select here." />
+							</Panel>
+		          <f:SimpleForm
+		            id="idRedshiftViewForm"
+		            maxContainerCols="1"
+		            editable="true"
+		            layout="ResponsiveGridLayout"
+		            labelSpanL="3"
+		            labelSpanM="3"
+		            emptySpanL="4"
+		            emptySpanM="4"
+		            columnsL="1"
+		            columnsM="1"
+		            class="editableForm">
+		            <f:content>
+									<Label text="">
+										<layoutData>
+											<l:GridData span="L3 M3 S1" />
+										</layoutData>
+									</Label>
+		              <ComboBox
+		                id="idViewsComboBox"
+										change="onViewChange">
+										<layoutData>
+											<l:GridData span="L6 M6 S10" />
+										</layoutData>
+									</ComboBox>
+									<Label text="">
+										<layoutData>
+											<l:GridData span="L3 M3 S1" />
+										</layoutData>
+									</Label>
+		            </f:content>
+		          </f:SimpleForm>
+		        </l:content>
+		      </l:Grid>
+				</Page>
+
+				<!--
+				████████╗ █████╗ ██████╗ ██╗     ███████╗███████╗
+				╚══██╔══╝██╔══██╗██╔══██╗██║     ██╔════╝██╔════╝
+				   ██║   ███████║██████╔╝██║     █████╗  ███████╗
+				   ██║   ██╔══██║██╔══██╗██║     ██╔══╝  ╚════██║
+				   ██║   ██║  ██║██████╔╝███████╗███████╗███████║
+				   ╚═╝   ╚═╝  ╚═╝╚═════╝ ╚══════╝╚══════╝╚══════╝
+				-->
+
+				<Page
+					id="idPageTables"
+					enableScrolling="false"
+					showHeader="false">
+					<l:Grid
+		        defaultSpan="L12 M12 S12"
+		        width="auto">
+		        <l:content>
+							<Panel
+								expandable="false"
+								headerText="">
+								<Text
+									text="Select a database table from those listed below. Either begin typing the name of the table
+									or select from the drop-down. It's important to ensure your	database user has privileges to read
+									from the table you select here." />
+							</Panel>
+		          <f:SimpleForm
+		            id="idRedshiftTableForm"
+		            maxContainerCols="1"
+		            editable="true"
+		            layout="ResponsiveGridLayout"
+		            labelSpanL="3"
+		            labelSpanM="3"
+		            emptySpanL="4"
+		            emptySpanM="4"
+		            columnsL="1"
+		            columnsM="1"
+		            class="editableForm">
+		            <f:content>
+									<Label text="">
+										<layoutData>
+											<l:GridData span="L3 M3 S1" />
+										</layoutData>
+									</Label>
+		              <ComboBox
+		                id="idTablesComboBox"
+										change="onTableChange">
+										<layoutData>
+											<l:GridData span="L6 M6 S10" />
+										</layoutData>
+									</ComboBox>
+									<Label text="">
+										<layoutData>
+											<l:GridData span="L3 M3 S1" />
+										</layoutData>
+									</Label>
 		            </f:content>
 		          </f:SimpleForm>
 		        </l:content>

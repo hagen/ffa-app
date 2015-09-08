@@ -139,9 +139,11 @@
 	                level="H1"
 	                titleStyle="H1" />
 								<Text text="Pick one of your previously configured data sets.
-									This will be used to supply 'training data' to the forecast.
-									We'll also use it's fields to determine which you'd	like to forecast,
-									and which fields you'd like to optionally use as variables." />
+									This will be used to supply 'training data' to the forecast. Additionally, we're
+									going to pick a field in the data set to forecast. This is the field for which
+									we're going to predict future results. You can also elect to use up to three
+									of the data set's other fields as variables. If you don't have any data sets
+									you'll need to create one." />
 	            </l:content>
 	          </l:Grid>
 	    			<TileContainer
