@@ -1,0 +1,23 @@
+<core:FragmentDefinition
+xmlns="sap.m"
+xmlns:core="sap.ui.core">
+<ActionSheet
+  title="Forecast actions"
+  showCancelButton="true"
+  placement="Left">
+  <buttons>
+    <Button
+      id="idSettingsButton"
+      icon="sap-icon://FontAwesome/cogs"
+      text="Chart display"
+      tooltip="Chart display options"
+      press="onOptionsPress" />
+    <Button
+      id="idAdjustmentsButton"
+      icon="sap-icon://FontAwesome/pencil"
+      text="Adjust"
+      tooltip="Make some forecast adjustments"
+      press="onAdjustPress"/>
+  </buttons>
+</ActionSheet>
+</core:FragmentDefinition>

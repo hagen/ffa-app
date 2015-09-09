@@ -18,6 +18,10 @@
         icon="sap-icon://favorite"
         pressed="{= ${forecast>favorite} === 'X' }"
         press="onFavoritePress" />
+      <Button
+        id="idOverflowButton"
+        icon="sap-icon://FontAwesome/ellipsis-h"
+        press="onOverflowPress" />
     </headerContent>
     <footer>
       <Toolbar design="Transparent">

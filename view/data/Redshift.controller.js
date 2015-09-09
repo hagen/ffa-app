@@ -48,7 +48,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
         database: "db1",
         username: "kermit",
         password: "1h6LW3mI3Ozg50q",
-        remember: false,
+        remember: true,
         query: "",
         created_by: this.getUserId(),
         query_type: ""
@@ -127,35 +127,42 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
       // Delayed call, for effect.
       jQuery.sap.delayedCall(1000, this, function() {
 
-        // We always need to test the connection. So do this now.
-        if (!this._connect()) {
+        // Promise, so we know when to continue on
+        let oPromise = jQuery.Deferred();
+
+        // Depending on the state of the promise, after we try and connect,
+        // execute one of the done/fail deferred options
+        jQuery.when(oPromise).done(jQuery.proxy(function() {
+
+          // Collect the type the user has selected
+          let sInflectedType = this._getQueryType(true /* bInflected */ );
+
+          // perform page set up.
+          let oPage = this.getView().byId("idPage" + sInflectedType);
+          let fn = "setupPage" + sInflectedType;
+          if (typeof this[fn] === "function") {
+            this[fn].apply(this, []);
+          }
+
+          // Button is now bound to the save action
+          oButton.detachPress(this.onNextPress, this)
+            .attachPress(this.onSavePress, this)
+            .setText("Save");
+          this.getView().byId("idBackButton").setEnabled(true);
+
+          // advance to the next page
+          let oNav = this.getView().byId("idNavContainer");
+          oNav.to(oPage, "slide");
+
           // Not busy now
           this.hideBusyDialog();
-          return;
-        }
+        }, this)).fail(jQuery.proxy(function() {
 
-        // Collect the type the user has selected
-        let sInflectedType = this._getQueryType(true /* bInflected */ );
+          this.hideBusyDialog();
+        }, this));
 
-        // perform page set up.
-        let oPage = this.getView().byId("idPage" + sInflectedType);
-        let fn = "setupPage" + sInflectedType;
-        if (typeof this[fn] === "function") {
-          this[fn].apply(this, []);
-        }
-
-        // Button is now bound to the save action
-        oButton.detachPress(this.onNextPress, this)
-          .attachPress(this.onSavePress, this)
-          .setText("Save");
-        this.getView().byId("idBackButton").setEnabled(true);
-
-        // advance to the next page
-        let oNav = this.getView().byId("idNavContainer");
-        oNav.to(oPage, "slide");
-
-        // Not busy now
-        this.hideBusyDialog();
+        // Now try and connect
+        this._connect(oPromise);
       });
     };
 
@@ -213,7 +220,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
       // set screen to busy
       this.openBusyDialog({
         title: "Saving",
-        text: "Saving your Redshift configuration - one moment please..."
+        text: "Saving your Redshift dataset - one moment please..."
       });
 
       // Save the redshift data...
@@ -233,6 +240,11 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
 
             // NOt busy any more
             this.closeBusyDialog();
+
+            // Send the Redshift nav container back to start
+            try {
+              this.getView().byId("idNavContainer").back();
+            } catch (e) {}
 
             // Navigate to the new data set...
             this.getRouter().navTo("datasets", {
@@ -255,43 +267,43 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
         async: true,
       });
     };
+
     /***
-     *    ████████╗███████╗███████╗████████╗
-     *    ╚══██╔══╝██╔════╝██╔════╝╚══██╔══╝
-     *       ██║   █████╗  ███████╗   ██║
-     *       ██║   ██╔══╝  ╚════██║   ██║
-     *       ██║   ███████╗███████║   ██║
-     *       ╚═╝   ╚══════╝╚══════╝   ╚═╝
+     *     ██████╗ ██████╗ ███╗   ██╗███╗   ██╗███████╗ ██████╗████████╗██╗ ██████╗ ███╗   ██╗
+     *    ██╔════╝██╔═══██╗████╗  ██║████╗  ██║██╔════╝██╔════╝╚══██╔══╝██║██╔═══██╗████╗  ██║
+     *    ██║     ██║   ██║██╔██╗ ██║██╔██╗ ██║█████╗  ██║        ██║   ██║██║   ██║██╔██╗ ██║
+     *    ██║     ██║   ██║██║╚██╗██║██║╚██╗██║██╔══╝  ██║        ██║   ██║██║   ██║██║╚██╗██║
+     *    ╚██████╗╚██████╔╝██║ ╚████║██║ ╚████║███████╗╚██████╗   ██║   ██║╚██████╔╝██║ ╚████║
+     *     ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝
      *
      */
 
     /**
      * Tests the user's details to connect to the postgresql database.
-     * @return {[type]} [description]
+     * @param  {Deferred} oPromise The promise to either resolve or reject
      */
-    Redshift.prototype._connect = function() {
-      let bContinue = false;
+    Redshift.prototype._connect = function(oPromise) {
 
       // Test redshift; success call back if connection could be made
       this.getView().getModel("dataset").create("/RedshiftTest", this._getData(), {
-        async: false,
+        async: true,
         success: jQuery.proxy(function(oData, mResponse) {
 
           // Handle error with empty, clears Error
           this._handleTestError();
+
           // Cool to continue
-          bContinue = true;
+          oPromise.resolve();
         }, this),
         error: jQuery.proxy(function(mError) {
 
           // Handle connection test errors
           this._handleTestError(mError);
-          // not busy any more
-          this.closeBusyDialog();
+
+          // Reject the promise
+          oPromise.reject();
         }, this)
       });
-
-      return bContinue;
     };
 
     /***
@@ -397,7 +409,14 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
       return bValid;
     };
 
-
+    /**
+     * Validates the query text in the supplied control. Basically, we're
+     * checking to make sure that there are no modification SQL operations in
+     * the text. This same check is performed in the back-end, so there's no
+     * getting around it.
+     * @param  {[type]} oControl [description]
+     * @return {[type]}          [description]
+     */
     Redshift.prototype._validateQuery = function(oControl) {
 
       // Valid
@@ -464,7 +483,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
 
       // Now we can do the checking
       let oComboBox = oControl || this.control("idViewsComboBox");
-      if (oComboBox.getSelectedKey() === "" || !c.getSelectedKey()) {
+      if (oComboBox.getSelectedKey() === "" || !oComboBox.getSelectedKey()) {
         oComboBox.setValueState(sap.ui.core.ValueState.Error);
         oComboBox.setValueStateText("Please pick only from the available views");
         return false;
@@ -494,11 +513,14 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
       switch (this._getQueryType(false)) {
         case 'tables':
           // Check if the tables combo box is populated with a valid entry
-          bValid = this.validateTables(control("idTablesComboBox")); break;
+          bValid = this._validateTables(control("idTablesComboBox"));
+          break;
         case 'views':
-          bValid = this.validateViews(control("idViewsComboBox")); break;
+          bValid = this._validateViews(control("idViewsComboBox"));
+          break;
         case 'query':
-          bValid = this.validateQuery(control("idQueryTextArea")); break;
+          bValid = this._validateQuery(control("idQueryTextArea"));
+          break;
       }
       return bValid;
     };

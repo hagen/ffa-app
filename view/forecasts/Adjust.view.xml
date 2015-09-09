@@ -1,0 +1,31 @@
+<mvc:View
+  controllerName="view.forecasts.Adjust"
+  xmlns:chart="thirdparty.chartjs"
+  xmlns:core="sap.ui.core"
+  xmlns:l="sap.ui.layout"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+	xmlns:html="http://www.w3.org/1999/xhtml">
+  <NavContainer
+    id="idNavContainer">
+    <pages>
+      <Page
+        enableScrolling="false"
+        id="idAdjustPage"
+        navButtonPress="onNavBackPress"
+        showNavButton="true"
+        title="{forecast>Forecast/name}">
+        <content>
+        </content>
+      </Page>
+      <MessagePage
+        id="idMessagePage"
+        description="Sorry there - couldn't get hold of the thing you want"
+        icon="sap-icon://FontAwesome/question-circle"
+        showHeader="true"
+        showNavButton="true"
+        text="That's a 404"
+        navButtonPress="onNavBackPress" />
+    </pages>
+  </NavContainer>
+</mvc:View>

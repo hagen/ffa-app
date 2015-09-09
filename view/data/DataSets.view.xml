@@ -31,19 +31,24 @@
 					<Toolbar
 						id="idDataSetsMasterFooterToolbar">
 						<Button
-							id="idDataSetMasterEditButton"
-							text="Edit"
-							press="onMasterEditButtonPress" />
+							id="idMasterSelectButton"
+							text="Select"
+							press="onMasterSelectPress" />
 						<Button
-							id="idDataSetMasterDoneButton"
+							id="idMasterDoneButton"
 							text="Done"
 							visible="false"
-							press="onMasterDoneButtonPress" />
+							press="onMasterDonePress" />
 						<ToolbarSpacer />
 						<Button
-							id="idDataSetMasterAddButton"
+							id="idMasterAddButton"
 							icon="sap-icon://add"
-							press="onMasterAddButtonPress" />
+							press="onMasterAddPress" />
+						<Button
+							id="idMasterDeleteButton"
+							text="Delete"
+							visible="false"
+							press="onMasterDeletePress" />
 					</Toolbar>
 				</footer>
 				<content>
@@ -98,7 +103,7 @@
 					<Link
 						id="idMessagePageLink"
 						text="or create one now"
-						press="onMasterAddButtonPress"/>
+						press="onMasterAddPress"/>
 				</customDescription>
 			</MessagePage>
 

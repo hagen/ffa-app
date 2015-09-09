@@ -146,6 +146,14 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
           viewLevel: 5
         }]
       }, {
+        pattern: "adjust/{forecast_id}/run/{run_id}/:return_route:",
+        name: "adjust",
+        view: "forecasts.Adjust",
+        targetControl: "idContainer",
+        targetAggregation: "pages",
+        transition : "flip",
+        viewLevel: 6
+      }, {
         pattern: "settings",
         name: "settings",
         view: "settings.Menu",

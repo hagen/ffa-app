@@ -6,20 +6,18 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
     "use strict";
 
     var Forecasts = Controller.extend("view.forecasts.Forecasts", /** @lends view.forecasts.Forecasts.prototype */ {
-
+      _sForecastId : "",
+      _sFolderId : "",
+      _sRunId : "",
+      _sReturnRoute : "",
+      _sTab : "",
+      _navByButton : false
     });
 
     /**
      * On init handler
      */
     Forecasts.prototype.onInit = function() {
-      // Our forecast and folder globals
-      this._sForecastId = "";
-      this._sFolderId = "";
-      this._sRunId = "";
-      this._sReturnRoute = "";
-      this._sTab = "";
-      this._navByButton = false;
 
       // Route handlers
       this.getRouter().getRoute("forecast-from-folder").attachPatternMatched(this._onRouteMatchedFolder, this);
@@ -342,6 +340,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
             this._drawViz((function() {
               let aData = [];
               jQuery.each(oData.results || [], function(index, obj) {
+
                 // Push on the x and y
                 let date = "";
                 let value = 0;
@@ -595,6 +594,43 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
       if (oModel.hasPendingChanges()) {
         oModel.submitChanges();
       }
+    };
+
+    /**
+     * Renders the overflow action sheet, containing the edit and settings
+     * buttons.
+     * @param  {Event} oEvent The button press event
+     */
+    Forecasts.prototype.onOverflowPress = function (oEvent) {
+      // We're going to show the overflow fragment
+      if(!this._oActionSheet) {
+        this._oActionSheet = sap.ui.xmlfragment("idActionSheetFragment", "view.forecasts.ActionSheet", this);
+        this.getView().addDependent(this._oActionSheet);
+      }
+
+      // Now open the action sheet
+      this._oActionSheet.openBy(oEvent.getSource());
+    };
+
+    /**
+     * Shows the chart display options pop-up. This floats over the chart,
+     * and offers simple settings like colour, and titles.
+     * @param  {event} oEvent The button press event
+     */
+    Forecasts.prototype.onOptionsPress = function (oEvent) {
+
+    };
+
+    /**
+     * Navigates to the workspace for this forecast.
+     * @param  {Event} oEvent The button press event
+     */
+    Forecasts.prototype.onAdjustPress = function (oEvent) {
+      this.getRouter().navTo("adjust", {
+        forecast_id : this._sForecastId,
+        run_id : this._sRunId,
+        return_route : this._sRoute
+      }, !sap.ui.Device.system.phone);
     };
 
     /***

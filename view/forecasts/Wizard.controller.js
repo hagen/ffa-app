@@ -61,7 +61,7 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
      * @param  {object} oEvent Route matched event
      */
     Wizard.prototype._onRouteMatched = function(oEvent) {
-  		this._checkMetaDataLoaded("forecast");
+      this._checkMetaDataLoaded("forecast");
       // Couple of scenarios...
       // (1) arrive here from folders - Create New Forecast; if so, retain
       // parent folder Id
@@ -164,7 +164,7 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
 
       // and page
       var sPage = "idNewForecastWizardPage" + this._iStep;
-      
+
       // set page Title
       this._setPageTitle("Step " + this._iStep);
 
@@ -194,13 +194,15 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
      */
     Wizard.prototype.onDonePress = function(oEvent) {
       this.getRouter().navTo("forecast-from-folder", {
-        folder_id : this._sFolderId,
-        forecast_id : this._sForecastId
+        folder_id: this._sFolderId,
+        forecast_id: this._sForecastId
       }, !sap.ui.Device.system.phone);
 
       // Raise an event to signal the end of all forecast processing.
       // The user must now go home, or go to the forecast.
-      this.getEventBus().publish("Forecast", "Finished", { forecast_id : this._sForecastId });
+      this.getEventBus().publish("Forecast", "Finished", {
+        forecast_id: this._sForecastId
+      });
 
     };
 
@@ -214,7 +216,9 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
 
       // Raise an event to signal the end of all forecast processing.
       // The user must now go home, or go to the forecast.
-      this.getEventBus().publish("Forecast", "Finished", { forecast_id : this._sForecastId });
+      this.getEventBus().publish("Forecast", "Finished", {
+        forecast_id: this._sForecastId
+      });
     };
 
     /***
@@ -326,27 +330,27 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
      */
     Wizard.prototype._onForecastingFinished = function(sChannel, sEvent, oData) {
 
-        // Cancel button
-        this.getView().byId("idCancelButton").setEnabled(false);
-        this.getView().byId("idCancelButton").setVisible(false);
+      // Cancel button
+      this.getView().byId("idCancelButton").setEnabled(false);
+      this.getView().byId("idCancelButton").setVisible(false);
 
-        // Home button
-        this.getView().byId("idHomeButton").setEnabled(true);
-        this.getView().byId("idHomeButton").setVisible(true);
+      // Home button
+      this.getView().byId("idHomeButton").setEnabled(true);
+      this.getView().byId("idHomeButton").setVisible(true);
 
-        // Page title
-        this.getView().byId("idWizardTitle").setText("Done");
+      // Page title
+      this.getView().byId("idWizardTitle").setText("Done");
 
-        // Back button
-        this.getView().byId("idBackButton").setEnabled(false);
-        this.getView().byId("idBackButton").setVisible(false);
+      // Back button
+      this.getView().byId("idBackButton").setEnabled(false);
+      this.getView().byId("idBackButton").setVisible(false);
 
-        // Next button
-        this.getView().byId("idNextButton").setEnabled(false);
-        this.getView().byId("idNextButton").setVisible(false);
+      // Next button
+      this.getView().byId("idNextButton").setEnabled(false);
+      this.getView().byId("idNextButton").setVisible(false);
 
-        // Nav back to start page...
-        this.getView().byId("idForecastWizardNavContainer").backToTop();
+      // Nav back to start page...
+      this.getView().byId("idForecastWizardNavContainer").backToTop();
     };
 
     /***
@@ -358,31 +362,6 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
      *     ╚═════╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝╚══════╝
      *
      */
-
-    /**
-     * Compile all necessary attributes to create cache. Note, these are mostly
-     * dummy attributes.
-     * @return {object} Cache object
-     */
-    Wizard.prototype._getCacheData = function() {
-
-      // Do we need a new cache id?
-      if (!this._sCacheId) {
-        this._sCacheId = ShortId.generate(10);
-      }
-
-      return {
-        id: this._sCacheId,
-        forecast_id: this._sForecastId,
-        dataset_id: this._sDataSetId,
-        created_at: new Date(Date.now()).toISOString(),
-        user: "",
-        columns: 0, // not required
-        bytes: 0, // not required
-        begda: new Date(0), // not required
-        endda: new Date(0) // not required
-      };
-    };
 
     /**
      * Refresh the cache
@@ -419,25 +398,50 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
      */
     Wizard.prototype._getCacheHeader = function(sCacheId, oModel) {
       var oCache = {};
-      if(this._oCacheHeader) {
-        if(this._oCacheHeader.id === sCacheId) {
+      if (this._oCacheHeader) {
+        if (this._oCacheHeader.id === sCacheId) {
           return this._oCacheHeader;
         }
       }
 
       // otherwise, read.
       oModel.read("/Cache('" + sCacheId + "')", {
-        success : jQuery.proxy(function(oData, mResponse) {
+        success: jQuery.proxy(function(oData, mResponse) {
           this._oCacheHeader = oData;
         }, this),
-        error : jQuery.proxy(function(oData, mResponse) {
+        error: jQuery.proxy(function(oData, mResponse) {
           this._oCacheHeader = {};
         }, this),
-        async : false
+        async: false
       });
 
       // return
       return this._oCacheHeader;
+    };
+
+    /**
+     * Compile all necessary attributes to create cache. Note, these are mostly
+     * dummy attributes.
+     * @return {object} Cache object
+     */
+    Wizard.prototype._getCacheData = function() {
+
+      // Do we need a new cache id?
+      if (!this._sCacheId) {
+        this._sCacheId = ShortId.generate(10);
+      }
+
+      return {
+        id: this._sCacheId,
+        forecast_id: this._sForecastId,
+        dataset_id: this._sDataSetId,
+        created_at: new Date(Date.now()),
+        user: this.getProfileId(),
+        columns: 0, // not required
+        bytes: 0, // not required
+        begda: new Date(0), // not required
+        endda: new Date(0) // not required
+      };
     };
     /***
      *    ███████╗████████╗███████╗██████╗      ██╗
@@ -974,6 +978,7 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
         favorite: " "
       };
     };
+
     /***
      *    ███████╗████████╗███████╗██████╗      ██████╗
      *    ██╔════╝╚══██╔══╝██╔════╝██╔══██╗    ██╔════╝
@@ -984,7 +989,6 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
      *
      */
 
-
     /**
      * The forecast is now running. Would they like a notficiation when it's done?
      */
@@ -992,8 +996,8 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
 
       // Indicate the forecast is commencing.
       this.showBusyDialog({
-        title: "Initialising",
-        text: "Firing up ol' Betsy - one moment please...",
+        title: "Forecasting",
+        text: "Firing up the Predicto-matic - one moment please...",
         showCancelButton: false
       });
       var oCreatedPromise = jQuery.Deferred();
