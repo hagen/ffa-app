@@ -14,8 +14,12 @@
         id="idAdjustPage"
         navButtonPress="onNavBackPress"
         showNavButton="true"
-        title="{forecast>Forecast/name}">
+        title="{forecast>Forecast/name}"
+        class="sapUiContentPadding">
         <content>
+          <html:div
+						id="idVizContainer"
+						class="ffaOverviewChartContainer"/>
         </content>
       </Page>
       <MessagePage

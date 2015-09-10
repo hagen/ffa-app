@@ -1,12 +1,40 @@
-<core:FragmentDefinition
-  xmlns="sap.m"
-  xmlns:core="sap.ui.core"
+<mvc:View
+	controllerName="view.forecasts.Rerun"
+	xmlns="sap.m"
   xmlns:l="sap.ui.layout"
-  xmlns:f="sap.ui.layout.form">
-  <Dialog
-    id="idReRunDialog"
-    title="Re-run forecast">
-    <l:Grid
+  xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core"
+	xmlns:mvc="sap.ui.core.mvc">
+	<Page
+		id="idRerunPage"
+		title="Re-run forecast"
+		enableScrolling="true"
+		showNavButton="true"
+		navButtonPress="onNavBackPress">
+		<footer>
+			<!-- Toolbar + Cancel button -->
+			<Toolbar>
+				<Button
+					id="idRefreshCacheButton"
+					icon="sap-icon://FontAwesome/refresh"
+					press="onRefreshCachePress" />
+				<Text
+					text="{
+						path : 'forecast>created_at',
+						type : 'sap.ui.model.type.DateTime',
+						formatOptions : {
+							style : 'medium'
+						}
+					}" />
+				<ToolbarSpacer />
+				<Button
+					id="idRunButton"
+					text="Re-run"
+					type="Emphasized"
+					press="onRerunPress" />
+			</Toolbar>
+		</footer>
+		<l:Grid
       defaultSpan="L12 M12 S12"
       width="auto"
       class="sapUiSmallMargin">
@@ -20,8 +48,9 @@
           } so you can pick an effective date of {
             path : 'forecast>endda',
             formatter : 'util.DateFormatter.add1Day'
-          } or earlier.
-          Additionally, the length of your horizon dictates how much training data your
+          } or earlier. In the bottom left corner, you can see when the training data was last refreshed
+					and by pressing the refresh button, get a fresh copy. Lastly,
+          the length of your horizon dictates how much training data your
           forecast requires - if there isn't enough, I'll let you know." />
         <f:SimpleForm
           id="idNewForecastParamsForm"
@@ -74,5 +103,5 @@
         </f:SimpleForm>
       </l:content>
     </l:Grid>
-  </Dialog>
-</core:FragmentDefinition>
+	</Page>
+</mvc:View>

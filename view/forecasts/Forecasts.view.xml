@@ -83,7 +83,16 @@
 								</customData>-->
                 <attributes>
                   <ObjectAttribute active="false" text="{ path: 'forecast>train_to', formatter : '.nextDay' }" title="Effective as of"/>
-                  <ObjectAttribute active="false" text="{ path: 'forecast>train_from', type: 'sap.ui.model.type.Date', formatOptions : { pattern : 'dd/MM/yyyy' } }" title="Training from"/>
+                  <ObjectAttribute
+                    active="false"
+                    text="{
+                      path: 'forecast>train_from',
+                      type: 'sap.ui.model.type.Date',
+                      formatOptions : {
+                        pattern : 'dd/MM/yyyy'
+                      }
+                    }"
+                    title="Training from"/>
                 </attributes>
                 <statuses>
                   <ObjectStatus state="None" text="{ path: 'MEDIAN_APE', type: 'sap.ui.model.type.Float' }" title="Median APE"/>
@@ -190,7 +199,16 @@
                     <Text text="Date"/>
                   </Column>
                   <Column demandPopin="true" hAlign="Right" minScreenWidth="Tablet">
-                    <Text text="Forecast value"/>
+                    <Text text="Actual"/>
+                  </Column>
+                  <Column demandPopin="true" hAlign="Right" minScreenWidth="Tablet">
+                    <Text text="Diff"/>
+                  </Column>
+                  <Column demandPopin="true" hAlign="Right" minScreenWidth="Tablet">
+                    <Text text="Forecast"/>
+                  </Column>
+                  <Column demandPopin="true" hAlign="Right" minScreenWidth="Tablet">
+                    <Text text="Adjustment"/>
                   </Column>
                 </columns>
                 <items>
@@ -204,12 +222,16 @@
                         }
                       }"/>
                       <ObjectNumber number="{
-												path: 'forecast>value',
+												path: 'forecast>forecast',
 												type: 'sap.ui.model.type.Float',
                         formatOptions : {
+                          minFractionDigits : '2',
                           maxFractionDigits : '2'
                         }
 											}"/>
+                      <ObjectNumber number="{= ${forecast>actual} === 0 ? '' : ${forecast>actual} }"/>
+                      <ObjectNumber number="{= ${forecast>diff_percent} === 0 ? '' : ${forecast>diff_percent} + '%' }"/>
+                      <ObjectNumber number="{= ${forecast>change} === 0 ? '' : ${forecast>change} }"/>
                     </cells>
                   </ColumnListItem>
                 </items>

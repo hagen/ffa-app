@@ -391,35 +391,6 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
     };
 
     /**
-     * [function description]
-     * @param  {[type]} this._sCacheId [description]
-     * @param  {[type]} oModel         [description]
-     * @return {[type]}                [description]
-     */
-    Wizard.prototype._getCacheHeader = function(sCacheId, oModel) {
-      var oCache = {};
-      if (this._oCacheHeader) {
-        if (this._oCacheHeader.id === sCacheId) {
-          return this._oCacheHeader;
-        }
-      }
-
-      // otherwise, read.
-      oModel.read("/Cache('" + sCacheId + "')", {
-        success: jQuery.proxy(function(oData, mResponse) {
-          this._oCacheHeader = oData;
-        }, this),
-        error: jQuery.proxy(function(oData, mResponse) {
-          this._oCacheHeader = {};
-        }, this),
-        async: false
-      });
-
-      // return
-      return this._oCacheHeader;
-    };
-
-    /**
      * Compile all necessary attributes to create cache. Note, these are mostly
      * dummy attributes.
      * @return {object} Cache object
@@ -825,13 +796,13 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
         let oToDatePicker = this.getView().byId("idToDatePicker");
         if (!oToDatePicker.getDateValue()) {
           // set the effective date onload
-          oToDatePicker.setDateValue(this._getMaxDate());
+          oToDatePicker.setDateValue(this._getMaxDate(this._sCacheId));
         }
 
         let oFromDatePicker = this.getView().byId("idFromDatePicker");
         if (!oFromDatePicker.getDateValue()) {
           // set the training period begin date onload
-          oFromDatePicker.setDateValue(this._getBeginDate());
+          oFromDatePicker.setDateValue(this._getBeginDate(this._sCacheId));
         }
 
         // Close dialog and resolve promise
@@ -1081,8 +1052,8 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
         dDate = new Date(oControl.getValue());
       }
 
-      let dMaxDate = this._getMaxDate();
-      let dMinDate = this._getBeginDate();
+      let dMaxDate = this._getMaxDate(this._sCacheId);
+      let dMinDate = this._getBeginDate(this._sCacheId);
       let bValid = false;
 
       // Now check that dDate is not greater than dMaxDate
@@ -1114,10 +1085,19 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
         sValue = oControl.getValue();
       }
 
-      let i = parseInt(oControl.getValue(), 10);
+      if (!sValue) {
+        oControl.setValue("0"); // 0 days
+        sValue = 0;
+      }
+
+      let i = parseInt(sValue, 10);
 
       // Now check that dDate is not greater than dMaxDate
-      if (i <= 0) {
+      if (isNaN(i)) {
+        oControl.setValueState(sap.ui.core.ValueState.Error);
+        oControl.setValueStateText("The horizon should only be a number");
+        bValid = false;
+      } else if (i <= 0) {
         oControl.setValueState(sap.ui.core.ValueState.Error);
         oControl.setValueStateText("Horizon must be greater than 0 days");
         bValid = false;
@@ -1142,8 +1122,8 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
         dDate = new Date(oControl.getValue());
       }
 
-      let dMaxDate = this._getMaxDate();
-      let dMinDate = this._getBeginDate();
+      let dMaxDate = this._getMaxDate(this._sCacheId);
+      let dMinDate = this._getBeginDate(this._sCacheId);
       let bValid = false;
 
       if (dDate < dMinDate) {
@@ -1173,14 +1153,24 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
       if (!sValue) {
         sValue = oControl.getValue();
       }
-      let i = parseInt(oControl.getValue(), 10);
-      let dMaxDate = this._getMaxDate();
-      let dMinDate = this._getBeginDate();
+
+      if (!sValue) {
+        oControl.setValue("0"); // 0 days
+        sValue = 0;
+      }
+
+      let i = parseInt(sValue, 10);
+      let dMaxDate = this._getMaxDate(this._sCacheId);
+      let dMinDate = this._getBeginDate(this._sCacheId);
       let oneDay = 24 * 60 * 60 * 1000;
       let diff = Math.round(Math.abs((dMinDate.getTime() - dMaxDate.getTime()) / (oneDay)));
 
       // Now check that validation is not greater than the total training period
-      if (i > diff) {
+      if (isNaN(i)) {
+        oControl.setValueState(sap.ui.core.ValueState.Error);
+        oControl.setValueStateText("The validation period should only be a number");
+        bValid = false;
+      } else if (i > diff) {
         oControl.setValueState(sap.ui.core.ValueState.Error);
         oControl.setValueStateText("Validation period must not be greater than " + diff + " days");
         bValid = false;
@@ -1191,51 +1181,6 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
       }
 
       return bValid;
-    };
-
-    /***
-     *    ██████╗  █████╗ ████████╗███████╗███████╗
-     *    ██╔══██╗██╔══██╗╚══██╔══╝██╔════╝██╔════╝
-     *    ██║  ██║███████║   ██║   █████╗  ███████╗
-     *    ██║  ██║██╔══██║   ██║   ██╔══╝  ╚════██║
-     *    ██████╔╝██║  ██║   ██║   ███████╗███████║
-     *    ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚══════╝╚══════╝
-     *
-     */
-
-    /**
-     * [function description]
-     * @return {[type]} [description]
-     */
-    Wizard.prototype._getMaxDate = function() {
-      let dDate = this._getEndDate();
-      return this._date(new Date(dDate.setDate(dDate.getDate() + 1)));
-    };
-
-    /**
-     * [function description]
-     * @return {[type]} [description]
-     */
-    Wizard.prototype._getEndDate = function() {
-      var oModel = this.getView().getModel("forecast");
-      let dDate = oModel.getProperty("/Cache('" + this._sCacheId + "')/endda");
-      if (!dDate) {
-        dDate = this._getCacheHeader(this._sCacheId, oModel).endda;
-      }
-      return this._date(dDate);
-    };
-
-    /**
-     * [function description]
-     * @return {[type]} [description]
-     */
-    Wizard.prototype._getBeginDate = function() {
-      var oModel = this.getView().getModel("forecast");
-      let dDate = oModel.getProperty("/Cache('" + this._sCacheId + "')/begda");
-      if (!dDate) {
-        dDate = this._getCacheHeader(this._sCacheId, oModel).begda;
-      }
-      return this._date(dDate);
     };
 
     return Wizard;

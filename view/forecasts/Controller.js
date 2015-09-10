@@ -19,6 +19,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
      *    ╚═╝      ╚═════╝ ╚═╝  ╚═╝╚══════╝ ╚═════╝╚═╝  ╚═╝╚══════╝   ╚═╝   ╚══════╝
      *
      */
+    
     /**
      * Queries OData backend for forecasts matching filter criteria.
      * @param  {Array} aFilters Array of fitlers
@@ -200,19 +201,42 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
      */
 
     /**
+     * [function description]
+     * @param  {[type]} this._sCacheId [description]
+     * @param  {[type]} oModel         [description]
+     * @return {[type]}                [description]
+     */
+    Controller.prototype._getCacheHeader = function(sCacheId, oModel) {
+      var oCache = {};
+      if (this._oCacheHeader) {
+        if (this._oCacheHeader.id === sCacheId) {
+          return this._oCacheHeader;
+        }
+      }
+
+      // otherwise, read.
+      oModel.read("/Cache('" + sCacheId + "')", {
+        success: jQuery.proxy(function(oData, mResponse) {
+          this._oCacheHeader = oData;
+        }, this),
+        error: jQuery.proxy(function(oData, mResponse) {
+          this._oCacheHeader = {};
+        }, this),
+        async: false
+      });
+
+      // return
+      return this._oCacheHeader;
+    };
+
+    /**
      * For the suuplied Forecast Id, the latest Cache entry (just one) is read.
      * @param  {String} sForecastId Forecast Id
      * @return {String}             Cache Id
      */
-    Controller.prototype.getLatestCacheId = function(sForecastId) {
+    Controller.prototype.getLatestCacheId = function(sForecastId, fnSuccess, fnError) {
 
-      let oPromise = jQuery.Deferred();
       let sCacheId = "";
-
-      // Once the promise is resolved, or rejected, return. For this, use proxy.
-      jQuery.when(oPromise).then(jQuery.proxy(function() {
-        return sCacheId;
-      }, this));
 
       // Now set up model read
       this.getView().getModel("forecast").read("/Cache", {
@@ -235,10 +259,50 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
           } else {
             sCacheId = "";
           }
+
+          // Call callback
+          fnSuccess(sCacheId);
         },
         error: jQuery.proxy(function(mError) {
           this._maybeHandleAuthError();
+          // Call callback
+          fnError(sCacheId);
         }, this)
       });
+    };
+
+    /**
+     * [function description]
+     * @return {[type]} [description]
+     */
+    Controller.prototype._getMaxDate = function(sCacheId) {
+      let dDate = this._getEndDate(sCacheId);
+      return this._date(new Date(dDate.setDate(dDate.getDate() + 1)));
+    };
+
+    /**
+     * [function description]
+     * @return {[type]} [description]
+     */
+    Controller.prototype._getEndDate = function(sCacheId) {
+      var oModel = this.getView().getModel("forecast");
+      let dDate = oModel.getProperty("/Cache('" + sCacheId + "')/endda");
+      if (!dDate) {
+        dDate = this._getCacheHeader(sCacheId, oModel).endda;
+      }
+      return this._date(dDate);
+    };
+
+    /**
+     * [function description]
+     * @return {[type]} [description]
+     */
+    Controller.prototype._getBeginDate = function(sCacheId) {
+      var oModel = this.getView().getModel("forecast");
+      let dDate = oModel.getProperty("/Cache('" + sCacheId + "')/begda");
+      if (!dDate) {
+        dDate = this._getCacheHeader(sCacheId, oModel).begda;
+      }
+      return this._date(dDate);
     };
   });

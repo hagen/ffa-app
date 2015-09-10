@@ -154,6 +154,14 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
         transition : "flip",
         viewLevel: 6
       }, {
+        pattern: "rerun/{forecast_id}/:return_route:",
+        name: "rerun",
+        view: "forecasts.Rerun",
+        targetControl: "idContainer",
+        targetAggregation: "pages",
+        transition : "flip",
+        viewLevel: 6
+      }, {
         pattern: "settings",
         name: "settings",
         view: "settings.Menu",

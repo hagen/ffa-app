@@ -240,6 +240,10 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
           } else {
             this._oBusyDialog.setShowCancelButton(oParams.showCancelButton);
           }
+        } else {
+          this._oBusyDialog.setTitle("");
+          this._oBusyDialog.setText("");
+          this._oBusyDialog.setShowCancelButton(false);
         }
 
         // now show the dialog
