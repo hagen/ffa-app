@@ -2,190 +2,243 @@ jQuery.sap.declare("view.forecasts.Controller");
 
 // Provides controller util.Controller
 sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
-function(jQuery, UtilController) {
-  "use strict";
+  function(jQuery, UtilController) {
+    "use strict";
 
-  var Controller = UtilController.extend("view.forecasts.Controller", /** @lends view.forecasts.Controller */ {
-    _aForecasts: [],
-    _aBatchOps: []
-  });
-
-  /***
-   *    ███████╗ ██████╗ ██████╗ ███████╗ ██████╗ █████╗ ███████╗████████╗███████╗
-   *    ██╔════╝██╔═══██╗██╔══██╗██╔════╝██╔════╝██╔══██╗██╔════╝╚══██╔══╝██╔════╝
-   *    █████╗  ██║   ██║██████╔╝█████╗  ██║     ███████║███████╗   ██║   ███████╗
-   *    ██╔══╝  ██║   ██║██╔══██╗██╔══╝  ██║     ██╔══██║╚════██║   ██║   ╚════██║
-   *    ██║     ╚██████╔╝██║  ██║███████╗╚██████╗██║  ██║███████║   ██║   ███████║
-   *    ╚═╝      ╚═════╝ ╚═╝  ╚═╝╚══════╝ ╚═════╝╚═╝  ╚═╝╚══════╝   ╚═╝   ╚══════╝
-   *
-   */
-  /**
-   * Queries OData backend for forecasts matching filter criteria.
-   * @param  {Array} aFilters Array of fitlers
-   * @return {boolean}          Result
-   */
-  Controller.prototype.hasForecasts = function(aFilters) {
-
-    // Query OData for any forecasts matching the supplied filters
-    var bForecasts = false;
-    this.getView().getModel("forecast").read("/Forecasts", {
-      filters: aFilters,
-      success: function(oData, mResponse) {
-        if (oData.results.length > 0) {
-          bForecasts = true;
-        }
-      },
-      error : jQuery.proxy(function(mError) {
-        this._maybeHandleAuthError(mError);
-      }, this),
-      async: false
+    var Controller = UtilController.extend("view.forecasts.Controller", /** @lends view.forecasts.Controller */ {
+      _aForecasts: [],
+      _aBatchOps: []
     });
 
-    // return result
-    return bForecasts;
-  };
+    /***
+     *    ███████╗ ██████╗ ██████╗ ███████╗ ██████╗ █████╗ ███████╗████████╗███████╗
+     *    ██╔════╝██╔═══██╗██╔══██╗██╔════╝██╔════╝██╔══██╗██╔════╝╚══██╔══╝██╔════╝
+     *    █████╗  ██║   ██║██████╔╝█████╗  ██║     ███████║███████╗   ██║   ███████╗
+     *    ██╔══╝  ██║   ██║██╔══██╗██╔══╝  ██║     ██╔══██║╚════██║   ██║   ╚════██║
+     *    ██║     ╚██████╔╝██║  ██║███████╗╚██████╗██║  ██║███████║   ██║   ███████║
+     *    ╚═╝      ╚═════╝ ╚═╝  ╚═╝╚══════╝ ╚═════╝╚═╝  ╚═╝╚══════╝   ╚═╝   ╚══════╝
+     *
+     */
+    /**
+     * Queries OData backend for forecasts matching filter criteria.
+     * @param  {Array} aFilters Array of fitlers
+     * @return {boolean}          Result
+     */
+    Controller.prototype.hasForecasts = function(aFilters) {
 
-  /**
-   * Reads in the forecast; if cached on the client, it is reused,
-   * otherwise the cache is refreshed with a read from oData.
-   * @param  {string} 	sId				Forecast ID
-   * @param  {boolean} 	bRefresh 	Force refresh
-   * @return {object}			  			Forecast object
-   */
-  Controller.prototype.getForecast = function(sId, bRefresh) {
-    // Do the read and return
-    var oForecast = this._aForecasts[sId];
-
-    // if I already have this forecast, return it.
-    if (oForecast && !bRefresh) {
-      return oForecast;
-    }
-
-    // Otherwise read in the forecast.
-    this.getView().getModel("forecast").read("/Forecasts('" + sId + "')", {
-      success: function(oData, mResponse) {
-        oForecast = oData;
-      },
-      error : jQuery.proxy(function(mError) {
-        this._maybeHandleAuthError(mError);
-      }, this),
-      async: false
-    });
-
-    return oForecast;
-  };
-
-  /***
-   *    ███████╗ ██████╗ ██╗     ██████╗ ███████╗██████╗ ███████╗
-   *    ██╔════╝██╔═══██╗██║     ██╔══██╗██╔════╝██╔══██╗██╔════╝
-   *    █████╗  ██║   ██║██║     ██║  ██║█████╗  ██████╔╝███████╗
-   *    ██╔══╝  ██║   ██║██║     ██║  ██║██╔══╝  ██╔══██╗╚════██║
-   *    ██║     ╚██████╔╝███████╗██████╔╝███████╗██║  ██║███████║
-   *    ╚═╝      ╚═════╝ ╚══════╝╚═════╝ ╚══════╝╚═╝  ╚═╝╚══════╝
-   *
-   */
-
-  /**
-   * Get the folder details.
-   * @param  {string}  The folder id
-   * @return {object/boolean} Folder object
-   */
-  Controller.prototype.getFolder = function(sId) {
-    var oModel = this.getView().getModel("forecast");
-    var sPath = "/Folders('" + sId + "')";
-
-    // Is this folder in the model?
-    var oFolder = oModel.getProperty(sPath);
-    if (!oFolder) {
-      this.getView().getModel("forecast").read(sPath, {
+      // Query OData for any forecasts matching the supplied filters
+      var bForecasts = false;
+      this.getView().getModel("forecast").read("/Forecasts", {
+        filters: aFilters,
         success: function(oData, mResponse) {
-          if (oData.id.length > 0) {
-            oFolder = oData;
-            // and we may as well make sure the folder object is now in the model
-            oModel.setProperty(sPath, oFolder);
+          if (oData.results.length > 0) {
+            bForecasts = true;
           }
         },
-        error : jQuery.proxy(function(mError) {
+        error: jQuery.proxy(function(mError) {
           this._maybeHandleAuthError(mError);
         }, this),
         async: false
       });
-    }
 
-    // return the folder object :)
-    return oFolder;
-  };
+      // return result
+      return bForecasts;
+    };
 
-  /**
-   * Get this folder's parent
-   * @param  {string}  The folder id
-   * @return {object/boolean} Folder parent
-   */
-  Controller.prototype.getParent = function(sId) {
-    var oModel = this.getView().getModel("forecast");
-    var sPath = "/Folders('" + sId + "')/Parent";
-    var oParent = false;
+    /**
+     * Reads in the forecast; if cached on the client, it is reused,
+     * otherwise the cache is refreshed with a read from oData.
+     * @param  {string} 	sId				Forecast ID
+     * @param  {boolean} 	bRefresh 	Force refresh
+     * @return {object}			  			Forecast object
+     */
+    Controller.prototype.getForecast = function(sId, bRefresh) {
+      // Do the read and return
+      var oForecast = this._aForecasts[sId];
 
-    // This should be tidied to check if the parent is in the model
-    oModel.read(sPath, {
-      success: function(oData, mResponse) {
-        if (oData.id.length > 0) {
-          oParent = oData;
-          // and we may as well make sure the folder object is now in the model
-          oModel.setProperty("/Folders('" + oParent.id + "')", oParent);
-        }
-      },
-      error : jQuery.proxy(function(mError) {
-        this._maybeHandleAuthError(mError);
-      }, this),
-      async: false
-    });
+      // if I already have this forecast, return it.
+      if (oForecast && !bRefresh) {
+        return oForecast;
+      }
 
-    // if the folder has a parent, return true
-    return oParent;
-  };
+      // Otherwise read in the forecast.
+      this.getView().getModel("forecast").read("/Forecasts('" + sId + "')", {
+        success: function(oData, mResponse) {
+          oForecast = oData;
+        },
+        error: jQuery.proxy(function(mError) {
+          this._maybeHandleAuthError(mError);
+        }, this),
+        async: false
+      });
 
-  /**
-   * Does this folder have any parents?
-   * @param  {string}  The folder id
-   * @return {boolean} Has forecasts or not?
-   */
-  Controller.prototype.hasParent = function(sId) {
-    return (this.getParent(sId) === false ? false : true);
-  };
+      return oForecast;
+    };
 
-  /***
-   *    ██████╗  ██████╗  ██████╗██╗   ██╗███╗   ███╗███████╗███╗   ██╗████████╗███████╗
-   *    ██╔══██╗██╔═══██╗██╔════╝██║   ██║████╗ ████║██╔════╝████╗  ██║╚══██╔══╝██╔════╝
-   *    ██║  ██║██║   ██║██║     ██║   ██║██╔████╔██║█████╗  ██╔██╗ ██║   ██║   ███████╗
-   *    ██║  ██║██║   ██║██║     ██║   ██║██║╚██╔╝██║██╔══╝  ██║╚██╗██║   ██║   ╚════██║
-   *    ██████╔╝╚██████╔╝╚██████╗╚██████╔╝██║ ╚═╝ ██║███████╗██║ ╚████║   ██║   ███████║
-   *    ╚═════╝  ╚═════╝  ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝
-   *
-   */
+    /***
+     *    ███████╗ ██████╗ ██╗     ██████╗ ███████╗██████╗ ███████╗
+     *    ██╔════╝██╔═══██╗██║     ██╔══██╗██╔════╝██╔══██╗██╔════╝
+     *    █████╗  ██║   ██║██║     ██║  ██║█████╗  ██████╔╝███████╗
+     *    ██╔══╝  ██║   ██║██║     ██║  ██║██╔══╝  ██╔══██╗╚════██║
+     *    ██║     ╚██████╔╝███████╗██████╔╝███████╗██║  ██║███████║
+     *    ╚═╝      ╚═════╝ ╚══════╝╚═════╝ ╚══════╝╚═╝  ╚═╝╚══════╝
+     *
+     */
 
-  /**
-   * [function description]
-   * @param  {[type]} aFilters [description]
-   * @return {[type]}          [description]
-   */
-  Controller.prototype.hasDocuments = function(aFilters) {
-    // Query OData for any forecasts matching the supplied filters
-    var bDocs = false;
-    this.getView().getModel("forecast").read("/Documents", {
-      filters: aFilters,
-      success: function(oData, mResponse) {
-        if (oData.results.length > 0) {
-          bDocs = true;
-        }
-      },
-      error : jQuery.proxy(function(mError) {
-        this._maybeHandleAuthError(mError);
-      }, this),
-      async: false
-    });
+    /**
+     * Get the folder details.
+     * @param  {string}  The folder id
+     * @return {object/boolean} Folder object
+     */
+    Controller.prototype.getFolder = function(sId) {
+      var oModel = this.getView().getModel("forecast");
+      var sPath = "/Folders('" + sId + "')";
 
-    // return result
-    return bDocs;
-  };
-});
+      // Is this folder in the model?
+      var oFolder = oModel.getProperty(sPath);
+      if (!oFolder) {
+        this.getView().getModel("forecast").read(sPath, {
+          success: function(oData, mResponse) {
+            if (oData.id.length > 0) {
+              oFolder = oData;
+              // and we may as well make sure the folder object is now in the model
+              oModel.setProperty(sPath, oFolder);
+            }
+          },
+          error: jQuery.proxy(function(mError) {
+            this._maybeHandleAuthError(mError);
+          }, this),
+          async: false
+        });
+      }
+
+      // return the folder object :)
+      return oFolder;
+    };
+
+    /**
+     * Get this folder's parent
+     * @param  {string}  The folder id
+     * @return {object/boolean} Folder parent
+     */
+    Controller.prototype.getParent = function(sId) {
+      var oModel = this.getView().getModel("forecast");
+      var sPath = "/Folders('" + sId + "')/Parent";
+      var oParent = false;
+
+      // This should be tidied to check if the parent is in the model
+      oModel.read(sPath, {
+        success: function(oData, mResponse) {
+          if (oData.id.length > 0) {
+            oParent = oData;
+            // and we may as well make sure the folder object is now in the model
+            oModel.setProperty("/Folders('" + oParent.id + "')", oParent);
+          }
+        },
+        error: jQuery.proxy(function(mError) {
+          this._maybeHandleAuthError(mError);
+        }, this),
+        async: false
+      });
+
+      // if the folder has a parent, return true
+      return oParent;
+    };
+
+    /**
+     * Does this folder have any parents?
+     * @param  {string}  The folder id
+     * @return {boolean} Has forecasts or not?
+     */
+    Controller.prototype.hasParent = function(sId) {
+      return (this.getParent(sId) === false ? false : true);
+    };
+
+    /***
+     *    ██████╗  ██████╗  ██████╗██╗   ██╗███╗   ███╗███████╗███╗   ██╗████████╗███████╗
+     *    ██╔══██╗██╔═══██╗██╔════╝██║   ██║████╗ ████║██╔════╝████╗  ██║╚══██╔══╝██╔════╝
+     *    ██║  ██║██║   ██║██║     ██║   ██║██╔████╔██║█████╗  ██╔██╗ ██║   ██║   ███████╗
+     *    ██║  ██║██║   ██║██║     ██║   ██║██║╚██╔╝██║██╔══╝  ██║╚██╗██║   ██║   ╚════██║
+     *    ██████╔╝╚██████╔╝╚██████╗╚██████╔╝██║ ╚═╝ ██║███████╗██║ ╚████║   ██║   ███████║
+     *    ╚═════╝  ╚═════╝  ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝
+     *
+     */
+
+    /**
+     * [function description]
+     * @param  {[type]} aFilters [description]
+     * @return {[type]}          [description]
+     */
+    Controller.prototype.hasDocuments = function(aFilters) {
+      // Query OData for any forecasts matching the supplied filters
+      var bDocs = false;
+      this.getView().getModel("forecast").read("/Documents", {
+        filters: aFilters,
+        success: function(oData, mResponse) {
+          if (oData.results.length > 0) {
+            bDocs = true;
+          }
+        },
+        error: jQuery.proxy(function(mError) {
+          this._maybeHandleAuthError(mError);
+        }, this),
+        async: false
+      });
+
+      // return result
+      return bDocs;
+    };
+
+    /***
+     *     ██████╗ █████╗  ██████╗██╗  ██╗███████╗
+     *    ██╔════╝██╔══██╗██╔════╝██║  ██║██╔════╝
+     *    ██║     ███████║██║     ███████║█████╗
+     *    ██║     ██╔══██║██║     ██╔══██║██╔══╝
+     *    ╚██████╗██║  ██║╚██████╗██║  ██║███████╗
+     *     ╚═════╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝╚══════╝
+     *
+     */
+
+    /**
+     * For the suuplied Forecast Id, the latest Cache entry (just one) is read.
+     * @param  {String} sForecastId Forecast Id
+     * @return {String}             Cache Id
+     */
+    Controller.prototype.getLatestCacheId = function(sForecastId) {
+
+      let oPromise = jQuery.Deferred();
+      let sCacheId = "";
+
+      // Once the promise is resolved, or rejected, return. For this, use proxy.
+      jQuery.when(oPromise).then(jQuery.proxy(function() {
+        return sCacheId;
+      }, this));
+
+      // Now set up model read
+      this.getView().getModel("forecast").read("/Cache", {
+        async: true,
+        urlParameters: {
+          $top: 1
+        },
+        filters: [new sap.ui.model.Filter({
+          path: 'forecast_id',
+          operator: sap.ui.model.FilterOperator.EQ,
+          value1: sForecastId
+        })],
+        sorter: [new sap.ui.model.Sorter({
+          path: 'created_at',
+          descending: true
+        })],
+        success: function(oData, mResponse) {
+          if (oData.results.length > 0) {
+            sCacheId = oData.results[0].id;
+          } else {
+            sCacheId = "";
+          }
+        },
+        error: jQuery.proxy(function(mError) {
+          this._maybeHandleAuthError();
+        }, this)
+      });
+    };
+  });

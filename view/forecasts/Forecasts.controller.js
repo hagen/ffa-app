@@ -6,12 +6,12 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
     "use strict";
 
     var Forecasts = Controller.extend("view.forecasts.Forecasts", /** @lends view.forecasts.Forecasts.prototype */ {
-      _sForecastId : "",
-      _sFolderId : "",
-      _sRunId : "",
-      _sReturnRoute : "",
-      _sTab : "",
-      _navByButton : false
+      _sForecastId: "",
+      _sFolderId: "",
+      _sRunId: "",
+      _sReturnRoute: "",
+      _sTab: "",
+      _navByButton: false
     });
 
     /**
@@ -54,7 +54,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
         // If we found an item, then we can use it
         if (oItem) {
           this._sRunId = oItem.getBindingContext("forecast").getProperty("id");
-          if(this._oRunsLoadedPromise){
+          if (this._oRunsLoadedPromise) {
             this._oRunsLoadedPromise.resolve();
           }
         }
@@ -122,7 +122,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      * @param  {object} oEvent Route matched event
      */
     Forecasts.prototype._onRouteMatched = function(oEvent) {
-  		this._checkMetaDataLoaded("forecast");
+      this._checkMetaDataLoaded("forecast");
 
       // We are heavily Dependent on the Run Id, so we'll declare this promise
       // each time the route is matched, but only if it doesn't already exist. It is
@@ -287,6 +287,52 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      */
     Forecasts.prototype.setupOverviewPage = function() {
 
+    };
+
+    /***
+     *    ██████╗ ███████╗    ██████╗ ██╗   ██╗███╗   ██╗
+     *    ██╔══██╗██╔════╝    ██╔══██╗██║   ██║████╗  ██║
+     *    ██████╔╝█████╗      ██████╔╝██║   ██║██╔██╗ ██║
+     *    ██╔══██╗██╔══╝      ██╔══██╗██║   ██║██║╚██╗██║
+     *    ██║  ██║███████╗    ██║  ██║╚██████╔╝██║ ╚████║
+     *    ╚═╝  ╚═╝╚══════╝    ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝
+     *
+     */
+
+    /**
+     * Re-runs an already executed forecast. This is just a trigger to display
+     * the re-run pop-up however, which is a simple dialog with some validation
+     * components
+     * @param  {Event} oEvent Button press event
+     */
+    Forecasts.prototype.onReRunPress = function(oEvent) {
+
+      // Busy.
+      this.showBusyDialog();
+
+      // Open the re-run dialog.
+      if (!this._oReRunDialog) {
+        this._oReRunDialog = sap.ui.xmlfragment("idReRunFragment", "view.forecast.ReRun", this);
+        this.getView().addDependent(this._oReRunDialog);
+      }
+
+      // Bind the dialog to the most recent cache entry for this Forecast
+      let oDialog = this.getView().byId(sap.ui.core.Fragment.createId("idReRunFragment", "idReRunDialog"));
+
+      // get latest Cache entry for this forecast
+      oDialog.bindElement("/Cache('" + this.getLatestCacheId(this._sForecastId) + "')", {
+        expand : "Forecast,Data"
+      });
+
+      // When the dialog has bound to the path, we can hide the busy dialog
+      oDialog.getElementBinding().attachEventOnce("dataReceived", jQuery.proxy(function() {
+
+        // we're no longer busy
+        this.hideBusyDialog();
+
+        // and open the dialog
+        this._oReRunDialog.open();
+      }, this));
     };
 
     /***
@@ -601,9 +647,9 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      * buttons.
      * @param  {Event} oEvent The button press event
      */
-    Forecasts.prototype.onOverflowPress = function (oEvent) {
+    Forecasts.prototype.onOverflowPress = function(oEvent) {
       // We're going to show the overflow fragment
-      if(!this._oActionSheet) {
+      if (!this._oActionSheet) {
         this._oActionSheet = sap.ui.xmlfragment("idActionSheetFragment", "view.forecasts.ActionSheet", this);
         this.getView().addDependent(this._oActionSheet);
       }
@@ -617,7 +663,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      * and offers simple settings like colour, and titles.
      * @param  {event} oEvent The button press event
      */
-    Forecasts.prototype.onOptionsPress = function (oEvent) {
+    Forecasts.prototype.onOptionsPress = function(oEvent) {
 
     };
 
@@ -625,11 +671,11 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      * Navigates to the workspace for this forecast.
      * @param  {Event} oEvent The button press event
      */
-    Forecasts.prototype.onAdjustPress = function (oEvent) {
+    Forecasts.prototype.onAdjustPress = function(oEvent) {
       this.getRouter().navTo("adjust", {
-        forecast_id : this._sForecastId,
-        run_id : this._sRunId,
-        return_route : this._sRoute
+        forecast_id: this._sForecastId,
+        run_id: this._sRunId,
+        return_route: this._sRoute
       }, !sap.ui.Device.system.phone);
     };
 
