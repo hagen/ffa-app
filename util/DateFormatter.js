@@ -52,5 +52,43 @@ util.DateFormatter = {
 		var a = moment(dDate);
 		a.add(1, "days");
 		return a.format("DD/MM/YYYY");
-	}
+	},
+
+	/**
+	 * Nice date formatter. Provide the date, and the format, and away you go.
+	 * @param oDate date object
+	 * @param ?sPattern Optional pattern - defaul is dd/MM/yyyy
+	 */
+	formatDate : function(oDate) {
+		return util.DateFormatter.formatDatePattern(oDate, "dd/MM/yyyy");
+	},
+
+	/**
+	 * Nice date formatter. Provide the date, and the format, and away you go.
+	 * @param sDate string date
+	 * @param ?sPattern Optional pattern - defaul is dd/MM/yyyy
+	 */
+	formatDatePattern : function(sDate, sPattern) {
+		// Don't bother if there's nothing there
+		if(sDate === "" || sDate === null)
+			return "";
+
+		// If pattern wasn't supplied, use default
+		if(!sPattern) {
+			sPattern = "dd/MM/yyyy";
+		}
+
+		// Need SAP formatter
+		jQuery.sap.require("sap.ui.core.format.DateFormat");
+
+		// Gateway Date and Time Values
+		var dDate = new Date(sDate);
+
+		// Create the Date Formatter
+		var dateFormat = sap.ui.core.format.DateFormat.getDateInstance({
+			pattern : sPattern
+		});
+
+		return dateFormat.format(new Date(dDate.getTime()));
+	},
 };

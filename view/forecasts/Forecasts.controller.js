@@ -266,7 +266,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      *
      */
 
-    Forecasts.prototype._rebind = function () {
+    Forecasts.prototype._rebind = function() {
       // If there's a chart, destory it.
       if (this._oChart) {
         this._oChart.destroy();
@@ -330,8 +330,8 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
 
       // Nav to the re-run view
       this.getRouter().navTo("rerun", {
-        forecast_id : this._sForecastId,
-        return_route : this._sRoute
+        forecast_id: this._sForecastId,
+        return_route: this._sRoute
       }, !sap.ui.Device.system.phone);
     };
 
@@ -372,7 +372,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
         // Right, now we can begin. The first thing we need, is our data.
         oModel.read("/ForecastDataExtra", {
           urlParameters: {
-            $select: "date,forecast,actual"
+            $select: "date,forecast,actual,adjustment"
           },
           filters: [new sap.ui.model.Filter({
             path: "run_id",
@@ -411,71 +411,8 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
       // When oPromise resolves, draw the chart.
       jQuery.when(oPromise).then(jQuery.proxy(function() {
 
-        let aActual = {
-          id: "idActualSeries",
-          color: "#2589BD",
-          data: [],
-          name: "Actual figures",
-          zIndex: 50
-        };
-
-        let aForecast = {
-          id: "idForecastSeries",
-          color: "#03CEA4",
-          data: [],
-          name: "Forecast figures",
-          zIndex: 100
-        };
-
-        // prepare two series...
-        aResults.forEach(function(obj, index) {
-
-          // Push on the x and y
-          let date = "";
-          let forecast = 0;
-          let actual = 0;
-
-          // If x is of type Date, then parse to milliseconds
-          // parse a useful value
-          if (obj.date instanceof Date) {
-            date = Date.parse(obj.date);
-          }
-
-          // Similarly, string number values are of no use; parse a number
-          if (typeof obj.forecast === "string") {
-            // If we have a decimal point, parse a float,
-            if (obj.forecast.indexOf(".") > -1) {
-              forecast = parseFloat(obj.forecast);
-            } else {
-              // otherwise, an Integer is fine
-              forecast = parseInt(obj.forecast);
-            }
-          } else {
-            forecast = obj.forecast;
-          }
-          // Add to data array
-          aForecast.data.push([date, forecast]);
-
-          // Similarly, string number values are of no use; parse a number
-          if (typeof obj.actual === "string") {
-            // If we have a decimal point, parse a float,
-            if (obj.actual.indexOf(".") > -1) {
-              actual = parseFloat(obj.actual);
-            } else {
-              // otherwise, an Integer is fine
-              actual = parseInt(obj.actual);
-            }
-          } else {
-            actual = obj.actual;
-          }
-          // Add to data array
-          if (actual !== 0) {
-            aActual.data.push([date, actual]);
-          }
-        }, this);
-
         // and render the chart
-        this._liquidsChart = new Highcharts.Chart({
+        this._oChart = new Highcharts.Chart({
           chart: {
             id: "idForecastViz",
             backgroundColor: "none",
@@ -507,7 +444,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
             pointInterval: 86400000,
             zIndex: 100
           },
-          series: [aActual, aForecast],
+          series: this._prepareSeries(aResults),
           title: {
             text: "Chart title",
           },
@@ -552,6 +489,109 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
           jQuery.sap.clearIntervalCall(sCallId);
         }
       }, []);
+    };
+
+    /**
+     * Prepares the two series that will be displayed on the chart. This data
+     * is built from the oData request results, which are passed directly into
+     * this function
+     * @param  {Array} aResults The oData results array
+     * @return {Array}          Prepared series objects, in an array
+     */
+    Forecasts.prototype._prepareSeries = function(aResults) {
+
+      let self = this;
+      let aActual = {
+        id: "idActualSeries",
+        color: "#A23B72",
+        data: [],
+        name: "Actual figures",
+        zIndex: 50
+      };
+
+      let aForecast = {
+        id: "idForecastSeries",
+        color: "#03CEA4",
+        data: [],
+        name: "Forecast figures",
+        zIndex: 100
+      };
+
+      let aAdjustment = {
+        id: "idAdjustmentSeries",
+        color: "#2589BD",
+        data: [],
+        name: "Adjustments",
+        zIndex: 10
+      };
+
+      // prepare two series...
+      aResults.forEach(function(obj, index) {
+
+        // Push on the x and y
+        let date = "";
+        let actual = 0;
+        let forecast = 0;
+        let adjustment = 0;
+
+        // If x is of type Date, then parse to milliseconds
+        // parse a useful value
+        if (obj.date instanceof Date) {
+          date = Date.parse(obj.date);
+        }
+
+        // Similarly, string number values are of no use; parse a number
+        if (typeof obj.actual === "string") {
+          // If we have a decimal point, parse a float,
+          if (obj.actual.indexOf(".") > -1) {
+            actual = parseFloat(obj.actual);
+          } else {
+            // otherwise, an Integer is fine
+            actual = parseInt(obj.actual);
+          }
+        } else {
+          actual = obj.actual;
+        }
+        // Add to data array
+        if (actual !== 0) {
+          aActual.data.push([date, actual]);
+        }
+
+        // Similarly, string number values are of no use; parse a number
+        if (typeof obj.forecast === "string") {
+          // If we have a decimal point, parse a float,
+          if (obj.forecast.indexOf(".") > -1) {
+            forecast = parseFloat(obj.forecast);
+          } else {
+            // otherwise, an Integer is fine
+            forecast = parseInt(obj.forecast);
+          }
+        } else {
+          forecast = obj.forecast;
+        }
+        // Add to data array
+        aForecast.data.push([date, forecast]);
+
+        // Similarly, string number values are of no use; parse a number
+        if (typeof obj.adjustment === "string") {
+          // If we have a decimal point, parse a float,
+          if (obj.adjustment.indexOf(".") > -1) {
+            adjustment = parseFloat(obj.adjustment);
+          } else {
+            // otherwise, an Integer is fine
+            adjustment = parseInt(obj.adjustment);
+          }
+        } else {
+          adjustment = obj.adjustment;
+        }
+        // Add to data array
+        if (adjustment !== 0) {
+          aAdjustment.data.push([date, adjustment]);
+        }
+      }, this);
+
+      // return our two series!
+      return [aActual, aForecast, aAdjustment];
     };
 
     /***

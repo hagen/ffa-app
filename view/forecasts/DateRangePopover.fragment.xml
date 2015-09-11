@@ -1,0 +1,65 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:form="sap.ui.layout.form">
+	<ResponsivePopover
+		title="Select date range"
+		class="sapUiPopupWithPadding"
+		modal="true"
+		showHeader="false"
+		placement="Left"
+	    contentWidth="400px"
+	    contentHeight="220px">
+		<beginButton>
+			<Button
+				id="idDateRangeOkButton"
+				text="OK"
+				press="onDateRangeOkPress"
+				class="ffaEmphasizedBtn" />
+		</beginButton>
+		<endButton>
+			<Button
+				text="Cancel"
+				press="onDateRangeCancelPress" />
+		</endButton>
+		<content>
+			<form:SimpleForm
+				id="idDateRangeForm"
+				width="360px"
+				maxContainerCols="2"
+				editable="true"
+				layout="ResponsiveGridLayout"
+				labelSpanL="3"
+				labelSpanM="3"
+				emptySpanL="4"
+				emptySpanM="4"
+				columnsL="1"
+				columnsM="1"
+				class="editableForm">
+				<form:content>
+					<Text
+						wrapping="true"
+						text="Please select a date range - note, the range should be between {
+							path : 'range>/lower',
+							type: 'sap.ui.model.type.DateTime',
+			         		formatOptions: {
+			         			pattern : 'MMM dd, yyyy'
+			         		}
+						} and {
+							path : 'range>/upper',
+							type: 'sap.ui.model.type.DateTime',
+			         		formatOptions: {
+			         			pattern : 'MMM dd, yyyy'
+			         		}
+						} inclusive, as this is the range of your forecast" />
+					<DateRangeSelection
+						id="idDateRange"
+						displayFormat="dd/MM/yyyy"
+						dateValue="{range>/from}"
+						secondDateValue="{range>/to}"
+						change="onDateRangeChange"/>
+				</form:content>
+			</form:SimpleForm>
+		</content>
+	</ResponsivePopover>
+</core:FragmentDefinition>

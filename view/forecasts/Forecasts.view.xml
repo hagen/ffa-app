@@ -82,7 +82,13 @@
 									<core:CustomData key="running" value="{= ${Running/RUNNING} === 'X' ? 'true' : 'false' }" writeToDom="true" />
 								</customData>-->
                 <attributes>
-                  <ObjectAttribute active="false" text="{ path: 'forecast>train_to', formatter : '.nextDay' }" title="Effective as of"/>
+                  <ObjectAttribute
+                    active="false"
+                    text="{
+                      path: 'forecast>train_to',
+                      formatter : '.nextDay'
+                    }"
+                    title="Effective as of" />
                   <ObjectAttribute
                     active="false"
                     text="{

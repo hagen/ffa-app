@@ -12,10 +12,54 @@
       <Page
         enableScrolling="false"
         id="idAdjustPage"
-        navButtonPress="onNavBackPress"
-        showNavButton="true"
         title="{forecast>Forecast/name}"
         class="sapUiContentPadding">
+        <customHeader>
+					<Toolbar
+						id="idWorkspaceChartToolbar"
+						class="ffaWhiteToolbarWithPadding">
+            <Button
+							id="idDoneButton"
+              text="Done"
+							type="Default"
+							press="onDonePress" />
+						<BusyIndicator
+							id="idWorkspaceBusyIndicator"
+							size="1.4em"
+							visible="false "/>
+						<ToolbarSpacer />
+						<Link
+							id="idClearRangeLink"
+							text="{= ${range>/selected} === 1 ? 'Clear ' + ${range>/selected} + ' point' : 'Clear ' + ${range>/selected} + ' points' }"
+							visible="{= ${range>/selected} > 0 }"
+							press="onClearRangePress"/>
+						<Button
+							id="idDateRangeButton"
+							text="Select date range"
+							type="Default"
+							press="onDateRangePress" />
+						<Button
+							id="idGainButton"
+							icon="sap-icon://FontAwesome/sliders"
+							title="Edit forecast"
+							type="Transparent"
+							press="onGainPress" />
+					</Toolbar>
+        </customHeader>
+        <footer>
+          <Toolbar>
+            <Button
+              id="idCancelButton"
+              text="Cancel"
+              press="onCancelPress" />
+						<ToolbarSpacer />
+            <Button
+              icon="sap-icon://download"
+              enabled="{device>/isDesktop}"
+              type="Transparent"
+              press="onExportPress" />
+          </Toolbar>
+        </footer>
         <content>
           <html:div
 						id="idVizContainer"
