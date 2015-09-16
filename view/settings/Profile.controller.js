@@ -44,7 +44,7 @@ sap.ui.define(["jquery.sap.global", "view/settings/Controller"],
       this.getEventBus().publish("Profile", "RouteMatched", {} /* payload */ );
 
       // Bind this page to the Profile Id...
-      let oPage = this.getView().byId("idProfilePage");
+      var oPage = this.getView().byId("idProfilePage");
       oPage.bindElement("profile>/Profiles('TESTUSER')");
     };
 

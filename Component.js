@@ -71,6 +71,14 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
             targetAggregation: "pages",
             transition : "flip",
             viewLevel: 5
+          }, {
+            pattern: "datasets/new/csv",
+            name: "csv",
+            view: "data.CSV",
+            targetControl: "idContainer",
+            targetAggregation: "pages",
+            transition : "flip",
+            viewLevel: 5
           }]
         }]
       }, {

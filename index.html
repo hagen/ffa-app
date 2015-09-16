@@ -13,11 +13,11 @@
 	<link rel="apple-touch-icon" sizes="152x152" href="images/touch-icon-ipad-retina.png">
 	<link rel="apple-touch-icon" sizes="180x180" href="images/touch-icon-ipad-plus.png">
 
-	<title>App Portfolio Login</title>
+	<title>Forefront App</title>
 
 	<script type="text/javascript">
 		var _token = "";
-		if(window.location.hash.indexOf("/token/") > -1) {
+		if (window.location.hash.indexOf("/token/") > -1) {
 			_token = window.location.hash.substring(window.location.hash.indexOf("/token/")+7, window.location.hash.length);
 			if (window.localStorage) {
 				window.localStorage.setItem("_token", _token);

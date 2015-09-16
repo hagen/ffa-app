@@ -114,7 +114,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      * @return {Boolean} [description]
      */
     Folders.prototype._hasTopLevel = function () {
-      let aFilters = [new sap.ui.model.Filter({
+      var aFilters = [new sap.ui.model.Filter({
         path: "endda",
         operator: sap.ui.model.FilterOperator.EQ,
         value1: "9999-12-31"
@@ -385,8 +385,8 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
       this.getView().getModel("forecast").create("/Folders", oData, {
         success: jQuery.proxy(function(oData, mResponse) {
           // Rebind the tile container.
-          let oTileContainer = this.getView().byId("idFoldersTileContainer");
-          let oBinding = oTileContainer.getBinding("tiles");
+          var oTileContainer = this.getView().byId("idFoldersTileContainer");
+          var oBinding = oTileContainer.getBinding("tiles");
           if(oBinding) {
             oBinding.refresh();
           } else {

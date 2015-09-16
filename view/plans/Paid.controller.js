@@ -45,10 +45,10 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
      * Route matched handler...
      */
     Paid.prototype._onRouteMatched = function(oEvent) {
-      let oParams = oEvent.getParameters();
+      var oParams = oEvent.getParameters();
 
       // bind the nav container to a particular checkout item
-      let sPath = "";
+      var sPath = "";
       if (oParams.name.indexOf("plan-lite") > -1) {
         this._sPlanId = 'lite';
         sPath = "profile>/PlanTypes('lite')";
@@ -61,7 +61,7 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
       this.getView().byId("idPaidPlanSplitContainer").bindElement(sPath);
 
       // Try and bind to some of the basic form fields.
-      let oView = this.getView();
+      var oView = this.getView();
       oView.byId("idBillingDetailsForm").bindElement("profile>/Profiles('TESTUSER')", {
         mode: "OneWay"
       });
@@ -95,7 +95,7 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
 
       // If this is a change to an existing account, then nav back to the plans
       // change screen, not the plans new screen
-      let sRoute = (this._isChange ? "change-plan" : "plans");
+      var sRoute = (this._isChange ? "change-plan" : "plans");
       this.getRouter().navTo(sRoute, {}, !sap.ui.Device.system.phone);
       this.onClearPress(null);
     };
@@ -124,7 +124,7 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
      * @return {[type]} [description]
      */
     Paid.prototype._getFormControls = function() {
-      let oView = this.getView();
+      var oView = this.getView();
       return [
         oView.byId("idFirstNameInput"),
         oView.byId("idLastNameInput"),
@@ -145,7 +145,7 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
      * @return {[type]}        [description]
      */
     Paid.prototype.onClearPress = function(oEvent) {
-      let aControls = this._getFormControls();
+      var aControls = this._getFormControls();
       jQuery.each(aControls, function(index, control) {
         control.setValue("");
       });
@@ -159,13 +159,13 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
      */
     Paid.prototype.onNextPress = function(oEvent) {
 
-      let aControls = this._getFormControls();
+      var aControls = this._getFormControls();
 
       // only change continue on exceptions
-      let bContinue = true;
+      var bContinue = true;
 
       jQuery.each(aControls, jQuery.proxy(function(index, control) {
-        let bIsCombo = (typeof control.getSelectedKey === 'function');
+        var bIsCombo = (typeof control.getSelectedKey === 'function');
 
         if ('true' === control.data("required") && (sap.ui.core.ValueState.Error === control.getValueState() || control.getValue() === "")) {
           // Set the control to error state
@@ -185,7 +185,7 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
       }
 
       // Nav to next page.
-      let oSplit = this.getView().byId("idPaidPlanSplitContainer");
+      var oSplit = this.getView().byId("idPaidPlanSplitContainer");
 
       // attach to the after detail navigate event of the split container and
       // Load up the payment form, if necessary
@@ -236,7 +236,7 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
           container: this.getView().createId("idBrainTreeDropInDiv"),
           paymentMethodNonceReceived: jQuery.proxy(function(event, nonce) {
 
-            // Don't let the form submit
+            // Don't var the form submit
             event.preventDefault();
 
             // submit the payment to Node
@@ -250,10 +250,10 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
 
           }, this),
           onReady: jQuery.proxy(function() {
-            let j = 1;
+            var j = 1;
           }, this),
           onError: jQuery.proxy(function(oEvent) {
-            let i = 1;
+            var i = 1;
           }, this)
         });
         this.hideBusyDialog();
@@ -292,7 +292,7 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
         showCancelButton: false
       });
 
-      let eForm = this.getView().byId("idBraintreeDropInForm").$()[0];
+      var eForm = this.getView().byId("idBraintreeDropInForm").$()[0];
 
       // set correct action
       eForm.action = "/payments/pro"
@@ -317,13 +317,13 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
     Paid.prototype._submitPayment = function(sNonce, sCustomerId, sUrl) {
 
       // Build payload
-      let oPayload = {
+      var oPayload = {
         payment_method_nonce: sNonce,
         customerId: sCustomerId
       };
 
       // Now append form controls
-      let aControls = this._getFormControls();
+      var aControls = this._getFormControls();
       jQuery.each(aControls, function(index, control) {
         oPayload[control.getName()] = (typeof control.getSelectedKey === 'function' ? control.getSelectedKey() : control.getValue());
       });
@@ -396,8 +396,8 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
      * @return {[type]}        [description]
      */
     Paid.prototype.onChangeValidateCountry = function(oEvent) {
-      let oItem = oEvent.getParameter("selectedItem");
-      let oCombo = oEvent.getSource();
+      var oItem = oEvent.getParameter("selectedItem");
+      var oCombo = oEvent.getSource();
       if (oCombo.getValueState() === sap.ui.core.ValueState.Error || oItem === null) {
         oCombo.setValueState(sap.ui.core.ValueState.None);
       }
@@ -409,8 +409,8 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
      * @return {[type]}        [description]
      */
     Paid.prototype.onChangeValidatePopulated = function(oEvent) {
-      let oControl = oEvent.getSource();
-      let sValue = oEvent.getParameter("value");
+      var oControl = oEvent.getSource();
+      var sValue = oEvent.getParameter("value");
 
       if (sValue !== "") {
         oControl.setValueState(sap.ui.core.ValueState.None);
@@ -425,8 +425,8 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
      * @return {[type]}        [description]
      */
     Paid.prototype.onChangeValidateEmail = function(oEvent) {
-      let oControl = oEvent.getSource();
-      let sValue = oEvent.getParameter("value");
+      var oControl = oEvent.getSource();
+      var sValue = oEvent.getParameter("value");
       if (sValue) {
         if (this._validateEmail(sValue)) {
           oControl.setValueState(sap.ui.core.ValueState.None);

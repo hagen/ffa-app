@@ -43,7 +43,7 @@ sap.ui.define(["jquery.sap.global", "view/settings/Controller"],
       this.getEventBus().publish("Account", "RouteMatched", {} /* payload */ );
 
       // Bind this page to the Social Id...
-      let oPage = this.getView().byId("idAccountPage");
+      var oPage = this.getView().byId("idAccountPage");
       oPage.bindElement("profile>/Profiles('TESTUSER')", {
         expand : 'CacheTotal,ForecastCount',
         select : 'CacheTotal/mb,ForecastCount/count'
@@ -70,10 +70,10 @@ sap.ui.define(["jquery.sap.global", "view/settings/Controller"],
      */
     Account.prototype.onChangePlanPress = function (oEvent) {
       // If Enterprise, no changes are allowed
-      let oModel = this.getView().getModel("profile");
+      var oModel = this.getView().getModel("profile");
 
       // Show prompt to get user action
-      let sMessage = "Please note, if your current plan is non-free, your new subscription price (if any) will take effect immediately. All prices are pro-rated to the day. Continue and change your plan?";
+      var sMessage = "Please note, if your current plan is non-free, your new subscription price (if any) will take effect immediately. All prices are pro-rated to the day. Continue and change your plan?";
       jQuery.sap.require("sap.m.MessageBox");
       sap.m.MessageBox.show(sMessage, {
         icon: sap.m.MessageBox.Icon.INFORMATION,
@@ -102,7 +102,7 @@ sap.ui.define(["jquery.sap.global", "view/settings/Controller"],
       }
 
       // Try to determine the Current profile plan type
-      let sPlan = oModel.getProperty("/CurrentProfilePlan('TESTUSER')/plan_type_id");
+      var sPlan = oModel.getProperty("/CurrentProfilePlan('TESTUSER')/plan_type_id");
       if (sPlan === undefined) {
         oModel.read("/CurrentProfilePlan('TESTUSER')", {
           async : false,

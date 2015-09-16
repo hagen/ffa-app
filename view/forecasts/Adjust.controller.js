@@ -53,20 +53,20 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
       this._sReturnRoute = oParameters.arguments.return_route;
 
       // Bind the page to the supplied Forecast run
-      let oPage = this.getView().byId("idAdjustPage");
+      var oPage = this.getView().byId("idAdjustPage");
       oPage.bindElement("forecast>/Runs('" + this._sRunId + "')", {
         expand: "Forecast"
       });
 
       // attach to page element binding events
-      let oBinding = oPage.getElementBinding("forecast");
+      var oBinding = oPage.getElementBinding("forecast");
       oBinding.attachEventOnce("dataReceived", jQuery.proxy(function() {
 
         // Get the nav container
-        let oNavContainer = this.getView().byId("idNavContainer");
+        var oNavContainer = this.getView().byId("idNavContainer");
 
         // Check that this run belongs to this forecast
-        let oContext = oPage.getBindingContext('forecast');
+        var oContext = oPage.getBindingContext('forecast');
         if (oContext.getProperty("forecast_id") !== this._sForecastId) {
           oNavContainer.to(this.getView().byId("idMessagePage"));
         } else if (!oNavContainer.currentPageIsTopPage()) {
@@ -74,7 +74,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
         }
 
         // And build a JSON model to represent some important metrics for the viz
-        let mRange = new sap.ui.model.json.JSONModel();
+        var mRange = new sap.ui.model.json.JSONModel();
         mRange.setDefaultBindingMode("TwoWay");
         mRange.setData({
           lower: this._calcSelectionLower(),
@@ -113,12 +113,9 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      */
     Adjust.prototype.onDonePress = function(oEvent) {
 
-      // If needs be, we're going to submit our changes (if any) to the back end.
-
-
       // If the route requires a folder Id, we'll get this and add it to the
       // params.
-      let oParams = {
+      var oParams = {
         forecast_id: this._sForecastId
       };
 
@@ -182,7 +179,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
       }
 
       // delay because addDependent will do a async rerendering and the popover will immediately close without it
-      let oButton = oEvent.getSource();
+      var oButton = oEvent.getSource();
       jQuery.sap.delayedCall(0, this, function() {
         this._oDateRangePopover.openBy(oButton);
       });
@@ -194,7 +191,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      */
     Adjust.prototype.onGainPress = function(oEvent) {
 
-      let fragment = function(sId) {
+      var fragment = function(sId) {
         return sap.ui.core.Fragment.byId("idSeriesGainFragment", sId);
       };
 
@@ -256,11 +253,11 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      * @param oEvent the button event
      */
     Adjust.prototype.onDateRangeOkPress = function(oEvent) {
-      let oRangePicker = sap.ui.core.Fragment.byId("idDateRangeFragment", "idDateRange");
-      let mRange = this.getView().getModel("range");
-      let dFrom = new Date(mRange.getProperty("/from"));
-      let dTo = new Date(mRange.getProperty("/to"));
-      let count = 0;
+      var oRangePicker = sap.ui.core.Fragment.byId("idDateRangeFragment", "idDateRange");
+      var mRange = this.getView().getModel("range");
+      var dFrom = new Date(mRange.getProperty("/from"));
+      var dTo = new Date(mRange.getProperty("/to"));
+      var count = 0;
 
       // perform validation on the dates (possibly again)
       if (!this._validDateRange(dFrom, dTo, oRangePicker)) {
@@ -274,8 +271,8 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
       this._deselectAllPoints();
 
       // continue on - select points on the adjustable total plot line
-      let oSeries = this._getAdjustableSeries();
-      let that = this;
+      var oSeries = this._getAdjustableSeries();
+      var that = this;
 
       // Select points that are within the range
       jQuery.each(oSeries.data, function(ix, oPoint) {
@@ -336,11 +333,11 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
         bValid = true,
         sText = "";
 
-      let oModel = this.getView().getModel("range");
-      let dLower = oModel.getProperty("/lower");
-      let sLower = util.DateFormatter.formatDate(dLower);
-      let dUpper = oModel.getProperty("/upper");
-      let sUpper = util.DateFormatter.formatDate(dUpper);
+      var oModel = this.getView().getModel("range");
+      var dLower = oModel.getProperty("/lower");
+      var sLower = util.DateFormatter.formatDate(dLower);
+      var dUpper = oModel.getProperty("/upper");
+      var sUpper = util.DateFormatter.formatDate(dUpper);
 
       // Check that this date is between our upper and lower limits.
       if (!(this._date(dFrom) >= this._date(dLower) && this._date(dTo) <= this._date(dUpper))) {
@@ -409,10 +406,10 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      * Deselects all points on the adjustments chart, if any.
      */
     Adjust.prototype._deselectAllPoints = function() {
-      let mRange = this.getView().getModel("range");
+      var mRange = this.getView().getModel("range");
 
       // deselect all points
-      let aPoints = this._oChart.getSelectedPoints() || [];
+      var aPoints = this._oChart.getSelectedPoints() || [];
       jQuery.each(aPoints, function(ix, point) {
         point.select(false /* select? */ , true /* accumulate/ not relevent for deselect */ );
       });
@@ -422,20 +419,20 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
     };
 
     Adjust.prototype._calcSelectionLower = function() {
-      let oModel = this.getView().getModel("forecast");
-      let dTo = oModel.getProperty("/Runs('" + this._sRunId + "')/Forecast/train_to");
+      var oModel = this.getView().getModel("forecast");
+      var dTo = oModel.getProperty("/Runs('" + this._sRunId + "')/Forecast/train_to");
       return new Date(dTo.setDate(dTo.getDate() + 1));
     };
 
     Adjust.prototype._calcSelectionMid = function() {
-      let oModel = this.getView().getModel("forecast");
+      var oModel = this.getView().getModel("forecast");
       return oModel.getProperty("/Runs('" + this._sRunId + "')/Forecast/train_to");
     };
 
     Adjust.prototype._calcSelectionUpper = function() {
-      let oModel = this.getView().getModel("forecast");
-      let dTo = oModel.getProperty("/Runs('" + this._sRunId + "')/Forecast/train_to");
-      let iHorizon = oModel.getProperty("/Runs('" + this._sRunId + "')/Forecast/horizon");
+      var oModel = this.getView().getModel("forecast");
+      var dTo = oModel.getProperty("/Runs('" + this._sRunId + "')/Forecast/train_to");
+      var iHorizon = oModel.getProperty("/Runs('" + this._sRunId + "')/Forecast/horizon");
       return new Date(dTo.setDate(dTo.getDate() + (iHorizon - 1)));
     };
 
@@ -455,11 +452,11 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      * @return {array} Points array
      */
     Adjust.prototype._getSelectedPoints = function() {
-      let j = 0;
+      var j = 0;
 
       // we collect the user-selected points, as these will only be on the main plot line
       // for TOTAL
-      let aPoints = this._oChart.getSelectedPoints() || [];
+      var aPoints = this._oChart.getSelectedPoints() || [];
       if (aPoints.length === 0) {
         return aPoints;
       }
@@ -481,7 +478,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      * @param {Event} oEvent Slide event
      */
     Adjust.prototype.onSliderLiveChange = function(oEvent) {
-      let oInput = sap.ui.core.Fragment.byId("idSeriesGainFragment", "idSliderInput");
+      var oInput = sap.ui.core.Fragment.byId("idSeriesGainFragment", "idSliderInput");
       oInput.setValue(oEvent.getParameter("value").toFixed(3));
     };
 
@@ -494,7 +491,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
     Adjust.prototype.onSliderChange = function(oEvent) {
       // Get the change value (%); it is safe to simply take this from
       // the event, as the value fromthe slider is always a float
-      let fPercent = parseFloat(oEvent.getParameter("value")) / 100;
+      var fPercent = parseFloat(oEvent.getParameter("value")) / 100;
 
       // Now make the change to our chart...
       this._update(fPercent, this._aPoints, this._oChart);
@@ -506,9 +503,9 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      * @param oEvent
      */
     Adjust.prototype.onSliderInputChange = function(oEvent) {
-      let oInput = oEvent.getSource();
-      let sState = oInput.getValueState();
-      let fPercent = parseFloat(oEvent.getParameter("value"));
+      var oInput = oEvent.getSource();
+      var sState = oInput.getValueState();
+      var fPercent = parseFloat(oEvent.getParameter("value"));
 
       // Note, the sValue should be a float value; that's all the user is allowed to enter.
       // if it's note, then invalidate the control
@@ -523,7 +520,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
       }
 
       // Now we set the value of the slider
-      let oSlider = sap.ui.core.Fragment.byId("idSeriesGainFragment", "idSlider");
+      var oSlider = sap.ui.core.Fragment.byId("idSeriesGainFragment", "idSlider");
       oSlider.setValue(fPercent);
 
       // And now do the update
@@ -577,10 +574,10 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
     Adjust.prototype.onSliderDone = function(oEvent) {
 
       // base path
-      let oModel = this.getView().getModel("forecast");
-      let that = this;
-      let sBasePath = "/ForecastData(run_id='" + this._sRunId + "',date=datetime'&1')";
-      let dFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
+      var oModel = this.getView().getModel("forecast");
+      var that = this;
+      var sBasePath = "/ForecastData(run_id='" + this._sRunId + "',date=datetime'&1')";
+      var dFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
         pattern: "yyyy-MM-ddTHH:mm:ss",
         //UTC : true
       });
@@ -589,7 +586,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
       this._aPoints.forEach(function(point, index) {
         // The x (date value) from the point is an integer representing milliseconds
         // since Epoch. We need a nice date variable for oData.
-        let sPath = sBasePath.replace("&1", dFormat.format(new Date(point.x)));
+        var sPath = sBasePath.replace("&1", dFormat.format(new Date(point.x)));
         // create and add the batch operation
         this._aBatchOps.push(oModel.createBatchOperation(sPath, "MERGE", {
           adjustment: point.y
@@ -679,9 +676,9 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
 
       // otherwise, start the timer.
       this._timerRunning = true;
-      let that = this;
-      let oBusy = this.getView().byId("idWorkspaceBusyIndicator");
-      let oDone = this.getView().byId("idDoneButton");
+      var that = this;
+      var oBusy = this.getView().byId("idWorkspaceBusyIndicator");
+      var oDone = this.getView().byId("idDoneButton");
 
       // Busy indicator is now busy!
       oBusy.setVisible(this._timerRunning);
@@ -691,7 +688,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
       jQuery.sap.delayedCall(iDuration, this, function() {
 
         // collect model so we can update
-        let oModel = that.getView().getModel("forecast");
+        var oModel = that.getView().getModel("forecast");
 
         // add batch ops.
         oModel.addBatchChangeOperations(that._aBatchOps);
@@ -757,7 +754,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
       this.showBusyDialog();
 
       // Collect the forecast model.
-      let oModel = this.getView().getModel("forecast");
+      var oModel = this.getView().getModel("forecast");
 
       // Right, now we can begin. The first thing we need, is our data.
       oModel.read("/ForecastDataExtra", {
@@ -795,8 +792,8 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      * @param  {[type]} jDiv     [description]
      */
     Adjust.prototype._drawViz = function(aResults, jDiv) {
-      let iHeight = 0;
-      let oPromise = jQuery.Deferred();
+      var iHeight = 0;
+      var oPromise = jQuery.Deferred();
 
       // When oPromise resolves, draw the chart.
       jQuery.when(oPromise).then(jQuery.proxy(function() {
@@ -870,7 +867,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
 
       // Importantly, we cannot (and should not) draw anything until the
       // div element has it's height set. So let's wait
-      let sCallId = jQuery.sap.intervalCall(500, this, function() {
+      var sCallId = jQuery.sap.intervalCall(500, this, function() {
         iHeight = (jDiv ? jQuery(jDiv).height() : 0);
 
         // Now, if we have a height (and an element), it's okay to continue
@@ -890,8 +887,8 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      */
     Adjust.prototype._prepareSeries = function(aResults) {
 
-      let self = this;
-      let aAdjustment = {
+      var self = this;
+      var aAdjustment = {
         id: "idAdjustmentSeries",
         color: "#2589BD",
         data: [],
@@ -930,7 +927,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
         }
       };
 
-      let aForecast = {
+      var aForecast = {
         id: "idForecastSeries",
         color: "#03CEA4",
         data: [],
@@ -945,9 +942,9 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
       aResults.forEach(function(obj, index) {
 
         // Push on the x and y
-        let date = "";
-        let forecast = 0;
-        let adjustment = 0;
+        var date = "";
+        var forecast = 0;
+        var adjustment = 0;
 
         // If x is of type Date, then parse to milliseconds
         // parse a useful value

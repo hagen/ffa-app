@@ -61,10 +61,10 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
       this.showBusyDialog();
 
       // set up
-      let oModel = this.getView().getModel("profile");
+      var oModel = this.getView().getModel("profile");
       this._sPlanId = oModel.getProperty("/Profiles('TESTUSER')/plan_type_id") ||
         oModel.getProperty("/CurrentSubscriptions('TESTUSER')/plan_type_id");
-      let oPromise = jQuery.Deferred();
+      var oPromise = jQuery.Deferred();
 
       // If undefined, we need to read from Odata
       if (!this._sPlanId) {
@@ -91,7 +91,7 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
       // We need to dynamically bind to the Tile Container, and only display
       // those tiles that are not the current plan and not the Enterprise plan
       jQuery.when(oPromise).then(jQuery.proxy(function() {
-        let oTileContainer = this.getView().byId("idPlansTileContainer");
+        var oTileContainer = this.getView().byId("idPlansTileContainer");
         oTileContainer.bindAggregation("tiles", {
           path: 'profile>/PlanTypes',
           sorters: [new sap.ui.model.Sorter({
@@ -142,11 +142,11 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
     Change.prototype.onTilePress = function(oEvent) {
 
       // what's the bound index?
-      let oTile = oEvent.getSource();
-      let oContext = oTile.getBindingContext("profile");
+      var oTile = oEvent.getSource();
+      var oContext = oTile.getBindingContext("profile");
 
       // Bind dialog to correct plan
-      let oDialog = this.getView().byId("idPlanDetailsDialog");
+      var oDialog = this.getView().byId("idPlanDetailsDialog");
       oDialog.bindElement("profile>/PlanTypes('" + oContext.getProperty("id") + "')");
 
       // now show the dialog
@@ -177,7 +177,7 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
      */
     Change.prototype.onGoPress = function(oEvent) {
       // What's our new plan?
-      let sPlanId = oEvent.getSource().data("planType");
+      var sPlanId = oEvent.getSource().data("planType");
       this._handlePlanChange(this._sPlanId, /* old */ sPlanId /* new */ );
     };
 
@@ -216,21 +216,21 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
       this.showBusyDialog();
 
       // Declare a holder for our error message, if any
-      let sMessage = "";
+      var sMessage = "";
 
       // Check usage limits
-      let sAction = ((sNew === 'pro' || (sNew === 'lite' && (sOld === 'free' || sOld === ""))) ? 'upgrading' : 'downgrading');
-      let sProfileId = this.getProfileId();
-      let oPlan = this._getPlan(sNew);
+      var sAction = ((sNew === 'pro' || (sNew === 'lite' && (sOld === 'free' || sOld === ""))) ? 'upgrading' : 'downgrading');
+      var sProfileId = this.getProfileId();
+      var oPlan = this._getPlan(sNew);
 
       // Check forecasts
-      let iCount = this._getActiveForecastCount(sProfileId);
+      var iCount = this._getActiveForecastCount(sProfileId);
       if (iCount > oPlan.forecast_limit) {
         sMessage = "Unfortunately, you currently have " + iCount + " active forecasts. The new plan only allows " + iLimit + ". Please remove " + (iCount - iLimit) + " before " + sAction + ". ";
       }
 
       // Now for data.
-      let iTotal = this._getDataTotal(sProfileId);
+      var iTotal = this._getDataTotal(sProfileId);
       if (iTotal > oPlan.data_limit) {
         sMessage += "Your training data total sits at " + iTotal + "Mb, while your new plan only allows " + iMax + "Mb. Please remove enough data sets to reduce your total before " + sAction + ".";
       }
@@ -276,9 +276,9 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
      * @return {[type]}         [description]
      */
     Change.prototype._getPlan = function(sPlanId) {
-      let oModel = this.getView().getModel("profile");
-      let sPath = "/PlanTypes('" + sPlanId + "')";
-      let oPlan = oModel.getObject(sPath);
+      var oModel = this.getView().getModel("profile");
+      var sPath = "/PlanTypes('" + sPlanId + "')";
+      var oPlan = oModel.getObject(sPath);
 
       // If there's nothing in the model, read from Odata.
       if (oPlan.forecast_limit === undefined || oPlan.data_limit === undefined) {
@@ -320,7 +320,7 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
     Change.prototype._getActiveForecastCount = function(sProfileId) {
 
       // Collect the subscription start date
-      let dStart = this._getSubscriptionStartDate(sProfileId);
+      var dStart = this._getSubscriptionStartDate(sProfileId);
 
       // Read the number of forecasts that were created between
       // the start date, and now.
@@ -340,8 +340,8 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
      */
     Change.prototype._getSubscriptionStartDate = function(sProfileId) {
       // body...
-      let oModel = this.getView().getModel("profile");
-      let dStart = new Date(0);
+      var oModel = this.getView().getModel("profile");
+      var dStart = new Date(0);
 
       // Well, let's get their subscription start date.
       oModel.read("/Subscriptions", {
@@ -391,12 +391,12 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
     Change.prototype._getForecastCount = function(sProfileId, dStart, bIncStart, dEnd, bIncEnd) {
 
       // Set up the begda and endda.
-      let dBegda = (bIncStart ? dStart : new Date(dStart.setDate(dStart.getDate() + 1)));
-      let dEndda = (bIncEnd ? dEnd : new Date(dEnd.setDate(dEnd.getDate() - 1)));
+      var dBegda = (bIncStart ? dStart : new Date(dStart.setDate(dStart.getDate() + 1)));
+      var dEndda = (bIncEnd ? dEnd : new Date(dEnd.setDate(dEnd.getDate() - 1)));
 
       // now read the number of forecasts in between, that are currently active
-      let oModel = this.getView().getModel("forecast");
-      let iCount = 0;
+      var oModel = this.getView().getModel("forecast");
+      var iCount = 0;
 
       // Well, let's get their subscription start date.
       oModel.read("/Forecasts", {
@@ -447,8 +447,8 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
     Change.prototype._getDataTotal = function(sProfileId) {
 
       // now read the number of forecasts in between, that are currently active
-      let oModel = this.getView().getModel("forecast");
-      let iTotal = 0;
+      var oModel = this.getView().getModel("forecast");
+      var iTotal = 0;
 
       // Well, let's get their subscription start date.
       oModel.read("/CacheTotal('TESTUSER')", {
@@ -490,12 +490,12 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
     Change.prototype._updatePayments = function(sOldPlan, sNewPlan) {
 
       // Collect the model
-      let oModel = this.getView().getModel("profile");
-      let sPath = "/Profiles('TESTUSER')/CurrentSubscription";
-      let bHasNoPlan = false;
+      var oModel = this.getView().getModel("profile");
+      var sPath = "/Profiles('TESTUSER')/CurrentSubscription";
+      var bHasNoPlan = false;
 
       // We will need to collect the user's current subscription.
-      let oSubscription = this.getCurrentSubscription(); // Controller function
+      var oSubscription = this.getCurrentSubscription(); // Controller function
 
       // If the current subscription has no Braintree ID, then we need a totally new
       // plan subscription.
@@ -509,7 +509,7 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
 
       // Call Node to perform the subscription change; note that subscriptionId
       // may be blank. This means that the user was previously on free plan.
-      let sNewSubscriptionId = "";
+      var sNewSubscriptionId = "";
       jQuery.ajax({
         url: '/payments/upgrade/' + sNewPlan,
         type: 'POST',
@@ -537,7 +537,7 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
 
       // Now we can update the user's profile to plans listing by inserting
       // a new record. This has the effect of delimiting the old record, and creating
-      let oPayload = {
+      var oPayload = {
         id: sNewSubscriptionId,
         profile_id: this.getProfileId(),
         plan_type_id: sNewPlan,
@@ -551,7 +551,7 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
         success: jQuery.proxy(function(oData, mResponse) {
           // Huz-zah, the record has been created, and the user is now bumped up
           // to another subscription.
-          let i = 0;
+          var i = 0;
         }),
         error: jQuery.proxy(function(mError) {
           this._maybeHandleAuthError(mError);

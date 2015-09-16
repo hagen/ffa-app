@@ -39,13 +39,13 @@ sap.ui.define(['jquery.sap.global', 'view/auth/Controller'],
      * page - sign in and register.
      */
     Token.prototype._onRouteMatched = function(oEvent) {
-      let oDialog = this.getView().byId("idBusyDialog");
+      var oDialog = this.getView().byId("idBusyDialog");
       oDialog.open();
 
       // When the route is matched, we either want the login tab or
       // the register tab
       var oParameters = oEvent.getParameters();
-      let sRoute = "";
+      var sRoute = "";
 
       // First, check if access_token is supplied. If so, we're authed
       // to go to dash
@@ -104,7 +104,7 @@ sap.ui.define(['jquery.sap.global', 'view/auth/Controller'],
      * @return {[type]} [description]
      */
     Token.prototype._hasSocialProfile = function() {
-      let oProfile = {};
+      var oProfile = {};
 
       // Testuser will be replaced by proxy
       this.getView().getModel("profile").read("/SocialProfiles", {
@@ -133,11 +133,11 @@ sap.ui.define(['jquery.sap.global', 'view/auth/Controller'],
      */
     Token.prototype._create = function(sToken, sProvider) {
 
-      let bContinue = false;
-      let sCustomerId = "";
+      var bContinue = false;
+      var sCustomerId = "";
 
       // Create braintree customer
-      let oHeaders = {
+      var oHeaders = {
         Authorization: 'Bearer ' + this.getBearerToken()
       };
       jQuery.ajax({
@@ -162,8 +162,8 @@ sap.ui.define(['jquery.sap.global', 'view/auth/Controller'],
       }
 
       // Create HANA profile, with Braintree customerId
-      let oModel = this.getView().getModel("profile");
-      let oData = {
+      var oModel = this.getView().getModel("profile");
+      var oData = {
         id: this.getUserId(), // Controller function
         first_name: "",
         last_name: "",
@@ -202,7 +202,7 @@ sap.ui.define(['jquery.sap.global', 'view/auth/Controller'],
      */
     Token.prototype._hasPlan = function () {
 
-      let bValid = false;
+      var bValid = false;
 
       this.getView().getModel("profile").read("/CurrentSubscriptions('TESTUSER')", {
         success : jQuery.proxy(function(oData, mResponse) {

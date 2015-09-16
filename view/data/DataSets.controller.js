@@ -221,8 +221,8 @@ sap.ui.define(['jquery.sap.global', 'view/data/Controller'],
      */
     DataSets.prototype.onListItemPress = function(oEvent) {
 
-      let oList = oEvent.getSource();
-      let oItem = oEvent.getParameter("listItem");
+      var oList = oEvent.getSource();
+      var oItem = oEvent.getParameter("listItem");
 
       // If the oItem is already selected, then don't re-select/and re navigate
       if (oItem.getBindingContext("dataset").getProperty("id") === this._sId) {
@@ -289,14 +289,14 @@ sap.ui.define(['jquery.sap.global', 'view/data/Controller'],
      * @param  {object} oEvent Delete button pressed (contains parameter listItem)
      */
     DataSets.prototype.onMasterDeletePress = function(oEvent) {
-      let oList = this.getView().byId("idDataSetMasterList");
+      var oList = this.getView().byId("idDataSetMasterList");
       oList.setBusy(true);
-      let bRefresh = false;
+      var bRefresh = false;
 
       // Delete via. batch job
-      let oModel = this.getView().getModel("dataset");
+      var oModel = this.getView().getModel("dataset");
       oList.getSelectedItems().forEach(function(item, index) {
-        let sId = item.getBindingContext("dataset").getProperty("id");
+        var sId = item.getBindingContext("dataset").getProperty("id");
         this._aBatchOps.push(oModel.createBatchOperation("/DataSets('" + sId + "')", "DELETE"));
 
         // If this data set is currently displayed, then trigger a Refresh
@@ -307,10 +307,10 @@ sap.ui.define(['jquery.sap.global', 'view/data/Controller'],
       }, this);
 
       // How many data sets are we deleting here?
-      let iCount = this._aBatchOps.length;
+      var iCount = this._aBatchOps.length;
 
       // Declare a promise, so we can determine what to do after batch is submitted
-      let oPromise = jQuery.Deferred();
+      var oPromise = jQuery.Deferred();
       jQuery.when(oPromise).done(jQuery.proxy(function() {
 
         // All okay!
@@ -344,18 +344,18 @@ sap.ui.define(['jquery.sap.global', 'view/data/Controller'],
      * @param  {boolean} bEdit Edit mode?
      */
     DataSets.prototype.toggleMasterSelectMode = function(bSelect) {
-      let oView = this.getView();
+      var oView = this.getView();
 
       // Toggle the list to Delete mode
-      let oList = oView.byId("idDataSetMasterList");
-      let sListMode = sap.m.ListMode.SingleSelectMaster;
+      var oList = oView.byId("idDataSetMasterList");
+      var sListMode = sap.m.ListMode.SingleSelectMaster;
       if (bSelect) {
         sListMode = sap.m.ListMode.MultiSelect;
       }
       oList.setMode(sListMode);
 
       // All items are now inacative
-      let sListType = sap.m.ListType.Active;
+      var sListType = sap.m.ListType.Active;
       if (bSelect) {
         sListType = sap.m.ListType.Inactive;
       }
@@ -366,7 +366,7 @@ sap.ui.define(['jquery.sap.global', 'view/data/Controller'],
       }, this);
 
       // Hide the edit button
-      let oButton = oView.byId("idMasterSelectButton").setVisible(!bSelect);
+      var oButton = oView.byId("idMasterSelectButton").setVisible(!bSelect);
 
       // Show the Done button
       oButton = oView.byId("idMasterDoneButton").setVisible(bSelect);

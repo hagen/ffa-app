@@ -67,7 +67,11 @@
 										required="true" />
 		              <Input
 		                id="idNameInput"
-										value="{hana>/name}">
+										value="{hana>/name}"
+										change="onInputChange">
+										<customData>
+											<core:CustomData key="error" value="Every good data set needs a name!" />
+										</customData>
 		              </Input>
 
 		              <Label
@@ -76,7 +80,11 @@
 		              <Input
 		                id="idHostInput"
 										value="{hana>/host}"
-										placeholder="e.g. hana.company.com">
+										placeholder="e.g. hana.company.com"
+										change="onInputChange">
+										<customData>
+											<core:CustomData key="error" value="You didn't give me the host. I'll need the host." />
+										</customData>
 		              </Input>
 
 									<Label
@@ -86,8 +94,23 @@
 		                id="idPortInput"
 										value="{hana>/port}"
 										type="Number"
-										placeholder="e.g. 30015">
+										placeholder="e.g. 30015"
+										change="onInputChange">
+										<customData>
+											<core:CustomData key="error" value="Please specify your HANA port (default is 30015 - yours is probably the same)" />
+										</customData>
 		              </Input>
+
+									<Label
+										text="Schema"
+										required="true"/>
+									<Input
+										id="idSchemaInput"
+										change="onInputChange">
+										<customData>
+											<core:CustomData key="error" value="Erm, without a schema I have no idea where I'm looking!" />
+										</customData>
+									</Input>
 
 									<Label
 		                text="User name" />
@@ -107,34 +130,30 @@
 									<Label
 										text="" />
 									<CheckBox
-										id="idRememberPasswordCheckBox"
+										id="idRememberCheckBox"
 										selected="{hana>/remember}"
 										text="Save username &amp; password?"/>
 
 									<Label
 										text="Query method" />
 									<Select
-										id="idQueryMethodSelect"
-										value="{Hana>/query_type}">
+										id="idQueryMethodSelect">
 										<items>
-											<core:Item key="views" text="Hana View" />
-											<core:Item key="tables" text="Hana Table" />
+											<core:Item key="views" text="HANA View" />
+											<core:Item key="tables" text="HANA Table" />
 											<core:Item key="query" text="Write custom SQL query" />
 										</items>
 									</Select>
-									<core:Icon
-										id="idHelpIcon"
-										src="sap-icon://question-mark"
-										size="1.5rem"
-										activeColor="#007cc0"
-										hoverColor="#007cc0"
-										press="onHelpIconPress"
-										class="ffaIconTinyMarginTop">
-										<core:layoutData>
+									<Button
+										id="idHelpButton"
+										type="Transparent"
+										icon="sap-icon://FontAwesome/question-circle"
+										press="onHelpPress">
+										<layoutData>
 											<l:GridData
 												span="L1 M1 S1" />
-										</core:layoutData>
-									</core:Icon>
+										</layoutData>
+									</Button>
 		            </f:content>
 		          </f:SimpleForm>
 
@@ -260,6 +279,124 @@
 		          </f:SimpleForm>
 		        </l:content>
 		      </l:Grid>
+				</Page>
+
+				<!--
+				██╗   ██╗██╗███████╗██╗    ██╗███████╗
+				██║   ██║██║██╔════╝██║    ██║██╔════╝
+				██║   ██║██║█████╗  ██║ █╗ ██║███████╗
+				╚██╗ ██╔╝██║██╔══╝  ██║███╗██║╚════██║
+				 ╚████╔╝ ██║███████╗╚███╔███╔╝███████║
+					╚═══╝  ╚═╝╚══════╝ ╚══╝╚══╝ ╚══════╝
+				-->
+
+				<Page
+					id="idPageViews"
+					enableScrolling="false"
+					showHeader="false">
+					<l:Grid
+						defaultSpan="L12 M12 S12"
+						width="auto">
+						<l:content>
+							<Panel
+								expandable="false"
+								headerText="">
+								<Text
+									text="Select a database view from those listed below. Either begin typing the name of the view
+									or select from the drop-down. It's important to ensure your	database user has privileges to read
+									from the view you select here." />
+							</Panel>
+							<f:SimpleForm
+								id="idViewForm"
+								maxContainerCols="1"
+								editable="true"
+								layout="ResponsiveGridLayout"
+								labelSpanL="3"
+								labelSpanM="3"
+								emptySpanL="4"
+								emptySpanM="4"
+								columnsL="1"
+								columnsM="1"
+								class="editableForm">
+								<f:content>
+
+									<Label text="View">
+									</Label>
+									<ComboBox
+										id="idViewsComboBox"
+										change="onViewChange">
+										<layoutData>
+											<l:GridData span="L6 M6 S10" />
+										</layoutData>
+									</ComboBox>
+									<Label text="">
+										<layoutData>
+											<l:GridData span="L3 M3 S1" />
+										</layoutData>
+									</Label>
+								</f:content>
+							</f:SimpleForm>
+						</l:content>
+					</l:Grid>
+				</Page>
+
+				<!--
+				████████╗ █████╗ ██████╗ ██╗     ███████╗███████╗
+				╚══██╔══╝██╔══██╗██╔══██╗██║     ██╔════╝██╔════╝
+					 ██║   ███████║██████╔╝██║     █████╗  ███████╗
+					 ██║   ██╔══██║██╔══██╗██║     ██╔══╝  ╚════██║
+					 ██║   ██║  ██║██████╔╝███████╗███████╗███████║
+					 ╚═╝   ╚═╝  ╚═╝╚═════╝ ╚══════╝╚══════╝╚══════╝
+				-->
+
+				<Page
+					id="idPageTables"
+					enableScrolling="false"
+					showHeader="false">
+					<l:Grid
+						defaultSpan="L12 M12 S12"
+						width="auto">
+						<l:content>
+							<Panel
+								expandable="false"
+								headerText="">
+								<Text
+									text="Select a database table from those listed below. Either begin typing the name of the table
+									or select from the drop-down. It's important to ensure your	database user has privileges to read
+									from the table you select here." />
+							</Panel>
+							<f:SimpleForm
+								id="idTableForm"
+								maxContainerCols="1"
+								editable="true"
+								layout="ResponsiveGridLayout"
+								labelSpanL="3"
+								labelSpanM="3"
+								emptySpanL="4"
+								emptySpanM="4"
+								columnsL="1"
+								columnsM="1"
+								class="editableForm">
+								<f:content>
+
+									<Label text="Table">
+									</Label>
+									<ComboBox
+										id="idTablesComboBox"
+										change="onTableChange">
+										<layoutData>
+											<l:GridData span="L6 M6 S10" />
+										</layoutData>
+									</ComboBox>
+									<Label text="">
+										<layoutData>
+											<l:GridData span="L3 M3 S1" />
+										</layoutData>
+									</Label>
+								</f:content>
+							</f:SimpleForm>
+						</l:content>
+					</l:Grid>
 				</Page>
 			</pages>
 		</NavContainer>

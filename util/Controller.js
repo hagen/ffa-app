@@ -59,7 +59,7 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
      */
     Controller.prototype.getUserId =
       Controller.prototype.getProfileId = function() {
-        let mModel = this.getView().getModel("user");
+        var mModel = this.getView().getModel("user");
         return (mModel ? mModel.getProperty("/userid") : "");
       };
 
@@ -68,7 +68,7 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
      * @return {String} Bearer auth token
      */
     Controller.prototype.getBearerToken = function() {
-      let sToken = "";
+      var sToken = "";
       if (_token) {
         sToken = _token;
       } else if (window.localStorage) {
@@ -136,7 +136,7 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
       }
 
       // Collect the model matching that supplied.
-      let mModel = this.getView().getModel(sModel);
+      var mModel = this.getView().getModel(sModel);
 
       // If there's a metamodel, all good; if not, back to signin
       if (mModel) {
@@ -352,7 +352,7 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
      * @return {[type]}        [description]
      */
     Controller.prototype._put = function(sKey, sValue) {
-      let oStore = new jQuery.sap.storage(jQuery.sap.storage.Type.Local);
+      var oStore = new jQuery.sap.storage(jQuery.sap.storage.Type.Local);
       oStore.put(sKey, sValue);
     };
 
@@ -362,7 +362,7 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
      * @return {[type]}      [description]
      */
     Controller.prototype._get = function(sKey) {
-      let oStore = new jQuery.sap.storage(jQuery.sap.storage.Type.Local);
+      var oStore = new jQuery.sap.storage(jQuery.sap.storage.Type.Local);
       return oStore.get(sKey);
     };
 
@@ -382,7 +382,7 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
      * @return {[type]}        [description]
      */
     Controller.prototype._validateEmail = function(sEmail) {
-      let pattern = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+      var pattern = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
 
       // Test
       if (sEmail)

@@ -63,7 +63,11 @@
             </content>
           </Page>
 
-          <Page enableScrolling="true" id="idCarouselOverviewPage" showHeader="false" title="Forecast">
+          <Page
+            id="idCarouselOverviewPage"
+            enableScrolling="true"
+            showHeader="false"
+            title="Forecast">
             <customData>
               <core:CustomData key="tab" value="overview"/>
             </customData>
@@ -71,7 +75,6 @@
               <ObjectHeader
                 condensed="false"
                 id="idOverviewHeader"
-                intro="{forecast>name}"
                 number="{forecast>horizon}"
                 numberState="Success"
                 numberUnit="day forecast"
@@ -101,8 +104,14 @@
                     title="Training from"/>
                 </attributes>
                 <statuses>
-                  <ObjectStatus state="None" text="{ path: 'MEDIAN_APE', type: 'sap.ui.model.type.Float' }" title="Median APE"/>
-                  <ObjectStatus state="None" text="{ path: 'MEAN_APE', type: 'sap.ui.model.type.Float' }" title="Mean APE"/>
+                  <ObjectStatus
+                    id="idMedianApeObjectStatus"
+                    state="None"
+                    title="Median error" />
+                  <ObjectStatus
+                    id="idMeanApeObjectStatus"
+                    state="None"
+                    title="Mean error" />
                 </statuses>
               </ObjectHeader>
 
@@ -227,6 +236,8 @@
                           pattern : 'dd/MM/yyyy'
                         }
                       }"/>
+                      <ObjectNumber number="{= ${forecast>actual} === 0 ? '' : ${forecast>actual} }"/>
+                      <ObjectNumber number="{= ${forecast>diff_percent} === 0 ? '' : ${forecast>diff_percent} + '%' }"/>
                       <ObjectNumber number="{
 												path: 'forecast>forecast',
 												type: 'sap.ui.model.type.Float',
@@ -235,8 +246,6 @@
                           maxFractionDigits : '2'
                         }
 											}"/>
-                      <ObjectNumber number="{= ${forecast>actual} === 0 ? '' : ${forecast>actual} }"/>
-                      <ObjectNumber number="{= ${forecast>diff_percent} === 0 ? '' : ${forecast>diff_percent} + '%' }"/>
                       <ObjectNumber number="{= ${forecast>change} === 0 ? '' : ${forecast>change} }"/>
                     </cells>
                   </ColumnListItem>

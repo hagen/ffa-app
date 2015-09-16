@@ -135,59 +135,9 @@ sap.ui.define(['jquery.sap.global', 'view/data/Controller'],
      * @param  {object} oEvent Button/tile press event
      */
     Wizard.prototype.onCsvItemPress = function(oEvent) {
-      // Coming soon.
-      this._alertComingSoon();
+      // Create the fragment and open!
+      this.getRouter().navTo("csv", {}, !sap.ui.Device.system.phone);
     };
-
-    // /**
-    //  * When the user selects a CSV file for upload,
-    //  * @param  {[type]} oEvent [description]
-    //  * @return {[type]}        [description]
-    //  */
-    // Wizard.prototype.onCsvUploadChange = function(oEvent) {
-    //   var oUploadCollection = oEvent.getSource();
-    //
-    //   // Header Token
-    //   var oCustomerHeaderToken = new sap.m.UploadCollectionParameter({
-    //     name: "x-csrf-token",
-    //     value: this.getView().getModel("dataset").getSecurityToken()
-    //   });
-    //   oUploadCollection.addHeaderParameter(oCustomerHeaderToken);
-    //
-    //   // Header Slug
-    //   var oCustomerHeaderSlug = new sap.m.UploadCollectionParameter({
-    //     name: "slug",
-    //     value: oEvent.getParameter("files")[0].name
-    //   });
-    //   oUploadCollection.addHeaderParameter(oCustomerHeaderSlug);
-    //
-    //   // Content-Type
-    //   var oContentType = new sap.m.UploadCollectionParameter({
-    //     name: "Content-Type",
-    //     value: "multipart/form-data"
-    //   });
-    //   oUploadCollection.addHeaderParameter(oContentType);
-    // };
-    //
-    // /**
-    //  * User wishes to save the Google Sheets configuration...
-    //  * @param  {object} oEvent Button press event
-    //  */
-    // Wizard.prototype.onCsvSavePress = function(oEvent) {
-    //
-    // };
-    //
-    // /**
-    //  * User is cancelling the Google Sheets configuration process
-    //  * @param  {object} oEvent Button press event
-    //  */
-    // Wizard.prototype.onCsvCancelPress = function(oEvent) {
-    //   // close and destroy
-    //   this._oCsvDialog.close();
-    //   this.getView().removeDependent(this._oCsvDialog);
-    //   this._oCsvDialog.destroy();
-    //   delete this._oCsvDialog;
-    // };
 
     /***
      *    ███████╗██╗  ██╗ ██████╗███████╗██╗
@@ -215,22 +165,6 @@ sap.ui.define(['jquery.sap.global', 'view/data/Controller'],
     Wizard.prototype._alertComingSoon = function (sMessage) {
       // If message is supplied, use it, otherwise, don't bother.
       this.showInfoAlert(sMessage || "Almost there. Sorry, this hasn't been implemented yet.", "Coming soon");
-    };
-
-    /**
-     * Clears all inputs in the given dialog control
-     * @param  {control} oDialog Dialog control
-     */
-    Wizard.prototype._clearDialog = function(aInputs) {
-      jQuery.each(aInputs, function(i, c) {
-        if (c instanceof sap.m.InputBase) {
-          try {
-            c.setValue("");
-          } catch (e) {
-
-          }
-        }
-      });
     };
 
     return Wizard;

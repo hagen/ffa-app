@@ -1,0 +1,103 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+  xmlns:l="sap.ui.layout"
+  xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core">
+	<!-- TODO localisation of text -->
+	<Dialog
+		id="idDiagnosticsDialog"
+		title="Diagnostics"
+		horizontalScrolling="false">
+		<beginButton>
+		</beginButton>
+		<endButton>
+			<Button
+				id="idCloseButton"
+				text="Close"
+				press="onDiagnosticsClosePress"/>
+		</endButton>
+		<content>
+			<l:Grid
+				defaultSpan="L12 M12 S12"
+				width="auto">
+				<l:content>
+					<ObjectNumber
+						emphasized="true"
+						unit="day horizon"
+						state="None"
+						number="{forecast>Run/Forecast/horizon}">
+						<layoutData>
+							<l:GridData span="L6 M6 S12" />
+						</layoutData>
+					</ObjectNumber>
+
+					<ObjectNumber
+						emphasized="true"
+						unit="days of validation"
+						state="None"
+						number="{forecast>Run/Forecast/validation}">
+						<layoutData>
+							<l:GridData span="L6 M6 S12" />
+						</layoutData>
+					</ObjectNumber>
+
+					<ObjectNumber
+						emphasized="true"
+						unit="variables"
+						state="None"
+						number="{forecast>variables}">
+						<layoutData>
+							<l:GridData span="L6 M6 S12" />
+						</layoutData>
+					</ObjectNumber>
+
+					<ObjectNumber
+						emphasized="true"
+						unit="total training records"
+						state="None"
+						number="{forecast>len_time_series}">
+						<layoutData>
+							<l:GridData span="L6 M6 S12" />
+						</layoutData>
+					</ObjectNumber>
+
+					<ObjectNumber
+						emphasized="true"
+						unit="effective date"
+						state="None"
+						number="{
+							path : 'forecast>first_horizon_date',
+							type : 'sap.ui.model.type.Date',
+							formatOptions : {
+								style : 'medium'
+							}
+						}">
+						<layoutData>
+							<l:GridData span="L12 M12 S12" />
+						</layoutData>
+					</ObjectNumber>
+				</l:content>
+			</l:Grid>
+			<List
+				id="idLogList"
+				enableBusyIndicator="true"
+				headerText="Run log"
+				items="{
+					path : 'forecast>Run/LogEntries',
+					sorter : {
+						path : 'logged_at',
+						descending : false
+					}
+				}"
+				mode="None"
+				noDataText="No log records. What the?!">
+				<StandardListItem
+					adaptTitleSize="true"
+					type="Inactive"
+					title="{forecast>title}"
+					info=""
+					icon="{= ${forecast>type} === 'SUCCESS' ? 'sap-icon://FontAwesome/check-circle-o' : 'sap-icon://FontAwesome/exclamation-circle'}" />
+			</List>
+		</content>
+	</Dialog>
+</core:FragmentDefinition>

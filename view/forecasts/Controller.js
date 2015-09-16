@@ -236,7 +236,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
      */
     Controller.prototype.getLatestCacheId = function(sForecastId, fnSuccess, fnError) {
 
-      let sCacheId = "";
+      var sCacheId = "";
 
       // Now set up model read
       this.getView().getModel("forecast").read("/Cache", {
@@ -276,7 +276,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
      * @return {[type]} [description]
      */
     Controller.prototype._getMaxDate = function(sCacheId) {
-      let dDate = this._getEndDate(sCacheId);
+      var dDate = this._getEndDate(sCacheId);
       return this._date(new Date(dDate.setDate(dDate.getDate() + 1)));
     };
 
@@ -286,7 +286,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
      */
     Controller.prototype._getEndDate = function(sCacheId) {
       var oModel = this.getView().getModel("forecast");
-      let dDate = oModel.getProperty("/Cache('" + sCacheId + "')/endda");
+      var dDate = oModel.getProperty("/Cache('" + sCacheId + "')/endda");
       if (!dDate) {
         dDate = this._getCacheHeader(sCacheId, oModel).endda;
       }
@@ -299,7 +299,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
      */
     Controller.prototype._getBeginDate = function(sCacheId) {
       var oModel = this.getView().getModel("forecast");
-      let dDate = oModel.getProperty("/Cache('" + sCacheId + "')/begda");
+      var dDate = oModel.getProperty("/Cache('" + sCacheId + "')/begda");
       if (!dDate) {
         dDate = this._getCacheHeader(sCacheId, oModel).begda;
       }

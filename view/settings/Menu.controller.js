@@ -155,7 +155,7 @@ sap.ui.define(["jquery.sap.global", "view/settings/Controller"],
      */
     Menu.prototype.onListItemPress = function(oEvent) {
       // If the oItem is already selected, then don't re-select/and re navigate
-      let sRoute = oEvent.getParameter("listItem").data("route");
+      var sRoute = oEvent.getParameter("listItem").data("route");
 
       // Nav
       this.getRouter().navTo(sRoute, {}, !sap.ui.Device.system.phone);

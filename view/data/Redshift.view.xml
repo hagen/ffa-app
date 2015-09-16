@@ -146,19 +146,16 @@
 											<core:Item key="query" text="Write custom SQL query" />
 										</items>
 									</Select>
-									<core:Icon
-										id="idHelpIcon"
-										src="sap-icon://question-mark"
-										size="1.5rem"
-										activeColor="#007cc0"
-										hoverColor="#007cc0"
-										press="onHelpIconPress"
-										class="ffaIconTinyMarginTop">
-										<core:layoutData>
+									<Button
+										id="idHelpButton"
+										type="Transparent"
+										icon="sap-icon://FontAwesome/question-circle"
+										press="onHelpPress">
+										<layoutData>
 											<l:GridData
 												span="L1 M1 S1" />
-										</core:layoutData>
-									</core:Icon>
+										</layoutData>
+									</Button>
 		            </f:content>
 		          </f:SimpleForm>
 

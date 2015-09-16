@@ -44,7 +44,7 @@ sap.ui.define(["jquery.sap.global", "view/settings/Controller"],
       this.getEventBus().publish("Social", "RouteMatched", {} /* payload */ );
 
       // Bind this page to the Social Id...
-      let oPage = this.getView().byId("idSocialPage");
+      var oPage = this.getView().byId("idSocialPage");
       oPage.bindElement("profile>/Profiles('TESTUSER')");
     };
 
@@ -57,15 +57,15 @@ sap.ui.define(["jquery.sap.global", "view/settings/Controller"],
      * @return {[type]}        [description]
      */
     Social.prototype.onSocialTilePress = function(oEvent) {
-      let oTile = oEvent.getSource();
-      let oContext = oTile.getBindingContext("profile");
-      let sType = oContext.getProperty("type");
+      var oTile = oEvent.getSource();
+      var oContext = oTile.getBindingContext("profile");
+      var sType = oContext.getProperty("type");
 
       // if this tile is linked, we are unlinking, and vice versa.
       if (oContext.getProperty("linked") === "X") {
         // unlink
 
-        let fn = "_disconnect" + sType.charAt(0).toUpperCase() + sType.slice(1);
+        var fn = "_disconnect" + sType.charAt(0).toUpperCase() + sType.slice(1);
         if (typeof this[fn] === "function") {
           this[fn].apply(this, []);
         }
@@ -100,14 +100,14 @@ sap.ui.define(["jquery.sap.global", "view/settings/Controller"],
      */
     Social.prototype._hrefToConnect = function(sType) {
       // store link request Id
-      let sLinkId = jQuery.sap.uid();
+      var sLinkId = jQuery.sap.uid();
       window.localStorage.setItem("_link", sLinkId);
 
       // POST the link Id to back-end, including current bearer token.
-      let oHeaders = {
+      var oHeaders = {
         Authorization: 'Bearer ' + this.getBearerToken()
       };
-      let sMessage = "";
+      var sMessage = "";
       jQuery.ajax({
         url: '/auth/profile/link',
         type: 'POST',
@@ -144,10 +144,10 @@ sap.ui.define(["jquery.sap.global", "view/settings/Controller"],
      * @return {[type]}       [description]
      */
     Social.prototype._unlinkNode = function(sPath) {
-      let oHeaders = {
+      var oHeaders = {
         Authorization: 'Bearer ' + _token
       }; /* Global var */
-      let sMessage = "";
+      var sMessage = "";
       jQuery.ajax({
         url: sPath,
         type: 'GET',
@@ -170,7 +170,7 @@ sap.ui.define(["jquery.sap.global", "view/settings/Controller"],
     Social.prototype._delimitHana = function(sPath) {
       this.getView().getModel("profile").remove(sPath, {
         success: jQuery.proxy(function(oData, mResponse) {
-          let sMessage = 1;
+          var sMessage = 1;
         }, this),
         error: jQuery.proxy(function(mError) {
           this._maybeHandleAuthError(mError);
@@ -257,9 +257,9 @@ sap.ui.define(["jquery.sap.global", "view/settings/Controller"],
     Social.prototype.onLocalConnectOkPress = function(oEvent) {
 
       // Collect form details
-      let oEmailInput = this.getView().byId("idConnectEmail");
-      let oPasswordInput = this.getView().byId("idConnectPassword");
-      let bContinue = false;
+      var oEmailInput = this.getView().byId("idConnectEmail");
+      var oPasswordInput = this.getView().byId("idConnectPassword");
+      var bContinue = false;
 
       // Email validation...
       if (!(this._validateEmail(oEmailInput) && this._validatePassword(oPasswordInput))) {
@@ -267,12 +267,12 @@ sap.ui.define(["jquery.sap.global", "view/settings/Controller"],
       }
 
       // set the dialog to busy
-      let oDialog = this.getView().byId("idConnectDialog");
+      var oDialog = this.getView().byId("idConnectDialog");
       oDialog.setBusy(true);
 
       // Now POST ajax request to Node; this will create the local details And
       // do the merge. This only happens for local connect.
-      let oResult = {};
+      var oResult = {};
       jQuery.ajax({
         url: 'connect/local/',
         data: {
@@ -297,14 +297,14 @@ sap.ui.define(["jquery.sap.global", "view/settings/Controller"],
         return;
       }
 
-      let oProfile = {
+      var oProfile = {
         profile_id: this.getUserId(),
         email: oEmailInput.getValue(),
         linked: 'X'
       };
 
       // Now we can update HANA.
-      let oHeaders = {
+      var oHeaders = {
         Authorization: 'Bearer ' + this.getBearerToken()
       };
       this.getView().getModel("profile").update("/LocalProfiles('TESTUSER')", oProfile, {
@@ -337,8 +337,8 @@ sap.ui.define(["jquery.sap.global", "view/settings/Controller"],
     Social.prototype._validateEmail = function(oInput) {
 
       // Validate
-      let bValid = false;
-      let pattern = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+      var bValid = false;
+      var pattern = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
 
       // Test
       if (!pattern.test(oInput.getValue())) {
@@ -363,7 +363,7 @@ sap.ui.define(["jquery.sap.global", "view/settings/Controller"],
     Social.prototype._validatePassword = function(oInput) {
 
       // Validate
-      let bValid = false;
+      var bValid = false;
 
       // Password validation
       if ("" === oInput.getValue()) {

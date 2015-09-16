@@ -60,11 +60,11 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
     Plans.prototype.onTilePress = function(oEvent) {
 
       // what's the bound index?
-      let oTile = oEvent.getSource();
-      let oContext = oTile.getBindingContext("profile");;
+      var oTile = oEvent.getSource();
+      var oContext = oTile.getBindingContext("profile");;
 
       // Bind dialog to correct plan
-      let oDialog = this.getView().byId("idPlanDetailsDialog");
+      var oDialog = this.getView().byId("idPlanDetailsDialog");
       oDialog.bindElement("profile>/PlanTypes('" + oContext.getProperty("id") + "')");
 
       // now show the dialog
@@ -95,7 +95,7 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
      */
     Plans.prototype.onGoPress = function(oEvent) {
       // What's our new plan?
-      let sPlanId = oEvent.getSource().data("planType");
+      var sPlanId = oEvent.getSource().data("planType");
       // For new plans, nav straight away
       this.getRouter().navTo("plan-" + sPlanId, {}, !sap.ui.Device.system.phone);
     };

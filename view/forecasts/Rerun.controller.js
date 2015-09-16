@@ -48,7 +48,7 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
       // Busy.
       this.showBusyDialog();
 
-      let oParameters = oEvent.getParameters();
+      var oParameters = oEvent.getParameters();
       this._sForecastId = oParameters.arguments.forecast_id;
       this._sReturnRoute = oParameters.arguments.return_route;
 
@@ -56,11 +56,11 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
       this.getLatestCacheId(this._sForecastId, jQuery.proxy(function(sCacheId) {
 
         // Bind the dialog to the most recent cache entry for this Forecast
-        let oPage = this.getView().byId("idRerunPage");
+        var oPage = this.getView().byId("idRerunPage");
 
         // Continue on...
         this._sCacheId = sCacheId;
-        let sPath = "/Cache('" + this._sCacheId + "')";
+        var sPath = "/Cache('" + this._sCacheId + "')";
         oPage.bindElement("forecast>" + sPath, {
           expand: "Forecast"
         });
@@ -87,7 +87,7 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
 
       // If the route requires a folder Id, we'll get this and add it to the
       // params.
-      let oParams = {
+      var oParams = {
         forecast_id: this._sForecastId
       };
 
@@ -116,13 +116,13 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
      * @param  {Event} oEvent Data received event
      */
     Rerun.prototype._handlePageBound = function(oEvent) {
-      let oToDatePicker = this.getView().byId("idToDatePicker");
+      var oToDatePicker = this.getView().byId("idToDatePicker");
       if (!oToDatePicker.getDateValue()) {
         // set the effective date onload
         oToDatePicker.setDateValue(this._getMaxDate(this._sCacheId));
       }
 
-      let oFromDatePicker = this.getView().byId("idFromDatePicker");
+      var oFromDatePicker = this.getView().byId("idFromDatePicker");
       if (!oFromDatePicker.getDateValue()) {
         // set the training period begin date onload
         oFromDatePicker.setDateValue(this._getBeginDate(this._sCacheId));
@@ -201,10 +201,10 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
       jQuery.when(this._refreshCache()).then(jQuery.proxy(function() {
 
         // Bind the dialog to the most recent cache entry for this Forecast
-        let oPage = this.getView().byId("idRerunPage");
+        var oPage = this.getView().byId("idRerunPage");
 
         // Continue on... there will be a new global Cache Id
-        let sPath = "/Cache('" + this._sCacheId + "')";
+        var sPath = "/Cache('" + this._sCacheId + "')";
         oPage.bindElement("forecast>" + sPath, {
           expand: "Forecast"
         });
@@ -262,7 +262,7 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
      * @return {[type]} [description]
      */
     Rerun.prototype._refreshCache = function() {
-      let oPromise = jQuery.Deferred();
+      var oPromise = jQuery.Deferred();
 
       // Do the read
       this.getView().getModel("forecast").create("/Cache", this._getCacheData(), {
@@ -356,7 +356,7 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
      */
     Rerun.prototype.validateParameters = function() {
 
-      let oView = this.getView();
+      var oView = this.getView();
 
       // Return the result
       return (this._validateToDatePicker(oView.byId("idToDatePicker"))  // Effective Date
@@ -377,9 +377,9 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
         dDate = new Date(oControl.getValue());
       }
 
-      let dMaxDate = this._getMaxDate(this._sCacheId);
-      let dMinDate = this._getBeginDate(this._sCacheId);
-      let bValid = false;
+      var dMaxDate = this._getMaxDate(this._sCacheId);
+      var dMinDate = this._getBeginDate(this._sCacheId);
+      var bValid = false;
 
       // Now check that dDate is not greater than dMaxDate
       if (dDate > dMaxDate) {
@@ -405,7 +405,7 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
      * @return {[type]}        [description]
      */
     Rerun.prototype._validateHorizonInput = function(oControl, sValue) {
-      let bValid = false;
+      var bValid = false;
       if (!sValue) {
         sValue = oControl.getValue();
       }
@@ -415,7 +415,7 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
         sValue = 0;
       }
 
-      let i = parseInt(sValue, 10);
+      var i = parseInt(sValue, 10);
 
       // Now check that dDate is not greater than dMaxDate
       if (isNaN(i)) {
@@ -447,9 +447,9 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
         dDate = new Date(oControl.getValue());
       }
 
-      let dMaxDate = this._getMaxDate(this._sCacheId);
-      let dMinDate = this._getBeginDate(this._sCacheId);
-      let bValid = false;
+      var dMaxDate = this._getMaxDate(this._sCacheId);
+      var dMinDate = this._getBeginDate(this._sCacheId);
+      var bValid = false;
 
       if (dDate < dMinDate) {
         oControl.setValueState(sap.ui.core.ValueState.Error);
@@ -474,7 +474,7 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
      * @return {[type]}        [description]
      */
     Rerun.prototype._validateValidationInput = function(oControl, sValue) {
-      let bValid = false;
+      var bValid = false;
       if (!sValue) {
         sValue = oControl.getValue();
       }
@@ -484,11 +484,11 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
         sValue = 0;
       }
 
-      let i = parseInt(sValue, 10);
-      let dMaxDate = this._getMaxDate(this._sCacheId);
-      let dMinDate = this._getBeginDate(this._sCacheId);
-      let oneDay = 24 * 60 * 60 * 1000;
-      let diff = Math.round(Math.abs((dMinDate.getTime() - dMaxDate.getTime()) / (oneDay)));
+      var i = parseInt(sValue, 10);
+      var dMaxDate = this._getMaxDate(this._sCacheId);
+      var dMinDate = this._getBeginDate(this._sCacheId);
+      var oneDay = 24 * 60 * 60 * 1000;
+      var diff = Math.round(Math.abs((dMinDate.getTime() - dMaxDate.getTime()) / (oneDay)));
 
       // Now check that validation is not greater than the total training period
       if (isNaN(i)) {
@@ -530,10 +530,10 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
         showCancelButton: false
       });
 
-      let oPromise = jQuery.Deferred();
-      let oView = this.getView();
-      let oModel = oView.getModel("forecast");
-      let oForecast = {
+      var oPromise = jQuery.Deferred();
+      var oView = this.getView();
+      var oModel = oView.getModel("forecast");
+      var oForecast = {
         train_from : new Date(oView.byId("idFromDatePicker").getValue()),
         train_to : new Date(oView.byId("idToDatePicker").getValue()),
         horizon : parseInt(oView.byId("idHorizonInput").getValue(), 10),

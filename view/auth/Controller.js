@@ -26,12 +26,12 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
    * @return {[type]}           [description]
    */
   Controller.prototype._connect = function(sToken, sProvider) {
-    let oModel = this.getView().getModel("profile");
+    var oModel = this.getView().getModel("profile");
 
     // Read social stuff from node
-    let bContinue = false;
-    let oProfiles = {};
-    let oHeaders = {
+    var bContinue = false;
+    var oProfiles = {};
+    var oHeaders = {
       Authorization: 'Bearer ' + sToken
     };
     jQuery.ajax({
@@ -50,7 +50,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
 
     // Now, update their social profile
     // oProfiles should have a named array, matching the provider
-    let fn = "_connect" + sProvider.charAt(0).toUpperCase() + sProvider.slice(1);
+    var fn = "_connect" + sProvider.charAt(0).toUpperCase() + sProvider.slice(1);
     if (typeof this[fn] === "function") {
       this[fn].apply(this, [oModel, oProfiles]);
     }
@@ -63,7 +63,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
    * @return {[type]}           [description]
    */
   Controller.prototype._connectLocal = function(oModel, oProfiles) {
-    let oProfile = {
+    var oProfile = {
       profile_id: this.getUserId(),
       email: oProfiles.local.email,
       first_name: oProfiles.local.firstname,
@@ -75,7 +75,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
     oModel.update("/LocalProfiles('TESTUSER')", oProfile, {
       success: jQuery.proxy(function(oData, mResponse) {
         // Now we continue on to the Social stuff.
-        let bContinue = true;
+        var bContinue = true;
       }, this),
       error: jQuery.proxy(function(mError) {
         this._maybeHandleAuthError(mError);
@@ -92,7 +92,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
    * @return {[type]}           [description]
    */
   Controller.prototype._connectGoogle = function(oModel, oProfiles) {
-    let oProfile = {
+    var oProfile = {
       profile_id: this.getUserId(),
       id: oProfiles.google.id,
       name: oProfiles.google.name,
@@ -104,7 +104,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
     oModel.update("/GoogleProfiles('TESTUSER')", oProfile, {
       success: jQuery.proxy(function(oData, mResponse) {
         // Now we continue on to the Social stuff.
-        let bContinue = true;
+        var bContinue = true;
       }, this),
       error: jQuery.proxy(function(mError) {
         this._maybeHandleAuthError(mError);
@@ -121,7 +121,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
    * @return {[type]}           [description]
    */
   Controller.prototype._connectTwitter = function(oModel, oProfiles) {
-    let oProfile = {
+    var oProfile = {
       profile_id: this.getUserId(),
       id: oProfiles.twitter.id,
       display_name: oProfiles.twitter.displayName,
@@ -133,7 +133,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
     oModel.update("/TwitterProfiles('TESTUSER')", oProfile, {
       success: jQuery.proxy(function(oData, mResponse) {
         // Now we continue on to the Social stuff.
-        let bContinue = true;
+        var bContinue = true;
       }, this),
       error: jQuery.proxy(function(mError) {
         this._maybeHandleAuthError(mError);
@@ -150,7 +150,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
    * @return {[type]}           [description]
    */
   Controller.prototype._connectLinkedin = function(oModel, oProfiles) {
-    let oProfile = {
+    var oProfile = {
       profile_id: this.getUserId(),
       id: oProfiles.linkedin.id,
       email: oProfiles.linkedin.email,
@@ -164,7 +164,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
     oModel.update("/LinkedInProfiles('TESTUSER')", oProfile, {
       success: jQuery.proxy(function(oData, mResponse) {
         // Now we continue on to the Social stuff.
-        let bContinue = true;
+        var bContinue = true;
       }, this),
       error: jQuery.proxy(function(mError) {
         this._maybeHandleAuthError(mError);
@@ -202,15 +202,15 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
     * @return {[type]}           [description]
     */
    Controller.prototype._link = function(sToken, sProvider) {
-     let oModel = this.getView().getModel("profile");
+     var oModel = this.getView().getModel("profile");
 
      // Read social stuff from node
-     let bContinue = false;
-     let oProfiles = {};
+     var bContinue = false;
+     var oProfiles = {};
 
      // This will authenticate us with a different user, however it is now
      // up to Node to match up the user with the original user...
-     let oHeaders = {
+     var oHeaders = {
        Authorization: 'Bearer ' + sToken
      };
      jQuery.ajax({

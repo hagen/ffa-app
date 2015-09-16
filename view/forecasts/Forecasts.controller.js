@@ -1,4 +1,6 @@
 jQuery.sap.declare("view.forecasts.Forecasts");
+jQuery.sap.require("util.DateFormatter");
+jQuery.sap.require("util.FloatFormatter");
 
 // Provides controller forecasts.Forecasts
 sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
@@ -21,6 +23,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
 
       // register to re-run refresh
       this.getEventBus().subscribe("Rerun", "Complete", this._rebind, this);
+      this.getEventBus().subscribe("Adjustments", "Refresh", this._rebind, this);
 
       // Route handlers
       this.getRouter().getRoute("forecast-from-folder").attachPatternMatched(this._onRouteMatchedFolder, this);
@@ -229,9 +232,9 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
         oCarousel.setActivePage(oNewPage);
       } else {
         // navigate to the correct page
-        let iFrom = oCarousel.indexOfPage(this.getView().byId(oCarousel.getActivePage().split("--")[1]));
-        let iTo = oCarousel.indexOfPage(oNewPage);
-        let i = (iTo - iFrom);
+        var iFrom = oCarousel.indexOfPage(this.getView().byId(oCarousel.getActivePage().split("--")[1]));
+        var iTo = oCarousel.indexOfPage(oNewPage);
+        var i = (iTo - iFrom);
 
         // Transition forwards
         if (i > 0) {
@@ -249,7 +252,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
 
       // And then call the tab's set up page...
       try {
-        !this["setup" + sInflectedTab + "Page"].apply(this, [])
+        this["setup" + sInflectedTab + "Page"].apply(this, [])
       } catch (e) {
         // Couldn't call the tab's setup function
         alert(e.message);
@@ -271,6 +274,13 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
       if (this._oChart) {
         this._oChart.destroy();
         this._oChart = undefined;
+      }
+
+      // and the table...
+      var oTable = this.getView().byId("idForecastDataTable");
+      var oBinding = oTable.getBinding("items");
+      if (oBinding) {
+        oBinding.refresh();
       }
     };
 
@@ -307,7 +317,75 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      * @return {[type]} [description]
      */
     Forecasts.prototype.setupOverviewPage = function() {
+      // We cannot do anything without a Run ID. So wait until that is loaded.
+      var self = this;
+      jQuery.when(this._oRunsLoadedPromise).then(function() {
+        // now we bind the object statuses to our latest run
+        var sPath = "forecast>/Runs('" + self._sRunId + "')/";
 
+        // Bind the median
+        self.getView().byId("idMedianApeObjectStatus").bindProperty("text", {
+          path : sPath + "median_ape",
+          type: new sap.ui.model.type.Float(),
+          formatter : util.FloatFormatter.formatMAPEPercent
+        });
+
+        // Bind the Mean
+        self.getView().byId("idMeanApeObjectStatus").bindProperty("text", {
+          path : sPath + "mean_ape",
+          type: new sap.ui.model.type.Float(),
+          formatter : util.FloatFormatter.formatMAPEPercent
+        });
+      });
+    };
+
+    /**
+     * When the run list item is pressed, we show a pop up with information
+     * about the run
+     * @param  {object} oEvent List item press event
+     */
+    Forecasts.prototype.onRunListItemPress = function(oEvent) {
+      // Busy...
+      // this.showBusyDialog({});
+
+      // Create the dialog fragment, if not already init'd
+      if (!this._oDiagnosticsDialog) {
+        this._oDiagnosticsDialog = sap.ui.xmlfragment("idDiagnosticsFragment", "view.forecasts.Diagnostics", this);
+        this.getView().addDependent(this._oDiagnosticsDialog);
+      }
+
+      // What the list item's binding context run id?
+      var oItem = oEvent.getParameter("listItem");
+      var oContext = oItem.getBindingContext("forecast");
+      var sId = oContext.getProperty("id");
+
+      // Attach to data received
+      // this._oDiagnosticsDialog.attachEvent("dataReceived", jQuery.proxy(function() {
+      //
+      //   // Hide busy dialog
+      //   this.hideBusyDialog();
+      //   // Open
+      //   this._oDiagnosticsDialog.open();
+      // }, this));
+
+      // bind the dailog to the Diagnostics for this run.
+      this._oDiagnosticsDialog.bindElement({
+        path: "forecast>/Diagnostics('" + sId + "')",
+        expand: 'Run,Run/Forecast'
+      });
+
+      // Open
+      this._oDiagnosticsDialog.open();
+    };
+
+    /**
+     * [onDiagnosticsClosePress description]
+     * @param  {[type]} oEvent [description]
+     * @return {[type]}        [description]
+     */
+    Forecasts.prototype.onDiagnosticsClosePress = function(oEvent) {
+      // When the button is pressed, close the dialog.
+      this._oDiagnosticsDialog.close();
     };
 
     /***
@@ -364,7 +442,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
       this.showBusyDialog();
 
       // Collect the forecast model.
-      let oModel = this.getView().getModel("forecast");
+      var oModel = this.getView().getModel("forecast");
 
       // We cannot do anything without a Run ID. So wait until that is loaded.
       jQuery.when(this._oRunsLoadedPromise).then(jQuery.proxy(function() {
@@ -402,11 +480,11 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      * @param  {[type]} jDiv     [description]
      */
     Forecasts.prototype._drawViz = function(aResults, jDiv) {
-      let iHeight = 0;
-      let oPromise = jQuery.Deferred();
+      var iHeight = 0;
+      var oPromise = jQuery.Deferred();
 
       // Prepare the data into two series.
-      let aData = [];
+      var aData = [];
 
       // When oPromise resolves, draw the chart.
       jQuery.when(oPromise).then(jQuery.proxy(function() {
@@ -480,7 +558,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
 
       // Importantly, we cannot (and should not) draw anything until the
       // div element has it's height set. So let's wait
-      let sCallId = jQuery.sap.intervalCall(500, this, function() {
+      var sCallId = jQuery.sap.intervalCall(500, this, function() {
         iHeight = (jDiv ? jQuery(jDiv).height() : 0);
 
         // Now, if we have a height (and an element), it's okay to continue
@@ -500,8 +578,8 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      */
     Forecasts.prototype._prepareSeries = function(aResults) {
 
-      let self = this;
-      let aActual = {
+      var self = this;
+      var aActual = {
         id: "idActualSeries",
         color: "#A23B72",
         data: [],
@@ -509,7 +587,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
         zIndex: 50
       };
 
-      let aForecast = {
+      var aForecast = {
         id: "idForecastSeries",
         color: "#03CEA4",
         data: [],
@@ -517,7 +595,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
         zIndex: 100
       };
 
-      let aAdjustment = {
+      var aAdjustment = {
         id: "idAdjustmentSeries",
         color: "#2589BD",
         data: [],
@@ -529,10 +607,10 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
       aResults.forEach(function(obj, index) {
 
         // Push on the x and y
-        let date = "";
-        let actual = 0;
-        let forecast = 0;
-        let adjustment = 0;
+        var date = "";
+        var actual = 0;
+        var forecast = 0;
+        var adjustment = 0;
 
         // If x is of type Date, then parse to milliseconds
         // parse a useful value
@@ -818,15 +896,6 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      *    ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝
      *
      */
-
-    /**
-     * When the run list item is pressed, we show a pop up with information
-     * about the run
-     * @param  {object} oEvent List item press event
-     */
-    Forecasts.prototype.onRunListItemPress = function(oEvent) {
-      alert("Show run diagnostics");
-    };
 
     /**
      * Tries to load the latest run id, if not already loaded; once loaded, The

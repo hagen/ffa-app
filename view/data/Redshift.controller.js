@@ -89,7 +89,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      */
     Redshift.prototype.onBackPress = function(oEvent) {
       // Button is now bound to the save action
-      let oButton = this.getView().byId("idNextButton");
+      var oButton = this.getView().byId("idNextButton");
       oButton.detachPress(this.onSavePress, this)
         .attachPress(this.onNextPress, this)
         .setText("Next");
@@ -116,7 +116,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
       }
 
       // Now continue processing
-      let oButton = oEvent.getSource();
+      var oButton = oEvent.getSource();
 
       // set screen to busy
       this.openBusyDialog({
@@ -128,18 +128,18 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
       jQuery.sap.delayedCall(1000, this, function() {
 
         // Promise, so we know when to continue on
-        let oPromise = jQuery.Deferred();
+        var oPromise = jQuery.Deferred();
 
         // Depending on the state of the promise, after we try and connect,
         // execute one of the done/fail deferred options
         jQuery.when(oPromise).done(jQuery.proxy(function() {
 
           // Collect the type the user has selected
-          let sInflectedType = this._getQueryType(true /* bInflected */ );
+          var sInflectedType = this._getQueryType(true /* bInflected */ );
 
           // perform page set up.
-          let oPage = this.getView().byId("idPage" + sInflectedType);
-          let fn = "setupPage" + sInflectedType;
+          var oPage = this.getView().byId("idPage" + sInflectedType);
+          var fn = "setupPage" + sInflectedType;
           if (typeof this[fn] === "function") {
             this[fn].apply(this, []);
           }
@@ -151,7 +151,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
           this.getView().byId("idBackButton").setEnabled(true);
 
           // advance to the next page
-          let oNav = this.getView().byId("idNavContainer");
+          var oNav = this.getView().byId("idNavContainer");
           oNav.to(oPage, "slide");
 
           // Not busy now
@@ -322,10 +322,10 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      */
     Redshift.prototype._getData = function() {
 
-      let value = jQuery.proxy(this._value, this);
+      var value = jQuery.proxy(this._value, this);
 
       // Build the payload
-      let oData = {
+      var oData = {
         id: ShortId.generate(10),
         name: value("idRedshiftNameInput"),
         endpoint: value("idRedshiftEndpointInput"),
@@ -335,7 +335,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
         password: value("idRedshiftPasswordInput"),
         remember: value("idRedshiftRememberPasswordCheckBox"),
         query_type: value("idQueryMethodSelect"),
-        query: "",
+        query: value("idQueryTextArea"),
         created_by: this.getUserId()
       };
 
@@ -370,7 +370,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      * @return {[type]} [description]
      */
     Redshift.prototype._getQueryType = function(bInflect) {
-      let sType = this.getView().byId("idQueryMethodSelect").getSelectedKey();
+      var sType = this.getView().byId("idQueryMethodSelect").getSelectedKey();
       return (bInflect ? sType.charAt(0).toUpperCase() + sType.slice(1) : sType.toLowerCase());
     };
 
@@ -393,7 +393,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
     Redshift.prototype._validateConnection = function() {
 
       // Valid
-      let bValid = true;
+      var bValid = true;
 
       // get all mandatory fields and check their state
       this._getMandtControls().forEach(function(c, i) {
@@ -420,11 +420,11 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
     Redshift.prototype._validateQuery = function(oControl) {
 
       // Valid
-      let bValid = true;
+      var bValid = true;
 
-      let oTextArea = oControl || this._control("idQueryTextArea");
-      let sQuery = oTextArea.getValue().toLowerCase();
-      let pattern = /^(update|delete|insert|alter|create)(.*)(;)$/i;
+      var oTextArea = oControl || this._control("idQueryTextArea");
+      var sQuery = oTextArea.getValue().toLowerCase();
+      var pattern = /^(update|delete|insert|alter|create)(.*)(;)$/i;
 
       // Now checking
       if (sQuery === "" || !sQuery) {
@@ -453,10 +453,10 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
     Redshift.prototype._validateTables = function(oControl) {
 
       // Valid
-      let bValid = true;
+      var bValid = true;
 
       // Now we can do the checking
-      let oComboBox = oControl || this.control("idTablesComboBox");
+      var oComboBox = oControl || this.control("idTablesComboBox");
       if (oComboBox.getSelectedKey() === "" || !oComboBox.getSelectedKey()) {
         oComboBox.setValueState(sap.ui.core.ValueState.Error);
         oComboBox.setValueStateText("Please pick only from the available tables");
@@ -479,10 +479,10 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
     Redshift.prototype._validateViews = function(oControl) {
 
       // Valid
-      let bValid = true;
+      var bValid = true;
 
       // Now we can do the checking
-      let oComboBox = oControl || this.control("idViewsComboBox");
+      var oComboBox = oControl || this.control("idViewsComboBox");
       if (oComboBox.getSelectedKey() === "" || !oComboBox.getSelectedKey()) {
         oComboBox.setValueState(sap.ui.core.ValueState.Error);
         oComboBox.setValueStateText("Please pick only from the available views");
@@ -504,10 +504,10 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
     Redshift.prototype._validateSave = function() {
 
       // Valid
-      let bValid = true;
+      var bValid = true;
 
       // Control stub
-      let control = jQuery.proxy(this._control, this);
+      var control = jQuery.proxy(this._control, this);
 
       // For tables, validate using tables. etc.
       switch (this._getQueryType(false)) {
@@ -533,7 +533,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      */
     Redshift.prototype._getMandtControls = function() {
       // Shortcut
-      let control = jQuery.proxy(this._control, this);
+      var control = jQuery.proxy(this._control, this);
       return [
         control("idRedshiftNameInput"),
         control("idRedshiftEndpointInput"),
@@ -551,8 +551,8 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
     Redshift.prototype.onInputChange = function(oEvent) {
 
       // Validate onChange value
-      let oControl = oEvent.getSource();
-      let sValue = oEvent.getParameter("value");
+      var oControl = oEvent.getSource();
+      var sValue = oEvent.getParameter("value");
 
       if (sValue === "" || !sValue) {
         oControl.setValueState(sap.ui.core.ValueState.Error);
@@ -681,7 +681,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      */
     Redshift.prototype._handleTestError = function(mError) {
       // Something went wrong!
-      let oConsole = this.getView().byId("idTestConsoleTextArea");
+      var oConsole = this.getView().byId("idTestConsoleTextArea");
       if (!mError) {
         oConsole.setValue("Console...");
       } else {
@@ -696,7 +696,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      */
     Redshift.prototype._handleSaveError = function(mError) {
       // Something went wrong!
-      let oConsole = this.getView().byId("idSaveConsoleTextArea");
+      var oConsole = this.getView().byId("idSaveConsoleTextArea");
       this._populateConsole(mError, oConsole);
     };
 
@@ -707,16 +707,36 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      * @return {[type]}          [description]
      */
     Redshift.prototype._populateConsole = function(vError, oConsole) {
-      let sMessage = "";
+      var sMessage = "";
 
       if (typeof vError === "object") {
-        let mXML = new sap.ui.model.xml.XMLModel();
+        var mXML = new sap.ui.model.xml.XMLModel();
         mXML.setXML(vError.response.body);
         sMessage = mXML.getProperty("/message").replace(/}.+$/g, "").replace(/^.+{/g, "");
       } else if (typeof vError === "string") {
         sMessage = vError;
       }
       oConsole.setValue(sMessage);
+    };
+
+    /***
+     *    ██╗  ██╗███████╗██╗     ██████╗
+     *    ██║  ██║██╔════╝██║     ██╔══██╗
+     *    ███████║█████╗  ██║     ██████╔╝
+     *    ██╔══██║██╔══╝  ██║     ██╔═══╝
+     *    ██║  ██║███████╗███████╗██║
+     *    ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝
+     *
+     */
+
+    /**
+     * Help icon button press event
+     * @param  {[type]} oEvent [description]
+     * @return {[type]}        [description]
+     */
+    Redshift.prototype.onHelpPress = function (oEvent) {
+      // show the query type help pop-up
+      alert("Help!");
     };
 
     return Redshift;

@@ -36,7 +36,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
     Controller.prototype.getDatasetCount = function () {
 
       // Declare count
-      let iCount = 0;
+      var iCount = 0;
 
       // Otherwise read in the forecast.
       this.getView().getModel("dataset").read("/DataSets", {
@@ -79,7 +79,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
      * @return {[type]}     [description]
      */
     Controller.prototype._value = function (sId) {
-      let oControl = this._control(sId);
+      var oControl = this._control(sId);
       if (oControl instanceof sap.m.CheckBox) {
         return (oControl.getSelected() ? 'X' : ' ');
       } else if (oControl instanceof sap.m.Select){

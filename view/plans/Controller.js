@@ -15,7 +15,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
      */
     Controller.prototype._getClientToken = function() {
       // Request client token from Node.
-      let clientToken = "";
+      var clientToken = "";
 
       jQuery.ajax({
         url: '/payments/token',
@@ -40,11 +40,11 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
      */
     Controller.prototype._createProfilePlanLink = function(sProfileId, sSubscriptionId, sPlanId) {
       // Collect our model
-      let oModel = this.getView().getModel("profile");
-      let bContinue = false;
+      var oModel = this.getView().getModel("profile");
+      var bContinue = false;
 
       // Add the begda and endda to payload
-      let oPayload = {
+      var oPayload = {
         id: "", // Blank for now
         subscription_id : sSubscriptionId,
         profile_id: sProfileId,
@@ -83,11 +83,11 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
      */
     Controller.prototype.getCurrentSubscription = function() {
       // Collect the model
-      let oModel = this.getView().getModel("profile");
-      let sPath = "/Profiles('TESTUSER')/CurrentSubscription";
+      var oModel = this.getView().getModel("profile");
+      var sPath = "/Profiles('TESTUSER')/CurrentSubscription";
 
       // We will need to collect the user's current subscription.
-      let oSubscription = oModel.getProperty(sPath);
+      var oSubscription = oModel.getProperty(sPath);
       if (!oSubscription) {
         oModel.read(sPath, {
           async: false,

@@ -1,0 +1,202 @@
+<mvc:View
+	controllerName="view.data.CSV"
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc"
+  xmlns:l="sap.ui.layout"
+  xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core">
+	<Page
+		enableScrolling="false"
+		showHeader="true">
+		<customHeader>
+			<Toolbar>
+				<Button
+					id="idCancelButton"
+					text="Cancel"
+					press="onCancelPress" />
+				<ToolbarSpacer />
+				<Title
+					textAlign="Center"
+					text="Prepare data" />
+				<ToolbarSpacer />
+				<Text
+					text="" />
+			</Toolbar>
+		</customHeader>
+		<footer>
+			<Toolbar>
+				<Button
+					id="idBackButton"
+					text="Back"
+					enabled="false"
+					press="onBackPress" />
+				<ToolbarSpacer />
+				<Button
+					id="idNextButton"
+					text="Next"
+					enabled="true"
+					press="onNextPress" />
+			</Toolbar>
+		</footer>
+		<NavContainer
+			id="idNavContainer">
+			<pages>
+				<Page
+					id="idPageStart"
+					showHeader="false"
+					enableScrolling="true">
+					<l:Grid
+		        defaultSpan="L12 M12 S12"
+		        width="auto"
+						class="sapUiSmallMargin">
+						<l:content>
+							<Text text="Configuring CSV data sets is as simple as copy paste. Take your
+								CSV data from a text file, and paste it into the area below. At the next screen
+								you'll confirm the separator, and if there are any headers. I'll take care of the rest!
+								Things to remember: CSV data sets do not update themselves automatically. To update
+								the data set, you have to manually edit the CSV content." />
+		          <f:SimpleForm
+		            id="idCSVConfigForm"
+		            maxContainerCols="2"
+		            editable="true"
+		            layout="ResponsiveGridLayout"
+		            labelSpanL="3"
+		            labelSpanM="3"
+		            emptySpanL="3"
+		            emptySpanM="3"
+		            columnsL="1"
+		            columnsM="1"
+		            class="editableForm sapUiMediumMarginTop">
+		            <f:content>
+		              <Label
+		                text="Dataset name"
+										required="true">
+										<layoutData>
+											<l:GridData span="L3 M3 S1" />
+										</layoutData>
+									</Label>
+		              <Input
+		                id="idNameInput"
+										value=""
+										placeholder="My new CSV data set">
+										<layoutData>
+											<l:GridData span="L6 M6 S10" />
+										</layoutData>
+		              </Input>
+									<Text
+										text=" ">
+										<layoutData>
+											<l:GridData span="L3 M3 S1" />
+										</layoutData>
+									</Text>
+
+									<Label
+										text="Separator character"
+										required="true">
+										<layoutData>
+											<l:GridData span="L3 M3 S1" />
+										</layoutData>
+									</Label>
+									<Input
+										id="idSeparatorInput"
+										value=","
+										width="30px">
+										<layoutData>
+											<l:GridData span="L2 M2 S10" />
+										</layoutData>
+									</Input>
+									<CheckBox
+										id="idHeadersCheckBox"
+										selected="false"
+										text="Does the data set have headers?">
+										<layoutData>
+											<l:GridData span="L6 M6 S10" />
+										</layoutData>
+									</CheckBox>
+
+									<TextArea
+										id="idDataTextArea"
+										rows="18"
+										columns="50"
+										visible="true"
+										enabled="true"
+										placeholder="Paste CSV data here">
+										<layoutData>
+											<l:GridData
+												span="L12 M12 S12" />
+										</layoutData>
+									</TextArea>
+		            </f:content>
+		          </f:SimpleForm>
+		        </l:content>
+		      </l:Grid>
+				</Page>
+
+				<!--
+				██████╗ ██████╗ ███╗   ██╗███████╗██╗ ██████╗
+			 ██╔════╝██╔═══██╗████╗  ██║██╔════╝██║██╔════╝
+			 ██║     ██║   ██║██╔██╗ ██║█████╗  ██║██║  ███╗
+			 ██║     ██║   ██║██║╚██╗██║██╔══╝  ██║██║   ██║
+			 ╚██████╗╚██████╔╝██║ ╚████║██║     ██║╚██████╔╝
+			  ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝     ╚═╝ ╚═════╝
+			  -->
+
+				<Page
+					id="idPageConfig"
+					enableScrolling="false"
+					showHeader="false">
+					<l:Grid
+		        defaultSpan="L12 M12 S12"
+		        width="auto">
+		        <l:content>
+		          <f:SimpleForm
+		            id="idHanaQueryForm"
+		            maxContainerCols="1"
+		            editable="true"
+		            layout="ResponsiveGridLayout"
+		            labelSpanL="3"
+		            labelSpanM="3"
+		            emptySpanL="4"
+		            emptySpanM="4"
+		            columnsL="1"
+		            columnsM="1"
+		            class="editableForm">
+		            <f:content>
+		              <Label
+		                text="Please also supply an SQL query to run against the database. This
+										query will form the basis of your data set">
+										<layoutData>
+											<l:GridData
+												span="L12 M12 S12" />
+										</layoutData>
+									</Label>
+		              <TextArea
+		                id="idQueryTextArea"
+										rows="5"
+										columns="20"
+										value="{hana>/query}"
+										placeholder='e.g. select * from "SCHEMA"."package.path.to.data_table";'>
+										<layoutData>
+											<l:GridData
+												span="L12 M12 S12" />
+										</layoutData>
+									</TextArea>
+									<Button
+										id="idHanaTestButton"
+										press="onQueryPress"
+										type="Emphasized"
+										text="Test">
+										<layoutData>
+											<l:GridData
+												span="L12 M12 S12" />
+										</layoutData>
+									</Button>
+		            </f:content>
+		          </f:SimpleForm>
+		        </l:content>
+		      </l:Grid>
+				</Page>
+			</pages>
+		</NavContainer>
+	</Page>
+</mvc:View>

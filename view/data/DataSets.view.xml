@@ -107,7 +107,187 @@
 				</customDescription>
 			</MessagePage>
 
-			<!-- Redshift Data Set details page -->
+			<!--
+			██╗  ██╗██████╗ ██████╗
+			██║  ██║██╔══██╗██╔══██╗
+			███████║██║  ██║██████╔╝
+			██╔══██║██║  ██║██╔══██╗
+			██║  ██║██████╔╝██████╔╝
+			╚═╝  ╚═╝╚═════╝ ╚═════╝
+			-->
+			<Page
+				id="idDataSetDetailPageHdb"
+				showHeader="true"
+				showNavButton="{device>isPhone}"
+				navButtonPress="onNavBackPress"
+				title="SAP HANA">
+				<content>
+					<l:Grid
+						defaultSpan="L12 M12 S12"
+						class="sapUiSmallMarginTop"
+						width="auto">
+						<l:content>
+							<f:SimpleForm
+								id="idHdbConfigForm"
+								maxContainerCols="2"
+								editable="true"
+								layout="ResponsiveGridLayout"
+								labelSpanL="2"
+								labelSpanM="2"
+								emptySpanL="4"
+								emptySpanM="4"
+								columnsL="1"
+								columnsM="1"
+								class="editableForm">
+								<f:content>
+									<Label
+										text="Name">
+										<layoutData>
+											<l:GridData
+												span="L2 M2 S12" />
+										</layoutData>
+									</Label>
+									<Input
+										id="idHdbNameInput"
+										value="{dataset>name}"
+										enabled="false">
+										<layoutData>
+											<l:GridData
+												span="L10 M10 S12" />
+										</layoutData>
+									</Input>
+
+									<Label
+										text="Host name">
+										<layoutData>
+											<l:GridData
+												span="L2 M2 S12" />
+										</layoutData>
+									</Label>
+									<Input
+										id="idHdbHostInput"
+										value="{dataset>Hdb/host}"
+										enabled="false">
+										<layoutData>
+											<l:GridData
+												span="L10 M10 S12" />
+										</layoutData>
+									</Input>
+
+									<Label
+										text="Port">
+										<layoutData>
+											<l:GridData
+												span="L2 M2 S12" />
+										</layoutData>
+									</Label>
+									<Input
+										id="idHdbPortInput"
+										value="{dataset>Hdb/port}"
+										type="Number"
+										enabled="false">
+										<layoutData>
+											<l:GridData
+												span="L10 M10 S12" />
+										</layoutData>
+									</Input>
+
+									<Label
+										text="Schema">
+										<layoutData>
+											<l:GridData
+												span="L2 M2 S12" />
+										</layoutData>
+									</Label>
+									<Input
+										id="idHdbDatabaseInput"
+										value="{dataset>Hdb/schema}"
+										enabled="false">
+										<layoutData>
+											<l:GridData
+												span="L10 M10 S12" />
+										</layoutData>
+									</Input>
+
+									<Label
+										text="User name">
+										<layoutData>
+											<l:GridData
+												span="L2 M2 S12" />
+										</layoutData>
+									</Label>
+									<Input
+										id="idHdbUsernameInput"
+										value="{dataset>Hdb/username}"
+										enabled="false">
+										<layoutData>
+											<l:GridData
+												span="L10 M10 S12" />
+										</layoutData>
+									</Input>
+
+									<Label
+										text="Password">
+										<layoutData>
+											<l:GridData
+												span="L2 M2 S12" />
+										</layoutData>
+									</Label>
+									<Input
+										id="idHdbPasswordInput"
+										value="{dataset>Hdb/password}"
+										enabled="false"
+										type="Password">
+										<layoutData>
+											<l:GridData
+												span="L10 M10 S12" />
+										</layoutData>
+									</Input>
+
+									<Label
+										text=""><!-- empty text -->
+										<layoutData>
+											<l:GridData
+												span="L2 M2 S12" />
+										</layoutData>
+									</Label>
+									<CheckBox
+										id="idHdbRememberPasswordCheckBox"
+										selected="{= ${dataset>Hdb/remember} === 'X' ? true : false }"
+										text="Save username &amp; password?"
+										enabled="false">
+										<layoutData>
+											<l:GridData
+												span="L10 M10 S12" />
+										</layoutData>
+									</CheckBox>
+
+									<TextArea
+										id="idHdbQueryTextArea"
+										rows="5"
+										value="{dataset>Hdb/query}"
+										enabled="false">
+										<layoutData>
+											<l:GridData
+												span="L12 M12 S12" />
+										</layoutData>
+									</TextArea>
+								</f:content>
+							</f:SimpleForm>
+						</l:content>
+					</l:Grid>
+					<core:Fragment fragmentName="view.data.Definition" type="XML" />
+				</content>
+			</Page>
+
+			<!--
+			██████╗ ███████╗██████╗ ███████╗██╗  ██╗██╗███████╗████████╗
+			██╔══██╗██╔════╝██╔══██╗██╔════╝██║  ██║██║██╔════╝╚══██╔══╝
+			██████╔╝█████╗  ██║  ██║███████╗███████║██║█████╗     ██║
+			██╔══██╗██╔══╝  ██║  ██║╚════██║██╔══██║██║██╔══╝     ██║
+			██║  ██║███████╗██████╔╝███████║██║  ██║██║██║        ██║
+			╚═╝  ╚═╝╚══════╝╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝╚═╝        ╚═╝
+			-->
       <Page
         id="idDataSetDetailPageRedshift"
 				showHeader="true"
@@ -273,7 +453,15 @@
 				</content>
       </Page>
 
-			<!-- Google Data Set details page -->
+			<!--
+			██████╗  ██████╗  ██████╗  ██████╗ ██╗     ███████╗
+		 ██╔════╝ ██╔═══██╗██╔═══██╗██╔════╝ ██║     ██╔════╝
+		 ██║  ███╗██║   ██║██║   ██║██║  ███╗██║     █████╗
+		 ██║   ██║██║   ██║██║   ██║██║   ██║██║     ██╔══╝
+		 ╚██████╔╝╚██████╔╝╚██████╔╝╚██████╔╝███████╗███████╗
+		  ╚═════╝  ╚═════╝  ╚═════╝  ╚═════╝ ╚══════╝╚══════╝
+			-->
+
       <Page
         id="idDataSetDetailPageGoogle"
 				showHeader="true"
@@ -355,6 +543,7 @@
 					<core:Fragment fragmentName="view.data.Definition" type="XML" />
 				</content>
       </Page>
+
     </detailPages>
 	</SplitContainer>
 </mvc:View>

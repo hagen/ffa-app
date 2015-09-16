@@ -39,13 +39,13 @@ sap.ui.define(['jquery.sap.global', 'view/auth/Controller'],
      * page - sign in and register.
      */
     Connect.prototype._onRouteMatched = function(oEvent) {
-      let oDialog = this.getView().byId("idBusyDialog");
+      var oDialog = this.getView().byId("idBusyDialog");
       oDialog.open();
 
       // When the route is matched, we either want the login tab or
       // the register tab
       var oParameters = oEvent.getParameters();
-      let sRoute = "";
+      var sRoute = "";
 
       // First, check if access_token is supplied. If so, we're authed
       // to go to dash

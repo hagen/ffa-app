@@ -39,9 +39,9 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
      * Route matched handler...
      */
     Free.prototype._onRouteMatched = function(oEvent) {
-      let oCreatePromise = jQuery.Deferred();
-      let oTimerPromise = jQuery.Deferred();
-      let self = this;
+      var oCreatePromise = jQuery.Deferred();
+      var oTimerPromise = jQuery.Deferred();
+      var self = this;
 
       // Busy!
       this.showBusyDialog({
@@ -66,9 +66,9 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
      * Route matched handler...
      */
     Free.prototype._onChangeRouteMatched = function(oEvent) {
-      let oCreatePromise = jQuery.Deferred();
-      let oTimerPromise = jQuery.Deferred();
-      let self = this;
+      var oCreatePromise = jQuery.Deferred();
+      var oTimerPromise = jQuery.Deferred();
+      var self = this;
 
       // Busy!
       this.showBusyDialog({
@@ -103,7 +103,7 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
       }, []);
 
       // Update the user's account
-      let oModel = this.getView().getModel("profile");
+      var oModel = this.getView().getModel("profile");
       oModel.create("/Subscriptions", {
         id : "", // Will be updated
 				subscription_id : "",

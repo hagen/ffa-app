@@ -155,8 +155,8 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
           this._sId = oData.id;
 
           // advance to the next page
-          let oNav = this.getView().byId("idNavContainer");
-          let oPage = this.getView().byId("idPage2");
+          var oNav = this.getView().byId("idNavContainer");
+          var oPage = this.getView().byId("idPage2");
           oPage.bindElement("dataset>/DataSets('" + oData.id + "')");
           oNav.to(oPage, "slide");
 
@@ -191,7 +191,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
         return;
       }
 
-      let oContext = aItems[0].getBindingContext("dataset");
+      var oContext = aItems[0].getBindingContext("dataset");
       if (oContext.getProperty("type").toLowerCase() !== "date") {
         this.showErrorAlert("Pop. Please only select a column of type 'Date'.", "Date column", true /*bCompact*/ );
         return;
@@ -202,50 +202,24 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
         title: "Saving",
         text: "Saving your Sheet - one moment please..."
       });
+      
+      // Refresh the dataset listing by raising an event (subscribers will do
+      // the work)
+      this.getEventBus().publish("Detail", "RefreshMaster", {});
 
-      // What's the Id of our date dimension?
-      let sDimensionId = oContext.getProperty("id");
+      // Timed close.
+      jQuery.sap.delayedCall(1500, this, function() {
 
-      // When we save, all we're actually doing is setting the correct field
-      // to be our designated 'Date' field, as we MUST have this.
-      this.getView().getModel("dataset").update("/Dimensions('" + sDimensionId + "')", {
-        is_date: "X"
-      }, {
-        success: jQuery.proxy(function(oData, mResponse) {
-          // Refresh the dataset listing by raising an event (subscribers will do
-          // the work)
-          this.getEventBus().publish("Detail", "RefreshMaster", {});
+        // NOt busy any more
+        this.closeBusyDialog();
 
-          // Update the screen, then close.
-          this.updateBusyDialog({
-            text: "All done! Finishing up..."
-          });
+        // Navigate to the new data set...
+        this.getRouter().navTo("datasets", {
+          dataset_id: this._sId
+        }, !sap.ui.Device.system.phone);
 
-          // Timed close.
-          jQuery.sap.delayedCall(1500, this, function() {
-
-            // NOt busy any more
-            this.closeBusyDialog();
-
-            // Navigate to the new data set...
-            this.getRouter().navTo("datasets", {
-              dataset_id: this._sId
-            }, !sap.ui.Device.system.phone);
-
-            // return to the first page and close
-            this.onBackPress(null /* oEvent*/ );
-          });
-        }, this),
-        error: jQuery.proxy(function(mError) {
-
-          // Handle connection test errors
-          this._handleSaveError(mError);
-
-          // not busy any more
-          this.closeBusyDialog();
-        }, this),
-        async: true,
-        merge: true
+        // return to the first page and close
+        this.onBackPress(null /* oEvent*/ );
       });
     };
 
@@ -395,7 +369,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      */
     Sheets.prototype._handleTestError = function(mError) {
       // Something went wrong!
-      let oConsole = this.getView().byId("idTestConsoleTextArea");
+      var oConsole = this.getView().byId("idTestConsoleTextArea");
       this._populateConsole(mError, oConsole);
     };
 
@@ -406,8 +380,8 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      */
     Sheets.prototype._handleSaveError = function(mError) {
       // Something went wrong!
-      let oConsole = this.getView().byId("idSaveConsoleTextArea");
-      this._populateConsole(mError, oConsole);
+      // var oConsole = this.getView().byId("idSaveConsoleTextArea");
+      // this._populateConsole(mError, oConsole);
     };
 
     /**
@@ -417,10 +391,10 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      * @return {[type]}          [description]
      */
     Sheets.prototype._populateConsole = function(vError, oConsole) {
-      let sMessage = "";
+      var sMessage = "";
 
       if (typeof vError === "object") {
-        let mXML = new sap.ui.model.xml.XMLModel();
+        var mXML = new sap.ui.model.xml.XMLModel();
         mXML.setXML(vError.response.body);
         sMessage = mXML.getProperty("/message"); //.replace(/}.+$/g, "").replace(/^.+{/g, "");
       } else if (typeof vError === "string") {

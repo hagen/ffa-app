@@ -94,18 +94,18 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
     Login.prototype.onSignInButtonPress = function(oEvent) {
 
       // Validate the user-entered conditions
-      let oEmailInput = this.getView().byId("idLoginEmail");
-      let oPasswordInput = this.getView().byId("idLoginPassword");
-      let bContinue = false;
+      var oEmailInput = this.getView().byId("idLoginEmail");
+      var oPasswordInput = this.getView().byId("idLoginPassword");
+      var bContinue = false;
 
       // Email validation...
-      if (!(this._validateEmail(oEmailInput) && this._validatePassword(oPasswordInput))) {
+      if (!(this.validateEmail(oEmailInput, false /* bTestExists */) && this._validatePassword(oPasswordInput))) {
         return;
       }
 
       // The rest of this code assumes you are not using a library.
       // It can be made less wordy if you use one.
-      this._submitForm("http://localhost:8080/auth/local/login", "post", {
+      this._submitForm("http://hagen.forefrontanalytics.com.au/auth/local/login", "post", {
         email: oEmailInput.getValue(),
         password: oPasswordInput.getValue()
       });
@@ -138,17 +138,17 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
     Login.prototype.onRegisterButtonPress = function(oEvent) {
 
       // Validate the user-entered conditions
-      let oEmailInput = this.getView().byId("idRegisterEmail");
-      let oPasswordInput = this.getView().byId("idRegisterPassword");
+      var oEmailInput = this.getView().byId("idRegisterEmail");
+      var oPasswordInput = this.getView().byId("idRegisterPassword");
 
       // Email validation...
-      if (!(this.validateEmail(oEmailInput) && this._validatePassword(oPasswordInput))) {
+      if (!(this.validateEmail(oEmailInput, true /* bTestExists */) && this._validatePassword(oPasswordInput))) {
         return;
       }
 
       // Name validation
-      let oFirstnameInput = this.getView().byId("idFirstNameInput");
-      let oLastnameInput = this.getView().byId("idLastNameInput");
+      var oFirstnameInput = this.getView().byId("idFirstNameInput");
+      var oLastnameInput = this.getView().byId("idLastNameInput");
 
       if (!(this._isNotEmpty(oFirstnameInput, "I'm not a fan of my name either, but we'll need yours")
             && this._isNotEmpty(oLastnameInput, "Derp. We'll need your last name. Formalities, you know..."))) {
@@ -157,7 +157,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
 
       // The rest of this code assumes you are not using a library.
       // It can be made less wordy if you use one.
-      this._submitForm("http://localhost:8080/auth/local/register", "post", {
+      this._submitForm("http://hagen.forefrontanalytics.com.au/auth/local/register", "post", {
         email: oEmailInput.getValue(),
         password: oPasswordInput.getValue(),
         lastname: oLastnameInput.getValue(),
@@ -202,13 +202,13 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
     Login.prototype._submitForm = function(sAction, sMethod, oParams) {
       // The rest of this code assumes you are not using a library.
       // It can be made less wordy if you use one.
-      let form = document.createElement("form");
+      var form = document.createElement("form");
       form.setAttribute("method", sMethod.toLowerCase());
       form.setAttribute("action", sAction);
 
-      for (let key in oParams) {
+      for (var key in oParams) {
         if (oParams.hasOwnProperty(key)) {
-          let hiddenField = document.createElement("input");
+          var hiddenField = document.createElement("input");
           hiddenField.setAttribute("type", "hidden");
           hiddenField.setAttribute("name", key);
           hiddenField.setAttribute("value", oParams[key]);
@@ -255,10 +255,10 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
      * @param  {[type]} oInput [description]
      * @return {[type]}        [description]
      */
-    Login.prototype.validateEmail = function(oInput) {
+    Login.prototype.validateEmail = function(oInput, bTestExists) {
 
       // Validate
-      let bValid = false;
+      var bValid = false;
 
       // Test
       if (!this._validateEmail(oInput.getValue())) {
@@ -274,8 +274,10 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
         return bValid;
       }
 
-      // Check the email is not being used
-      bValid = !this._emailExists(oInput);
+      if(bTestExists) {
+        // Check the email is not being used
+        bValid = !this._emailExists(oInput);
+      }
 
       // return result
       return bValid;
@@ -290,7 +292,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
     Login.prototype._emailExists = function(oInput) {
 
       // Validate
-      let bExists = true;
+      var bExists = true;
 
       // Call unauthenticated GET end point in Node to check if an email exists.
       jQuery.ajax({
@@ -329,7 +331,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
     Login.prototype._validatePassword = function(oInput) {
 
       // Validate
-      let bValid = false;
+      var bValid = false;
 
       // Password validation
       if ("" === oInput.getValue()) {
@@ -360,7 +362,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
       }
 
       // Validate
-      let bEmpty = false;
+      var bEmpty = false;
 
       // Password validation
       if ("" === oInput.getValue()) {
@@ -391,7 +393,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
      * @param  {[type]} oEvent [description]
      */
     Login.prototype.onGooglePress = function(oEvent) {
-      window.location.href = "http://localhost:8080/auth/google";
+      window.location.href = "http://hagen.forefrontanalytics.com.au/auth/google";
     };
 
     /**
@@ -399,7 +401,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
      * @param  {[type]} oEvent [description]
      */
     Login.prototype.onTwitterPress = function(oEvent) {
-      window.location.href = "http://localhost:8080/auth/twitter";
+      window.location.href = "http://hagen.forefrontanalytics.com.au/auth/twitter";
     };
 
     /**
@@ -407,7 +409,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
      * @param  {[type]} oEvent [description]
      */
     Login.prototype.onLinkedInPress = function(oEvent) {
-      window.location.href = "http://localhost:8080/auth/linkedin";
+      window.location.href = "http://hagen.forefrontanalytics.com.au/auth/linkedin";
     };
 
     /**
@@ -415,7 +417,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
      * @param  {[type]} oEvent [description]
      */
     Login.prototype.onSCNPress = function(oEvent) {
-      window.location.href = "http://localhost:8080/auth/scn";
+      window.location.href = "http://hagen.forefrontanalytics.com.au/auth/scn";
     };
 
     return Login;
