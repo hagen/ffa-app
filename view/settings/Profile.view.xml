@@ -11,8 +11,7 @@
 		showHeader="true">
 		<customHeader>
 			<Toolbar>
-				<Text
-					text="" />
+				<Text text="" />
 				<ToolbarSpacer />
 				<Title
 					textAlign="Center"
@@ -24,6 +23,16 @@
 					press="onEditPress" />
 			</Toolbar>
 		</customHeader>
+		<footer>
+			<Toolbar>
+				<ToolbarSpacer />
+				<Button
+					id="idCancelButton"
+					text="Cancel"
+					visible="false"
+					press="onCancelPress" />
+			</Toolbar>
+		</footer>
 		<l:Grid
 			defaultSpan="L12 M12 S12"
 			width="auto">
@@ -52,7 +61,12 @@
 						<Input
 							id="idFirstNameInput"
 							value="{profile>first_name}"
+							name="first_name"
+							change="onInputChange"
 							enabled="false">
+							<customData>
+								<core:CustomData key="error" value="First names are important - may we please have yours?" />
+							</customData>
 							<layoutData>
 								<l:GridData
 									span="L4 M4 S12" />
@@ -70,7 +84,12 @@
 						<Input
 							id="idLastNameInput"
 							value="{profile>last_name}"
+							name="last_name"
+							change="onInputChange"
 							enabled="false">
+							<customData>
+								<core:CustomData key="error" value="No last name?! Really?" />
+							</customData>
 							<layoutData>
 								<l:GridData
 									span="L4 M4 S12" />
@@ -88,7 +107,14 @@
 						<Input
 							id="idEmailInput"
 							value="{profile>email}"
+							name="email"
+							type="Email"
+							change="onEmailChange"
 							enabled="false">
+							<customData>
+								<core:CustomData key="error_blank" value="Your email is blank. We'll need this!" />
+								<core:CustomData key="error_regex" value="This appears to be an invalid email. Please double-check your entry" />
+							</customData>
 							<layoutData>
 								<l:GridData
 									span="L10 M10 S12" />

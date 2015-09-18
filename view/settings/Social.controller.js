@@ -159,7 +159,7 @@ sap.ui.define(["jquery.sap.global", "view/settings/Controller"],
         error: jQuery.proxy(function(mError) {
           this._maybeHandleAuthError(mError);
         }, this)
-      })
+      });
     };
 
     /**
@@ -290,7 +290,7 @@ sap.ui.define(["jquery.sap.global", "view/settings/Controller"],
         error: jQuery.proxy(function(mError) {
           bContinue = false;
         }, this)
-      })
+      });
 
       // If bContinue
       if (!bContinue) {
