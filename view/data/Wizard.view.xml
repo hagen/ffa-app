@@ -7,65 +7,79 @@
 	xmlns:html="http://www.w3.org/1999/xhtml">
 
   <!-- TODO localise texts -->
-	<Page
-    id="idDataSetsWizardStartPage"
-    title="Data source">
-    <content>
-      <html:div
-        class="ffaDataSetWizardPage1Container">
-        <l:Grid
-          defaultSpan="L6 M6 S12"
-          class="sapUiSmallMarginTop">
-          <l:content>
-            <ObjectListItem
-              id="idHanaObjectListItem"
-              title="SAP HANA"
-              icon="sap-icon://sap-logo-shape"
-              type="Active"
-              press="onHanaItemPress"
-              class="ffaDataSourceIconHana">
-            </ObjectListItem>
-            <ObjectListItem
-              id="idRedshiftObjectListItem"
-              title="AWS Redshift"
-              icon="images/datasources/redshift.png"
-              press="onRedshiftItemPress"
-              type="Active"
-              class="ffaDataSourceIconRedshift">
-            </ObjectListItem>
-            <ObjectListItem
-              id="idHadoopObjectListItem"
-              title="Hadoop"
-              icon="sap-icon://FontMfizz/hadoop"
-              type="Active"
-              press="onHadoopItemPress">
-            </ObjectListItem>
-            <ObjectListItem
-              id="idExcelObjectListItem"
-              title="Excel"
-              icon="sap-icon://excel-attachment"
-              type="Active"
-              class="ffaDataSourceIconExcel"
-              press="onExcelItemPress">
-            </ObjectListItem>
-            <ObjectListItem
-              id="idSheetsObjectListItem"
-              title="Google Docs Spreadsheet"
-              icon="sap-icon://FontAwesome/google"
-              type="Active"
-              press="onSheetsItemPress"
-              class="ffaDataSourceIconGoogle">
-            </ObjectListItem>
-						<ObjectListItem
-              id="idCsvObjectListItem"
-              title="CSV file"
-              icon="sap-icon://FontAwesome/file-text-o"
-              type="Active"
-              press="onCsvItemPress">
-            </ObjectListItem>
-          </l:content>
-        </l:Grid>
-      </html:div>
-    </content>
-  </Page>
+	<NavContainer
+		id="idNavContainer">
+		<pages>
+			<Page
+		    id="idDataSetsWizardStartPage"
+		    title="Data source">
+		    <content>
+		      <html:div
+		        class="ffaDataSetWizardPage1Container">
+		        <l:Grid
+		          defaultSpan="L6 M6 S12"
+		          class="sapUiSmallMarginTop">
+		          <l:content>
+		            <ObjectListItem
+		              id="idHanaObjectListItem"
+		              title="SAP HANA"
+		              icon="sap-icon://sap-logo-shape"
+		              type="Active"
+		              press="onHanaItemPress"
+		              class="ffaDataSourceIconHana">
+		            </ObjectListItem>
+		            <ObjectListItem
+		              id="idRedshiftObjectListItem"
+		              title="AWS Redshift"
+		              icon="images/datasources/redshift.png"
+		              press="onRedshiftItemPress"
+		              type="Active"
+		              class="ffaDataSourceIconRedshift">
+		            </ObjectListItem>
+		            <ObjectListItem
+		              id="idHadoopObjectListItem"
+		              title="Hadoop"
+		              icon="sap-icon://FontMfizz/hadoop"
+		              type="Active"
+		              press="onHadoopItemPress">
+		            </ObjectListItem>
+		            <ObjectListItem
+		              id="idExcelObjectListItem"
+		              title="Excel"
+		              icon="sap-icon://excel-attachment"
+		              type="Active"
+		              class="ffaDataSourceIconExcel"
+		              press="onExcelItemPress">
+		            </ObjectListItem>
+		            <ObjectListItem
+		              id="idSheetsObjectListItem"
+		              title="Google Docs Spreadsheet"
+		              icon="sap-icon://FontAwesome/google"
+		              type="Active"
+		              press="onSheetsItemPress"
+		              class="ffaDataSourceIconGoogle">
+		            </ObjectListItem>
+								<ObjectListItem
+		              id="idCsvObjectListItem"
+		              title="CSV file"
+		              icon="sap-icon://FontAwesome/file-text-o"
+		              type="Active"
+		              press="onCsvItemPress">
+		            </ObjectListItem>
+		          </l:content>
+		        </l:Grid>
+		      </html:div>
+		    </content>
+		  </Page>
+
+			<!-- No favorites message page -->
+			<MessagePage
+				id="idMessagePage"
+				icon="sap-icon://FontAwesome/frown-o"
+				showHeader="false"
+				showNavButton="false"
+				description="You're over your plan's data limit. To create another data set, you'll need to remove some old ones, or upgrade your plan"
+				text="All out of data!" /> <!-- TODO Localisation -->
+		</pages>
+	</NavContainer>
 </mvc:View>

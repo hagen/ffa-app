@@ -251,6 +251,7 @@ sap.ui.define(['jquery.sap.global', 'view/data/Controller'],
      * @param  {object} oEvent Button press event
      */
     DataSets.prototype.onMasterAddPress = function(oEvent) {
+
       // deselect all list items...
       var oList = this.getView().byId('idDataSetMasterList');
       oList.removeSelections(true /* all */ );
@@ -423,6 +424,7 @@ sap.ui.define(['jquery.sap.global', 'view/data/Controller'],
         bUpdate // Import data?
       );
     };
+
 
     return DataSets;
 
