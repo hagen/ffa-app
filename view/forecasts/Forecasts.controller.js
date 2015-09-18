@@ -29,6 +29,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
       this.getRouter().getRoute("forecast-from-folder").attachPatternMatched(this._onRouteMatchedFolder, this);
       this.getRouter().getRoute("forecast-from-recents").attachPatternMatched(this._onRouteMatchedRecents, this);
       this.getRouter().getRoute("forecast-from-favorites").attachPatternMatched(this._onRouteMatchedFavorites, this);
+      this.getRouter().getRoute("forecast-from-search").attachPatternMatched(this._onRouteMatchedSearch, this);
 
       // and if some how they got here directly from the workbench, send them back to the folder
       this.getRouter().getRoute("forecasts").attachPatternMatched(this._onRouteMatchedDefault, this);
@@ -108,6 +109,16 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      */
     Forecasts.prototype._onRouteMatchedFavorites = function(oEvent) {
       this._sReturnRoute = "favorites";
+      this._onRouteMatched(oEvent);
+    };
+
+    /**
+     * We've come from the search overview. So when they nav back, navback
+     * there.
+     * @param  {object} oEvent Route matched event
+     */
+    Forecasts.prototype._onRouteMatchedSearch = function(oEvent) {
+      this._sReturnRoute = "search";
       this._onRouteMatched(oEvent);
     };
 

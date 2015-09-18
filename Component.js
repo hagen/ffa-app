@@ -17,6 +17,7 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
         forecastOdataUrl: "/fa/ppo/drop3/xs/services/forecast.xsodata",
         profileOdataUrl: "/fa/ppo/drop3/xs/services/profile.xsodata",
         staticsOdataUrl: "/fa/ppo/drop3/xs/services/static.xsodata",
+        functionOdataUrl: "/fa/ppo/drop3/xs/services/function.xsodata",
         userJsonUrl: "http://localhost:8080/auth/api/user",
       }
     },
@@ -31,9 +32,9 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
         transition: "slide"
       },
       routes: [{
-        pattern: "algorithms/:algorithm_id:",
-        name: "algorithms",
-        view: "Algorithms",
+        pattern: "functions/:function_id:",
+        name: "functions",
+        view: "functions.Library",
         viewLevel: 3
       }, {
         pattern: "datasets/:dataset_id:",
@@ -87,6 +88,21 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
         view: "forecasts.Workbench",
         viewLevel: 3,
         subroutes: [{
+          pattern: "workbench/search",
+          name: "search",
+          view: "forecasts.Search",
+          targetControl: "idWorkbenchSplitContainer",
+          targetAggregation: "detailPages",
+          viewLevel: 4,
+          subroutes: [{
+            pattern: "workbench/search/{forecast_id}/:tab:",
+            name: "forecast-from-search",
+            view: "forecasts.Forecasts",
+            targetControl: "idContainer",
+            targetAggregation: "pages",
+            viewLevel: 5
+          }]
+        }, {
           pattern: "workbench/recents",
           name: "recents",
           view: "forecasts.Recents",
@@ -345,6 +361,12 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
     });
     oPModel.setDefaultBindingMode("TwoWay");
     this.setModel(oPModel, "profile");
+
+    var oFuncModel = new sap.ui.model.odata.ODataModel(mConfig.serviceConfig.functionOdataUrl, {
+      headers : oHeaders
+    });
+    oFuncModel.setDefaultBindingMode("OneWay");
+    this.setModel(oFuncModel, "function");
 
     var oSModel = new sap.ui.model.odata.ODataModel(mConfig.serviceConfig.staticsOdataUrl, {
       headers : oHeaders

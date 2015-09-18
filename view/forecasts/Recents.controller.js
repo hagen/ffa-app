@@ -1,4 +1,5 @@
 jQuery.sap.declare("view.forecasts.Recents");
+jQuery.sap.require("thirdparty.momentjs.Momentjs");
 
 // Provides controller forecasts.Recents
 sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
@@ -29,8 +30,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
     /**
      *
      */
-    Recents.prototype.onAfterRendering = function() {;
-    };
+    Recents.prototype.onAfterRendering = function() {};
 
     /**
      * Route matched handler for the workbench recent forecasts listing
@@ -62,6 +62,10 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
         path: "user",
         operator: sap.ui.model.FilterOperator.EQ,
         value1: "TESTUSER"
+      }), new sap.ui.model.Filter({
+        path: "endda",
+        operator: sap.ui.model.FilterOperator.EQ,
+        value1: "9999-12-31"
       })];
 
       // If we have forecasts, bind the tile container
@@ -69,10 +73,15 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
 
 				var oTemplate = new sap.m.StandardTile({
 					title: "{forecast>name}",
-					info: "{forecast>DataSet/name}",
+					info: {
+            path : "forecast>run_at",
+            formatter : function(dRunAt) {
+              return moment(dRunAt).fromNow();
+            }
+          },
 					number: "{forecast>horizon}",
 					numberUnit: "{= ${forecast>horizon} === 1 ? 'day' : 'days' }",
-					icon: "sap-icon://line-chart",
+					icon: "sap-icon://FontAwesome/clock-o",
           type: sap.m.StandardTileType.None,
           press: jQuery.proxy(this.onTilePress, this) // be careful with this template
             // press event - you must wrap in Proxy, otherwise
@@ -81,10 +90,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
 
         // Bind tile container
         oTileContainer.bindAggregation("tiles", {
-          path: "forecast>/Forecasts",
-          parameters: {
-            expand: "DataSet,Runs"
-          },
+          path: "forecast>/Recents",
           filters: aFilters,
           sorter: [new sap.ui.model.Sorter({
             path: "name",

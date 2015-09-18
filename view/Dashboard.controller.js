@@ -76,7 +76,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
      */
     Dashboard.prototype.onAlogrithmsTilePress = function(oEvent) {
       // Now we can nav to the detail page.
-      this.getRouter().navTo("algorithms", {}, !sap.ui.Device.system.phone);
+      this.getRouter().navTo("functions", {}, !sap.ui.Device.system.phone);
     };
 
     return Dashboard;

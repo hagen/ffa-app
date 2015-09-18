@@ -56,8 +56,8 @@
 							<StandardListItem
 								id="idRecentsListItem"
 								adaptTitleSize="true"
-								icon="sap-icon://history"
-								title="Recent forecasts"
+								icon="sap-icon://FontAwesome/clock-o"
+								title="Recent"
 								type="Active">
 								<customData>
 									<core:CustomData

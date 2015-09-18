@@ -1,0 +1,83 @@
+<mvc:View
+	controllerName="view.functions.Library"
+	xmlns="sap.m"
+  xmlns:l="sap.ui.layout"
+  xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core"
+	xmlns:mvc="sap.ui.core.mvc">
+  <Page
+    id="idFunctionPage"
+		title="Function library"
+		showHeader="true"
+		showNavButton="true"
+		navButtonPress="onNavBackPress">
+		<content>
+			<l:Grid
+				defaultSpan="L12 M12 S12"
+				width="auto"
+				class="sapUiSmallMargin">
+				<l:content>
+					<f:SimpleForm
+						id="idSearchFunctionForm"
+						maxContainerCols="2"
+						editable="true"
+						layout="ResponsiveGridLayout"
+						labelSpanL="3"
+						labelSpanM="3"
+						emptySpanL="4"
+						emptySpanM="4"
+						columnsL="1"
+						columnsM="1"
+						class="editableForm">
+						<f:content>
+							<Label
+								text="Search">
+								<layoutData>
+									<l:GridData span="L2 M2 S12" />
+								</layoutData>
+							</Label>
+							<Input
+								id="idSearchInput"
+								change="onSearchChange">
+								<layoutData>
+									<l:GridData span="L8 M8 S10" />
+								</layoutData>
+							</Input>
+
+							<Button
+								id="idSearchButton"
+								type="Transparent"
+								icon="sap-icon://FontAwesome/search" >
+								<layoutData>
+									<l:GridData span="L1 M1 S2" />
+								</layoutData>
+							</Button>
+						</f:content>
+					</f:SimpleForm>
+				</l:content>
+			</l:Grid>
+
+			<TileContainer
+				id="idFunctionTileContainer"
+				allowAdd="false"
+				editable="false"
+				tiles="{
+					path : 'function>/Functions',
+					parameters : {
+						expand : 'Type'
+					},
+					sorter : {
+						path : 'Type/id',
+						descending : 'false'
+					}
+				}">
+				<StandardTile
+					icon="sap-icon://{function>icon}"
+					info="{function>Type/name}"
+					infoState="{= ${function>owner} === '' ? 'None' : 'Success' }"
+					title="{function>name}"
+					press="onTilePress"/>
+			</TileContainer>
+		</content>
+  </Page>
+</mvc:View>
