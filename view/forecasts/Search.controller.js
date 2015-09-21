@@ -158,6 +158,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
       // clear oInput
       oInput.setValue("");
     };
+    
     return Search;
 
   }, /* bExport= */ true);

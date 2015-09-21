@@ -150,7 +150,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
           sorter: [new sap.ui.model.Sorter({
             path: "type",
             descending: false,
-            group: true
+            group: false
           }), new sap.ui.model.Sorter({
             path: "name",
             descending: false,

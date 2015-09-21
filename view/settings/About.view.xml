@@ -8,7 +8,8 @@
 	<Page
 		id="idAboutPage"
 		enableScrolling="false"
-		showHeader="true">
+		showHeader="true"
+		class="sapUiContentPadding">
 		<customHeader>
 			<Toolbar>
 				<Title
@@ -17,6 +18,22 @@
 					text="About" />
 			</Toolbar>
 		</customHeader>
-		<Text text="Heaps of information about the Forefront App release, including bug fixes/enhancements" />
+		<Title
+			text="Predictive Console, v0.0.4"
+			titleStyle="H1" />
+		<Text text="With this, the first public release of the Predictive Console, Forefront Analytics
+			brings predictive forecasting to your finger tips. This Beta realse focuses on intuitive
+			and easy time series forecasting, visualisation, and
+			simple modifications of forecast results, right in the visualisation." />
+		<Text text="- Fiori-style tablet/phone compatible web app" />
+		<Text text="- Social authentication/log in, to simplify application access" />
+		<Text text="- Simple payment options for paid plans" />
+		<Text text="- Free plan for early adopters" />
+		<Text text="- HANA, CSV, Google Sheets, AWS Redshift, Hadoop data sources" />
+		<Text text="- Interactive charting library, for smooth, fast visualisations" />
+		<Text text="- Sneak-peek function library addition" />
+		<Text text="- embedded support service for paid users" />
+		<Text text="- re-run capability for forecasts" />
+		<Text text="- forecast folder organisation and forecast search" />
 	</Page>
 </mvc:View>
