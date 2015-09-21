@@ -537,7 +537,8 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
         train_from : new Date(oView.byId("idFromDatePicker").getValue()),
         train_to : new Date(oView.byId("idToDatePicker").getValue()),
         horizon : parseInt(oView.byId("idHorizonInput").getValue(), 10),
-        validation : parseInt(oView.byId("idValidationInput").getValue(), 10)
+        validation : parseInt(oView.byId("idValidationInput").getValue(), 10),
+        smoothing : (oView.byId("idSmoothingCheckBox").getSelected() ? "X" : " ")
       };
 
       // When we know the forecast has been created, we can run it...

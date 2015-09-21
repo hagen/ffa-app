@@ -24,8 +24,8 @@
 					<ObjectNumber
 						emphasized="true"
 						unit="day horizon"
-						state="None"
-						number="{forecast>Run/Forecast/horizon}">
+						state="Success"
+						number="{forecast>horizon}">
 						<layoutData>
 							<l:GridData span="L6 M6 S12" />
 						</layoutData>
@@ -35,7 +35,7 @@
 						emphasized="true"
 						unit="days of validation"
 						state="None"
-						number="{forecast>Run/Forecast/validation}">
+						number="{forecast>validation}">
 						<layoutData>
 							<l:GridData span="L6 M6 S12" />
 						</layoutData>
@@ -44,7 +44,7 @@
 					<ObjectNumber
 						emphasized="true"
 						unit="variables"
-						state="None"
+						state="Warning"
 						number="{forecast>variables}">
 						<layoutData>
 							<l:GridData span="L6 M6 S12" />
@@ -76,6 +76,15 @@
 							<l:GridData span="L12 M12 S12" />
 						</layoutData>
 					</ObjectNumber>
+
+					<CheckBox
+						selected="{= ${forecast>smooth} === 'X' ? true : false }"
+						text="Smoothing applied?"
+						enabled="false">
+						<layoutData>
+							<l:GridData span="L12 M12 S12" />
+						</layoutData>
+					</CheckBox>
 				</l:content>
 			</l:Grid>
 			<List

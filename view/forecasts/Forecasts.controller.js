@@ -370,19 +370,18 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
       var oContext = oItem.getBindingContext("forecast");
       var sId = oContext.getProperty("id");
 
-      // Attach to data received
-      // this._oDiagnosticsDialog.attachEvent("dataReceived", jQuery.proxy(function() {
-      //
-      //   // Hide busy dialog
-      //   this.hideBusyDialog();
-      //   // Open
-      //   this._oDiagnosticsDialog.open();
-      // }, this));
-
       // bind the dailog to the Diagnostics for this run.
+      try {
+        this._oDiagnosticsDialog.unbindElement("forecast");
+      } catch (e) {
+
+      }
+
       this._oDiagnosticsDialog.bindElement({
         path: "forecast>/Diagnostics('" + sId + "')",
-        expand: 'Run,Run/Forecast'
+        parameters : {
+          expand: 'Run'
+        }
       });
 
       // Open
