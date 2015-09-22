@@ -126,7 +126,7 @@
 	      <Page
 	    		id="idNewForecastWizardPage2"
 	    		title="Select data set"
-	    		enableScrolling="false"
+	    		enableScrolling="true"
 	    		showHeader="false">
 	    		<content>
 	          <l:Grid
@@ -310,10 +310,29 @@
 											description="days"
 											change="onValidationChange"/>
 
+										<Label text="Training data frequency" />
+										<Select
+											id="idFrequencySelect">
+											<core:Item key="365" text="Daily" />
+											<core:Item key="52" text="Weekly" />
+											<core:Item key="12" text="Monthly" />
+											<core:Item key="4" text="Quarterly" />
+											<core:Item key="1" text="Annual" />
+										</Select>
+										<Button
+											id="idFrequencyHelpButton"
+											type="Transparent"
+											icon="sap-icon://FontAwesome/question"
+											press="onFrequencyHelpPress">
+											<layoutData>
+												<l:GridData span="L1 M1 S1" />
+											</layoutData>
+										</Button>
+
 										<Label text="" />
 										<CheckBox
 											id="idSmoothingCheckBox"
-											text="Apply smoothing" />
+											text="Apply forecast smoothing?" />
 	                </f:content>
 	              </f:SimpleForm>
 	            </l:content>

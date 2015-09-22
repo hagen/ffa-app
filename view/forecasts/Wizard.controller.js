@@ -468,13 +468,15 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
       var oInput = this.getView().byId("idNewForecastNameInput");
       var sName = oInput.getValue();
       if (sName === "") {
-        oInput.setValue("My new forecast");
-        oInput.setValueState(sap.ui.core.ValueState.Error);
-        oInput.setValueStateText("You must name your forecast");
-        oInput.setShowValueStateMessage(true);
+        oInput.setValue("My new forecast")
+                .setValueState(sap.ui.core.ValueState.Error)
+                .setValueStateText("You must name your forecast")
+                .setShowValueStateMessage(true);
         return false;
       } else {
-        oInput.setShowValueStateMessage(false);
+        oInput.setValueState(sap.ui.core.ValueState.Error)
+                .setValueStateText("You must name your forecast")
+                .setShowValueStateMessage(false);
         // supply the name to the new forecast model
         return true;
       }
@@ -946,21 +948,27 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
      * @return {object} Forecast object
      */
     Wizard.prototype._buildForecast = function() {
+
+      var get = jQuery.proxy(function(sId) {
+        return this.getView().byId(sId);
+      }, this);
+
       // Collect the values from all of our inputs.
       return {
         id: this._sForecastId,
         folder_id: this._sFolderId,
         dataset_id: this._sDataSetId,
-        name: this.getView().byId("idNewForecastNameInput").getValue(),
+        name: get("idNewForecastNameInput").getValue(),
         created: new Date(Date.now()),
         begda: new Date(Date.now()),
         endda: new Date("9999-12-31T23:59:59"),
         user: this.getUserId(),
-        train_to: new Date(this.getView().byId("idToDatePicker").getValue()),
-        train_from: new Date(this.getView().byId("idFromDatePicker").getValue()),
-        horizon: parseInt(this.getView().byId("idHorizonInput").getValue(), 10),
-        validation: parseInt(this.getView().byId("idValidationInput").getValue(), 10),
-        smoothing: (this.getView().byId("idSmoothingCheckBox").getSelected() ? "X" : " "),
+        train_to: new Dateget("idToDatePicker").getValue()),
+        train_from: new Date(get("idFromDatePicker").getValue()),
+        horizon: parseInt(get("idHorizonInput").getValue(), 10),
+        validation: parseInt(get("idValidationInput").getValue(), 10),
+        smoothing: (get("idSmoothingCheckBox").getSelected() ? "X" : " "),
+        frequency : parseInt(get("idFrequencySelect").getSelectedKey(), 10),
         running: " ",
         favorite: " "
       };

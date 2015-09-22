@@ -1,8 +1,8 @@
 <mvc:View
 	controllerName="view.forecasts.Rerun"
 	xmlns="sap.m"
-  xmlns:l="sap.ui.layout"
-  xmlns:f="sap.ui.layout.form"
+	xmlns:l="sap.ui.layout"
+	xmlns:f="sap.ui.layout.form"
 	xmlns:core="sap.ui.core"
 	xmlns:mvc="sap.ui.core.mvc">
 	<Page
@@ -35,11 +35,12 @@
 			</Toolbar>
 		</footer>
 		<l:Grid
-      defaultSpan="L12 M12 S12"
-      width="auto"
-      class="sapUiSmallMargin">
+			defaultSpan="L12 M12 S12"
+			width="auto"
+			class="sapUiSmallMargin">
       <l:content>
-        <Text text="The data set linked to this forecast has training data from {
+        <Text
+					text="The data set linked to this forecast has training data from {
             path : 'forecast>begda',
             formatter : 'util.DateFormatter.ddMMyyyy'
           } to {
@@ -53,52 +54,71 @@
           the length of your horizon dictates how much training data your
           forecast requires - if there isn't enough, I'll let you know." />
         <f:SimpleForm
-          id="idNewForecastParamsForm"
-          maxContainerCols="2"
-          editable="true"
-          layout="ResponsiveGridLayout"
-          labelSpanL="3"
-          labelSpanM="3"
-          emptySpanL="4"
-          emptySpanM="4"
-          columnsL="1"
-          columnsM="1"
-          class="editableForm">
+					id="idNewForecastParamsForm"
+					maxContainerCols="2"
+					editable="true"
+					layout="ResponsiveGridLayout"
+					labelSpanL="3"
+					labelSpanM="3"
+					emptySpanL="4"
+					emptySpanM="4"
+					columnsL="1"
+					columnsM="1"
+					class="editableForm">
           <f:content>
             <Label
-              text="Effective date" />
+							text="Effective date" />
             <DatePicker
-              id="idToDatePicker"
-              displayFormat="dd/MM/yyyy"
-              change="onToDateChange"/>
+							id="idToDatePicker"
+							displayFormat="dd/MM/yyyy"
+							change="onToDateChange"/>
 
             <Label
-              text="Forecast horizon" />
+							text="Forecast horizon" />
             <Input
-              id="idHorizonInput"
-              type="Number"
-              description="days"
-              change="onHorizonChange"/>
+							id="idHorizonInput"
+							type="Number"
+							description="days"
+							change="onHorizonChange"/>
 
             <Label
-              text="Start of training period"/>
+							text="Start of training period"/>
             <DatePicker
-              id="idFromDatePicker"
-              displayFormat="dd/MM/yyyy"
-              change="onFromDateChange" />
+							id="idFromDatePicker"
+							displayFormat="dd/MM/yyyy"
+							change="onFromDateChange" />
+
+						<Label text="Training data frequency" />
+						<Select
+							id="idFrequencySelect">
+							<core:Item key="365" text="Daily" />
+							<core:Item key="52" text="Weekly" />
+							<core:Item key="12" text="Monthly" />
+							<core:Item key="4" text="Quarterly" />
+							<core:Item key="1" text="Annual" />
+						</Select>
+						<Button
+							id="idFrequencyHelpButton"
+							type="Transparent"
+							icon="sap-icon://FontAwesome/question"
+							press="onFrequencyHelpPress">
+							<layoutData>
+								<l:GridData span="L1 M1 S1" />
+							</layoutData>
+						</Button>
 
             <Label
-              text="Validation period" />
+							text="Validation period" />
             <Input
-              id="idValidationInput"
-              type="Number"
-              description="days"
-              change="onValidationChange"/>
+							id="idValidationInput"
+							type="Number"
+							description="days"
+							change="onValidationChange"/>
 
             <Label text="" />
             <CheckBox
-              id="idSmoothingCheckBox"
-              text="Apply smoothing" />
+							id="idSmoothingCheckBox"
+							text="Apply smoothing" />
           </f:content>
         </f:SimpleForm>
       </l:content>

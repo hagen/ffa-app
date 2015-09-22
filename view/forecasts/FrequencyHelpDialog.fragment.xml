@@ -1,0 +1,34 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+  xmlns:l="sap.ui.layout"
+  xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core">
+	<!-- TODO localisation of text -->
+	<Dialog
+		id="idFrequencyHelpDialog"
+		title="Forecast frequency">
+		<endButton>
+			<Button
+				id="idFrequencyHelpCloseButton"
+				text="Close"
+				press="onFrequencyHelpClosePress"/>
+		</endButton>
+		<content>
+			<Panel
+				headerText="Daily">
+				<Text
+					text="A forecast data set with a Daily frequency is typically daily data. That is, the dataset
+					has one entry, for each day in the period, and the period of collection is not specific
+					to any period of the year." />
+			</Panel>
+
+			<Panel
+				headerText="Weekly">
+				<Text
+					text="Weekly frequency changes the interpretation of data collection - now the dataset
+					has a behaviour that is specific to a week; that is, the pattern events of the dataset
+					cycle over a week of 7 days." />
+			</Panel>
+		</content>
+	</Dialog>
+</core:FragmentDefinition>

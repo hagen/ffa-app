@@ -19,7 +19,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
      *    ╚═╝      ╚═════╝ ╚═╝  ╚═╝╚══════╝ ╚═════╝╚═╝  ╚═╝╚══════╝   ╚═╝   ╚══════╝
      *
      */
-    
+
     /**
      * Queries OData backend for forecasts matching filter criteria.
      * @param  {Array} aFilters Array of fitlers
@@ -304,5 +304,41 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
         dDate = this._getCacheHeader(sCacheId, oModel).begda;
       }
       return this._date(dDate);
+    };
+
+    /***
+     *    ███████╗██████╗ ███████╗ ██████╗ ██╗   ██╗███████╗███╗   ██╗ ██████╗██╗   ██╗
+     *    ██╔════╝██╔══██╗██╔════╝██╔═══██╗██║   ██║██╔════╝████╗  ██║██╔════╝╚██╗ ██╔╝
+     *    █████╗  ██████╔╝█████╗  ██║   ██║██║   ██║█████╗  ██╔██╗ ██║██║      ╚████╔╝
+     *    ██╔══╝  ██╔══██╗██╔══╝  ██║▄▄ ██║██║   ██║██╔══╝  ██║╚██╗██║██║       ╚██╔╝
+     *    ██║     ██║  ██║███████╗╚██████╔╝╚██████╔╝███████╗██║ ╚████║╚██████╗   ██║
+     *    ╚═╝     ╚═╝  ╚═╝╚══════╝ ╚══▀▀═╝  ╚═════╝ ╚══════╝╚═╝  ╚═══╝ ╚═════╝   ╚═╝
+     *
+     */
+
+    /**
+     * When the frequency help button is pressed, we display a pop-up explaining
+     * what each frequency options means, and when should be used.
+     * @param  {Event} oEvent Button press event
+     */
+    Controller.prototype.onFrequencyHelpPress = function (oEvent) {
+      if (!this._oFrequencyDialog) {
+        this._oFrequencyDialog = sap.ui.xmlfragment("idFrequencyHelpFragment", "view.forecasts.FrequencyHelpDialog", this);
+        this.getView().addDependent(this._oFrequencyDialog);
+      }
+
+      // Now we open the dialog
+      this._oFrequencyDialog.open();
+    };
+
+    /**
+     * And of course, the frequency help dialog can also be closed.
+     * @param  {Event} oEvent Button press event
+     */
+    Controller.prototype.onFrequencyHelpClosePress = function (oEvent) {
+      if (this._oFrequencyDialog) {
+        // Now we open the dialog
+        this._oFrequencyDialog.close();
+      }
     };
   });
