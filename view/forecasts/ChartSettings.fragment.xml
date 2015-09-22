@@ -1,0 +1,131 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+  xmlns:l="sap.ui.layout"
+  xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core">
+	<!-- TODO localisation of text -->
+	<Dialog
+		id="idChartSettingsDialog"
+		title="Display settings"
+		horizontalScrolling="false">
+		<beginButton>
+			<Button
+				id="idCloseButton"
+				text="Close"
+				press="onDisplaySettingsClosePress"/>
+		</beginButton>
+		<endButton>
+			<Button
+				id="idSaveButton"
+				text="Save"
+				press="onDisplaySettingsSavePress"/>
+		</endButton>
+		<content>
+			<List
+				id="idChartSettingsList">
+				<GroupHeaderListItem
+					title="Title" />
+				<InputListItem label="Chart title">
+					<Switch
+						id="idTitleSwitch"
+						change="onTitleSwitchChange"
+						name="show_title"
+						state="{= ${viz>ChartSettings/show_title} === 'X' ? true : false }">
+						<customData>
+							<core:CustomData key="original" value="{viz>ChartSettings/show_title}" />
+						</customData>
+					</Switch>
+				</InputListItem>
+				<InputListItem label="Title text">
+					<Input
+						id="idTitleInput"
+						change="onChartSettingsInputChange"
+						name="title"
+						enabled="{= ${viz>ChartSettings/show_title} === 'X' ? true : false }"
+						value="{viz>ChartSettings/title}">
+						<customData>
+							<core:CustomData key="original" value="{viz>ChartSettings/title}" />
+						</customData>
+					</Input>
+				</InputListItem>
+
+				<GroupHeaderListItem
+					title="Axis" />
+				<InputListItem label="Axis labels">
+					<Switch
+						id="idAxisLabelsSwitch"
+						change="onAxisLabelsSwitchChange"
+						name="show_axis_labels"
+						state="{= ${viz>ChartSettings/show_axis_labels} === 'X' ? true : false }">
+						<customData>
+							<core:CustomData key="original" value="{viz>ChartSettings/show_axis_labels}" />
+						</customData>
+					</Switch>
+				</InputListItem>
+				<InputListItem label="X-axis">
+					<Input
+						id="idXAxisInput"
+						change="onChartSettingsInputChange"
+						name="xlabel"
+						enabled="{= ${viz>ChartSettings/show_axis_labels} === 'X' ? true : false }"
+						value="{viz>ChartSettings/xlabel}">
+						<customData>
+							<core:CustomData key="original" value="{viz>ChartSettings/xlabel}" />
+						</customData>
+					</Input>
+				</InputListItem>
+				<InputListItem label="Y-axis">
+					<Input
+						id="idYAxisInput"
+						change="onChartSettingsInputChange"
+						name="ylabel"
+						enabled="{= ${viz>ChartSettings/show_axis_labels} === 'X' ? true : false }"
+						value="{viz>ChartSettings/ylabel}">
+						<customData>
+							<core:CustomData key="original" value="{viz>ChartSettings/ylabel}" />
+						</customData>
+					</Input>
+				</InputListItem>
+
+				<GroupHeaderListItem
+					title="Series labels" />
+				<InputListItem label="Actuals">
+					<Input
+						id="idActualInput"
+						change="onChartSettingsInputChange"
+						placeholder="e.g. Actuals"
+						name="actual_title"
+						value="{viz>ChartSettings/actual_title}">
+						<customData>
+							<core:CustomData key="original" value="{viz>ChartSettings/actual_title}" />
+						</customData>
+					</Input>
+				</InputListItem>
+				<InputListItem label="Forecast">
+					<Input
+						id="idForecastInput"
+						change="onChartSettingsInputChange"
+						placeholder="e.g. Forecast"
+						name="forecast_title"
+						value="{viz>ChartSettings/forecast_title}">
+						<customData>
+							<core:CustomData key="original" value="{viz>ChartSettings/forecast_title}" />
+						</customData>
+					</Input>
+				</InputListItem>
+				<InputListItem label="Adjustments">
+					<Input
+						id="idAdjustmentInput"
+						change="onChartSettingsInputChange"
+						placeholder="e.g. Adjustments"
+						name="adjustment_title"
+						value="{viz>ChartSettings/adjustment_title}">
+						<customData>
+							<core:CustomData key="original" value="{viz>ChartSettings/adjustment_title}" />
+						</customData>
+					</Input>
+				</InputListItem>
+			</List>
+		</content>
+	</Dialog>
+</core:FragmentDefinition>

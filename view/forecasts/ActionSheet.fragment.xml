@@ -4,14 +4,14 @@ xmlns:core="sap.ui.core">
 <ActionSheet
   title="Forecast actions"
   showCancelButton="true"
-  placement="Left">
+  placement="Bottom">
   <buttons>
     <Button
       id="idSettingsButton"
       icon="sap-icon://FontAwesome/cogs"
       text="Chart display"
       tooltip="Chart display options"
-      press="onOptionsPress" />
+      press="onDisplaySettingsPress" />
     <Button
       id="idAdjustmentsButton"
       icon="sap-icon://FontAwesome/pencil"

@@ -18,6 +18,7 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
         profileOdataUrl: "/fa/ppo/drop3/xs/services/profile.xsodata",
         staticsOdataUrl: "/fa/ppo/drop3/xs/services/static.xsodata",
         functionOdataUrl: "/fa/ppo/drop3/xs/services/function.xsodata",
+        vizOdataUrl: "/fa/ppo/drop3/xs/services/viz.xsodata",
         userJsonUrl: "http://localhost:8080/auth/api/user",
       }
     },
@@ -374,6 +375,12 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
     oSModel.setDefaultBindingMode("OneWay");
     oSModel.setSizeLimit(300);
     this.setModel(oSModel, "static");
+
+    var oVizModel = new sap.ui.model.odata.ODataModel(mConfig.serviceConfig.vizOdataUrl, {
+      headers : oHeaders
+    });
+    oSModel.setDefaultBindingMode("TwoWay");
+    this.setModel(oVizModel, "viz");
 
     jQuery.ajax({
       url : 'auth/api/user',

@@ -336,16 +336,16 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
 
         // Bind the median
         self.getView().byId("idMedianApeObjectStatus").bindProperty("text", {
-          path : sPath + "median_ape",
+          path: sPath + "median_ape",
           type: new sap.ui.model.type.Float(),
-          formatter : util.FloatFormatter.formatMAPEPercent
+          formatter: util.FloatFormatter.formatMAPEPercent
         });
 
         // Bind the Mean
         self.getView().byId("idMeanApeObjectStatus").bindProperty("text", {
-          path : sPath + "mean_ape",
+          path: sPath + "mean_ape",
           type: new sap.ui.model.type.Float(),
-          formatter : util.FloatFormatter.formatMAPEPercent
+          formatter: util.FloatFormatter.formatMAPEPercent
         });
       });
     };
@@ -379,7 +379,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
 
       this._oDiagnosticsDialog.bindElement({
         path: "forecast>/Diagnostics('" + sId + "')",
-        parameters : {
+        parameters: {
           expand: 'Run'
         }
       });
@@ -496,75 +496,86 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
       // Prepare the data into two series.
       var aData = [];
 
-      // When oPromise resolves, draw the chart.
-      jQuery.when(oPromise).then(jQuery.proxy(function() {
+      // we'll also need to read the Chart Settings for this viz, so they
+      // can be incorporated into the chart... through a callback, supply these
+      // to the chart build
+      this._getChartSettings(this._sRunId,
+        jQuery.proxy(function(oSettings) {
 
-        // and render the chart
-        this._oChart = new Highcharts.Chart({
-          chart: {
-            id: "idForecastViz",
-            backgroundColor: "none",
-            renderTo: jDiv,
-            style: {
-              fontFamily: ["Arial", "Helvetica", "sans-serif"]
-            },
-            panKey: "shift",
-            panning: true,
-            zoomType: "x"
-          },
-          credits: {
-            enabled: true,
-            href: "http://forefrontanalytics.com.au",
-            text: "Forefront Analytics"
-          },
-          exporting: {
-            enabled: true
-          },
-          navigation: {
-            buttonOptions: {
-              enabled: false
-            }
-          },
-          plotOptions: {
-            type: "line",
-            animation: true,
-            stickyTracking: false,
-            pointInterval: 86400000,
-            zIndex: 100
-          },
-          series: this._prepareSeries(aResults),
-          title: {
-            text: "Chart title",
-          },
-          tooltip: {
-            headerFormat: '<span style="font-size: 10px">{point.key:%A, %b %e}</span><br/>',
-            pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y:,.0f}</b><br/>',
-            valueDecimals: 0,
-            delayForDisplay: 500 // TooltipDelay plugin, modified by yours truly
-          },
-          xAxis: {
-            id: "idXaxis",
-            type: "datetime",
-            dateTimeLabelFormats: {
-              day: "%b %e, '%y",
-              month: '%b "%y'
-            },
-            title: {
-              align: "middle",
-              enabled: true,
-              text: "Date"
-            }
-          },
-          yAxis: {
-            type: "linear",
-            title: {
-              align: "middle",
-              enabled: true,
-              text: "Y axis label"
-            }
-          }
-        });
-      }, this));
+          // When oPromise resolves, draw the chart.
+          jQuery.when(oPromise).then(jQuery.proxy(function() {
+
+            // and render the chart
+            this._oChart = new Highcharts.Chart({
+              chart: {
+                id: "idForecastViz",
+                backgroundColor: "none",
+                renderTo: jDiv,
+                style: {
+                  fontFamily: ["Arial", "Helvetica", "sans-serif"]
+                },
+                panKey: "shift",
+                panning: true,
+                zoomType: "x"
+              },
+              credits: {
+                enabled: true,
+                href: "http://forefrontanalytics.com.au",
+                text: "Forefront Analytics"
+              },
+              exporting: {
+                enabled: true
+              },
+              navigation: {
+                buttonOptions: {
+                  enabled: false
+                }
+              },
+              plotOptions: {
+                type: "line",
+                animation: true,
+                stickyTracking: false,
+                pointInterval: 86400000,
+                zIndex: 100
+              },
+              series: this._prepareSeries(aResults, oSettings),
+              title: {
+                text: oSettings.title,
+              },
+              tooltip: {
+                headerFormat: '<span style="font-size: 10px">{point.key:%A, %b %e}</span><br/>',
+                pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y:,.0f}</b><br/>',
+                valueDecimals: 0,
+                delayForDisplay: 500 // TooltipDelay plugin, modified by yours truly
+              },
+              xAxis: {
+                id: "idXaxis",
+                type: "datetime",
+                dateTimeLabelFormats: {
+                  day: "%b %e, '%y",
+                  month: '%b "%y'
+                },
+                title: {
+                  align: "middle",
+                  enabled: true,
+                  text: oSettings.xlabel
+                }
+              },
+              yAxis: {
+                type: "linear",
+                title: {
+                  align: "middle",
+                  enabled: true,
+                  text: oSettings.ylabel
+                }
+              }
+            });
+          }, this));
+        }, this),
+        function() {
+          // error
+        }
+      );
 
       // Importantly, we cannot (and should not) draw anything until the
       // div element has it's height set. So let's wait
@@ -580,36 +591,80 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
     };
 
     /**
+     * retreievs the chart display settings for this Run id. Also takes a success
+     * and error callback with which the results are passed
+     * @param  {String}   sRunId   Run Id to read from
+     * @param  {Function} fnSucces Success callback
+     * @param  {Function} fnError  Error callback
+     */
+    Forecasts.prototype._getChartSettings = function (sRunId, fnSucces, fnError) {
+      var oModel = this.getView().getModel("viz");
+      var sPath = "/Runs('" + sRunId + "')/ChartSettings";
+
+      // does the model have our data?
+      var oData = oModel.getObject(sPath);
+      if (oData) {
+        if (typeof fnSucces === "function") {
+          try {
+            fnSucces(oData);
+          } catch (e) {}
+        }
+        return;
+      } else {
+        // Otherwise, we call back end
+        oModel.read(sPath, {
+          success : function(oData, mResponse) {
+            if (typeof fnSucces === "function") {
+              try {
+                fnSucces(oData);
+              } catch (e) {}
+            }
+          },
+          error : jQuery.proxy(function(mError) {
+            this._maybeHandleAuthError(mError);
+            if (typeof fnError === "function") {
+              try {
+                fnError(mError);
+              } catch (e) {}
+            }
+          }, this)
+        });
+      }
+
+    };
+
+    /**
      * Prepares the two series that will be displayed on the chart. This data
      * is built from the oData request results, which are passed directly into
      * this function
-     * @param  {Array} aResults The oData results array
-     * @return {Array}          Prepared series objects, in an array
+     * @param  {Array}  aResults  The oData results array
+     * @param  {Object} oSettings The oData chart display settings
+     * @return {Array}            Prepared series objects, in an array
      */
-    Forecasts.prototype._prepareSeries = function(aResults) {
+    Forecasts.prototype._prepareSeries = function(aResults, oSettings) {
 
       var self = this;
       var aActual = {
         id: "idActualSeries",
-        color: "#A23B72",
+        color: oSettings.actual_colour,
         data: [],
-        name: "Actual figures",
+        name: oSettings.actual_title,
         zIndex: 50
       };
 
       var aForecast = {
         id: "idForecastSeries",
-        color: "#03CEA4",
+        color: oSettings.forecast_colour,
         data: [],
-        name: "Forecast figures",
+        name: oSettings.forecast_title,
         zIndex: 100
       };
 
       var aAdjustment = {
         id: "idAdjustmentSeries",
-        color: "#2589BD",
+        color: oSettings.adjustment_colour,
         data: [],
-        name: "Adjustments",
+        name: oSettings.adjustment_title,
         zIndex: 10
       };
 
@@ -821,15 +876,6 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
     };
 
     /**
-     * Shows the chart display options pop-up. This floats over the chart,
-     * and offers simple settings like colour, and titles.
-     * @param  {event} oEvent The button press event
-     */
-    Forecasts.prototype.onOptionsPress = function(oEvent) {
-
-    };
-
-    /**
      * Navigates to the workspace for this forecast.
      * @param  {Event} oEvent The button press event
      */
@@ -841,6 +887,356 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
       }, !sap.ui.Device.system.phone);
     };
 
+    /***
+     *     ██████╗██╗  ██╗ █████╗ ██████╗ ████████╗    ███████╗███████╗████████╗████████╗██╗███╗   ██╗ ██████╗ ███████╗
+     *    ██╔════╝██║  ██║██╔══██╗██╔══██╗╚══██╔══╝    ██╔════╝██╔════╝╚══██╔══╝╚══██╔══╝██║████╗  ██║██╔════╝ ██╔════╝
+     *    ██║     ███████║███████║██████╔╝   ██║       ███████╗█████╗     ██║      ██║   ██║██╔██╗ ██║██║  ███╗███████╗
+     *    ██║     ██╔══██║██╔══██║██╔══██╗   ██║       ╚════██║██╔══╝     ██║      ██║   ██║██║╚██╗██║██║   ██║╚════██║
+     *    ╚██████╗██║  ██║██║  ██║██║  ██║   ██║       ███████║███████╗   ██║      ██║   ██║██║ ╚████║╚██████╔╝███████║
+     *     ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝       ╚══════╝╚══════╝   ╚═╝      ╚═╝   ╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚══════╝
+     *
+     */
+
+    /**
+     * Shows the chart display options pop-up. This floats over the chart,
+     * and offers simple settings like colour, and titles.
+     * @param  {event} oEvent The button press event
+     */
+    Forecasts.prototype.onDisplaySettingsPress = function(oEvent) {
+      // We're going to show the settings dialog.
+      if (!this._oSettingsDialog) {
+        this._oSettingsDialog = sap.ui.xmlfragment("idChartSettingsFragment", "view.forecasts.ChartSettings", this);
+        this.getView().addDependent(this._oSettingsDialog);
+      }
+
+      // make the list Busy
+      var oList = sap.ui.core.Fragment.byId("idChartSettingsFragment", "idChartSettingsList");
+
+      // Try and get the dialog binding, if there is one. If the dialog hasn't
+      // been displayed yet, then it won't have a binding.
+      var sPath = "/Runs('" + this._sRunId + "')";
+      var oBinding = this._oSettingsDialog.getElementBinding("viz");
+      var bBind = false;
+      if (!oBinding) {
+        bBind = true;
+      } else if (oBinding.getPath() !== sPath) {
+        bBind = true;
+      }
+
+      // are we binding?
+      if (bBind) {
+        // we are busy
+        oList.setBusy(true);
+
+        // Bind the dialog to the chart settings for this run.
+        this._oSettingsDialog.bindElement({
+          path : "viz>" + sPath,
+          parameters : {
+            expand : "ChartSettings"
+          }
+        });
+      }
+      // bind to data received
+      var oBinding = this._oSettingsDialog.getElementBinding("viz");
+      oBinding.attachDataReceived(function() {
+        oList.setBusy(false);
+      })
+
+      // Now open the settings dialog sheet
+      this._oSettingsDialog.open();
+    };
+
+    /**
+     * Validates and saves the chart display settings
+     * @param  {event} oEvent The button press event
+     */
+    Forecasts.prototype.onDisplaySettingsSavePress = function(oEvent) {
+
+      // Getter
+      var get = jQuery.proxy(function(sId) {
+        return this._getFragmentControl("idChartSettingsFragment", sId);
+      }, this);
+
+      var bValid = true;
+
+      // Execute our validation rules.
+      // 1. If chart title is on, then we must have text in Chart title.
+      if (get("idTitleSwitch").getState() && !get("idTitleInput").getValue()) {
+        get("idTitleInput").setValueState(sap.ui.core.ValueState.Error)
+                            .setValueStateText("Empty chart title");
+        bValid = false;
+      } else {
+        get("idTitleInput").setValueState(sap.ui.core.ValueState.None)
+                            .setValueStateText("");
+      }
+
+      // 2. if axis labels is on, then we must have two axis labels - one for y
+      // and one for x
+      if (get("idAxisLabelsSwitch").getState()) {
+        // check x axis label input.
+        if (!get("idXAxisInput").getValue()) {
+          get("idXAxisInput").setValueState(sap.ui.core.ValueState.Error)
+                              .setValueStateText("Empty x axis label");
+          bValid = false;
+        } else {
+          get("idXAxisInput").setValueState(sap.ui.core.ValueState.None)
+                              .setValueStateText("");
+        }
+
+        // check y axis label input.
+        if (!get("idYAxisInput").getValue()) {
+          get("idYAxisInput").setValueState(sap.ui.core.ValueState.Error)
+                              .setValueStateText("Empty y axis label");
+          bValid = false;
+        } else {
+          get("idYAxisInput").setValueState(sap.ui.core.ValueState.None)
+                              .setValueStateText("");
+        }
+      }
+
+      // If we're not valid, then you can't close the dialog.
+      if (bValid) {
+        // we are now busy, while saving details and updating chart...
+        this.showBusyDialog({});
+
+        // do the update
+        this._updateChartSettings(
+
+          // chart Settings binding id
+          this._oSettingsDialog.getBindingContext("viz").getProperty("ChartSettings/id"),
+          // Success
+          jQuery.proxy(function(oData) {
+
+            // Update the highcharts object too!
+            this._updateHighcharts(this._oChart, oData);
+
+            // Not busy any more
+            this.hideBusyDialog();
+            // We're going to show the settings dialog.
+            if (this._oSettingsDialog) {
+
+              // maybe reset the values first?
+              this._oSettingsDialog.close();
+            }
+          }, this),
+          // Error
+          jQuery.proxy(function(mError) {
+            // Not busy any more
+            this.hideBusyDialog();
+          }, this)
+        );
+      }
+    };
+
+    /**
+     * Closes the display settings
+     * @param  {event} oEvent The button press event
+     */
+    Forecasts.prototype.onDisplaySettingsClosePress = function(oEvent) {
+      // We're going to show the settings dialog.
+      if (this._oSettingsDialog) {
+
+        // maybe reset the values first?
+        this._oSettingsDialog.close();
+      }
+    };
+
+    /**
+     * When the display title switch is toggled, we need to take some action on
+     * this title input field
+     * @param  {Event} oEvent The switch event
+     */
+    Forecasts.prototype.onTitleSwitchChange = function (oEvent) {
+
+      // Getter
+      var get = jQuery.proxy(function(sId) {
+        return this._getFragmentControl("idChartSettingsFragment", sId);
+      }, this);
+
+      // When the switch is switch off, clear the title input and disable.
+      var bState = oEvent.getParameter("state");
+
+      // If off, then disable and clear.
+      var oInput = get("idTitleInput");
+      if (!bState) {
+        // retain current value, if any
+        oInput.data("new", oInput.getValue());
+        // clear and disable
+        oInput.setValue("")
+                .setEnabled(false)
+                .setValueState(sap.ui.core.ValueState.None)
+                .setValueStateText("");
+      } else {
+        oInput.setValue(oInput.data("new"))
+                .setEnabled(true);
+      }
+    };
+
+    /**
+     * When the axis labels switch is toggled, we need to take some action on
+     * the axis label input fields.
+     * @param  {Event} oEvent The switch event
+     */
+    Forecasts.prototype.onAxisLabelsSwitchChange = function (oEvent) {
+
+      // Getter
+      var get = jQuery.proxy(function(sId) {
+        return this._getFragmentControl("idChartSettingsFragment", sId);
+      }, this);
+
+      // When the switch is switch off, clear the title input and disable.
+      var bState = oEvent.getParameter("state");
+
+      // If off, then disable and clear. X axis first.
+      var oInput = get("idXAxisInput");
+      if (!bState) {
+        // retain current value, if any
+        oInput.data("new", oInput.getValue());
+        // clear and disable
+        oInput.setValue("")
+                .setEnabled(false)
+                .setValueState(sap.ui.core.ValueState.None)
+                .setValueStateText("");
+
+      } else {
+        oInput.setValue(oInput.data("new"))
+                .setEnabled(true);
+      }
+
+      // Y axis now!
+      oInput = get("idYAxisInput");
+      if (!bState) {
+        // retain current value, if any
+        oInput.data("new", oInput.getValue());
+        // clear and disable
+        oInput.setValue("")
+                .setEnabled(false)
+                .setValueState(sap.ui.core.ValueState.None)
+                .setValueStateText("");
+      } else {
+        oInput.setValue(oInput.data("new"))
+                .setEnabled(true);
+      }
+    };
+
+    /**
+     * Updates the chart settings according to changed values from the dialog.
+     * Calls success callback when done.
+     * @param  {Function} fnSuccess Success callback
+     * @param  {Function} fnError   Error callback
+     */
+    Forecasts.prototype._updateChartSettings = function (sId, fnSuccess, fnError) {
+      // we need to build the oData to supply to our model
+      var aControls = this._getSettingsControls();
+      var oPayload = {};
+
+      // Now we build our update data payload
+      aControls.forEach(function(control, index) {
+        if (control instanceof sap.m.Input) {
+          oPayload[control.getName()] = control.getValue();
+        } else if (control instanceof sap.m.Switch) {
+          var sValue = (control.getState() ? "X" : "");
+          oPayload[control.getName()] = sValue;
+        }
+      }, this);
+
+      // And do the update
+      var oModel = this.getView().getModel("viz");
+      oModel.update("/ChartSettings('" + sId + "')", oPayload, {
+        async : true,
+        merge : true,
+        success : function(oData, mResponse) {
+          if (typeof fnSuccess === "function") {
+            // Now call the call back with our original data
+            fnSuccess(oPayload);
+          }
+        },
+        error : jQuery.proxy(function(mError) {
+          this._maybeHandleAuthError(mError);
+          if (typeof fnError === "function") {
+            fnError(mError);
+          }
+        }, this)
+      });
+    };
+
+    /**
+     * Updates the Highcharts object with the supplied parameters, using basic
+     * mapping
+     * @param  {Highcharts} oChart  Highcharts chart
+     * @param  {Object}     oParams Named array
+     */
+    Forecasts.prototype._updateHighcharts = function (oChart, oParams) {
+
+      // spin through all parameters, and apply the approriate function for each
+      for (var key in oParams) {
+        if (oParams.hasOwnProperty(key)) {
+          if ("show_title" === key) {
+            if (oParams.show_title !== "X") {
+              oChart.setTitle({ text : "" }, "", false);
+            }
+          } else if ("title" === key) {
+            if (oParams.show_title === "X") {
+              oChart.setTitle({ text : oParams.title }, "", false);
+            }
+          } else if ("show_axis_labels" === key) {
+            if (oParams.show_axis_labels === "X") {
+              oChart.xAxis[0].setTitle({ text : oParams.xlabel }, false);
+              oChart.yAxis[0].setTitle({ text : oParams.ylabel }, false);
+            } else {
+              oChart.xAxis[0].setTitle({ text : "" }, false);
+              oChart.yAxis[0].setTitle({ text : "" }, false);
+            }
+          } else if ("actual_title" === key) {
+            oChart.get("idActualSeries").update({ name : oParams.actual_title }, false);
+          } else if ("forecast_title" === key) {
+            oChart.get("idForecastSeries").update({ name : oParams.forecast_title }, false);
+          } else if ("adjustment_title" === key) {
+            oChart.get("idAdjustmentSeries").update({ name : oParams.adjustment_title }, false);
+          }
+        }
+      }
+
+      // Now redraw Chart
+      oChart.redraw(false /*animation*/ );
+    };
+
+    /**
+     * Collects and returns all controls in the Chart Settings dialog form.
+     * @return {Array} Array of controls
+     */
+    Forecasts.prototype._getSettingsControls = function () {
+      // Getter
+      var get = jQuery.proxy(function(sId) {
+        return this._getFragmentControl("idChartSettingsFragment", sId);
+      }, this);
+
+      return [
+        get("idTitleSwitch"),
+        get("idTitleInput"),
+        get("idAxisLabelsSwitch"),
+        get("idXAxisInput"),
+        get("idYAxisInput"),
+        get("idActualInput"),
+        get("idForecastInput"),
+        get("idAdjustmentInput")
+      ];
+    };
+
+    /**
+     * Simply handles changes to the input field and checks that there is a
+     * value supplied. Sets state accordingly.
+     * @param  {Event} oEvent Value change event
+     */
+    Forecasts.prototype.onChartSettingsInputChange = function (oEvent) {
+      // All we need do is check if there is a value, and if so, remove
+      // error value and state.
+      var sValue = oEvent.getParameter("value");
+      var oControl = oEvent.getSource();
+      if (sValue) {
+        oControl.setValueState(sap.ui.core.ValueState.None).setValueStateText("");
+      }
+    };
     /***
      *    ███████╗██████╗ ██╗████████╗    ███╗   ██╗ █████╗ ███╗   ███╗███████╗
      *    ██╔════╝██╔══██╗██║╚══██╔══╝    ████╗  ██║██╔══██╗████╗ ████║██╔════╝
@@ -975,6 +1371,34 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
 
       dDate.setDate(dDate.getDate() + 1);
       return dateFormat.format(new Date(dDate.getTime()));
+    };
+
+    /***
+     *    ██╗  ██╗███████╗██╗     ██████╗ ███████╗██████╗ ███████╗
+     *    ██║  ██║██╔════╝██║     ██╔══██╗██╔════╝██╔══██╗██╔════╝
+     *    ███████║█████╗  ██║     ██████╔╝█████╗  ██████╔╝███████╗
+     *    ██╔══██║██╔══╝  ██║     ██╔═══╝ ██╔══╝  ██╔══██╗╚════██║
+     *    ██║  ██║███████╗███████╗██║     ███████╗██║  ██║███████║
+     *    ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝     ╚══════╝╚═╝  ╚═╝╚══════╝
+     *
+     */
+
+    /**
+     * Gets the control identified by sId from the view.
+     * @param  {String} sId The control id
+     * @return {Control}     The control
+     */
+    Forecasts.prototype._getControl = function (sId) {
+      return this.getView().byId(sId);
+    };
+
+    /**
+     * Gets the fragment control identified by sId from the view.
+     * @param  {String} sId The control id
+     * @return {Control}     The control
+     */
+    Forecasts.prototype._getFragmentControl = function (sFragmentId, sId) {
+      return sap.ui.core.Fragment.byId(sFragmentId, sId);
     };
 
     /***
