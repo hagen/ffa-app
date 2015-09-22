@@ -48,7 +48,7 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
           view: "data.ViewHana",
           targetControl: "idDataSetsSplitContainer",
           targetAggregation: "detailPages",
-          transition : "slide",
+          transition : "show",
           viewLevel: 4
         },
          {
@@ -57,15 +57,15 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
           view: "data.ViewRedshift",
           targetControl: "idDataSetsSplitContainer",
           targetAggregation: "detailPages",
-          transition : "slide",
+          transition : "show",
           viewLevel: 4
         }, {
           pattern: "datasets/sheets/:dataset_id:",
-          name: "view-google",
+          name: "view-sheets",
           view: "data.ViewSheets",
           targetControl: "idDataSetsSplitContainer",
           targetAggregation: "detailPages",
-          transition : "slide",
+          transition : "show",
           viewLevel: 4
         },
          {
@@ -372,7 +372,7 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
     var oDSModel = new sap.ui.model.odata.ODataModel(mConfig.serviceConfig.datasetOdataUrl, {
       headers : oHeaders
     });
-    oDSModel.setDefaultBindingMode("OneWay");
+    oDSModel.setDefaultBindingMode("TwoWay");
     this.setModel(oDSModel, "dataset");
 
     // Create and set datasets domain model to the component

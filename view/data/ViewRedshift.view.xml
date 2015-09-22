@@ -1,0 +1,187 @@
+<mvc:View
+	controllerName="view.data.ViewRedshift"
+	xmlns="sap.m"
+  xmlns:l="sap.ui.layout"
+  xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core"
+	xmlns:mvc="sap.ui.core.mvc">
+	<Page
+		id="idRedshiftPage"
+		showHeader="true"
+		showNavButton="{device>isPhone}"
+		navButtonPress="onNavBackPress"
+		title="AWS Redshift">
+		<headerContent>
+			<Button
+				id="idEditButton"
+				text="Edit"
+				press="onEditPress" />
+		</headerContent>
+		<footer>
+			<Toolbar>
+				<ToolbarSpacer />
+				<Button
+					id="idCancelButton"
+					press="onCancelPress"
+					visible="false" />
+			</Toolbar>
+		</footer>
+		<content>
+			<l:Grid
+				defaultSpan="L12 M12 S12"
+				class="sapUiSmallMarginTop"
+				width="auto">
+				<l:content>
+					<f:SimpleForm
+						id="idRedshiftConfigForm"
+						maxContainerCols="2"
+						editable="true"
+						layout="ResponsiveGridLayout"
+						labelSpanL="2"
+						labelSpanM="2"
+						emptySpanL="4"
+						emptySpanM="4"
+						columnsL="1"
+						columnsM="1"
+						class="editableForm">
+						<f:content>
+							<Label
+								text="Name">
+								<layoutData>
+									<l:GridData
+										span="L2 M2 S12" />
+								</layoutData>
+							</Label>
+							<Input
+								id="idRedshiftNameInput"
+								value="{dataset>name}"
+								enabled="false">
+								<layoutData>
+									<l:GridData
+										span="L10 M10 S12" />
+								</layoutData>
+							</Input>
+
+							<Label
+								text="Endpoint">
+								<layoutData>
+									<l:GridData
+										span="L2 M2 S12" />
+								</layoutData>
+							</Label>
+							<Input
+								id="idRedshiftEndpointInput"
+								value="{dataset>Redshift/endpoint}"
+								enabled="false">
+								<layoutData>
+									<l:GridData
+										span="L10 M10 S12" />
+								</layoutData>
+							</Input>
+
+							<Label
+								text="Database">
+								<layoutData>
+									<l:GridData
+										span="L2 M2 S12" />
+								</layoutData>
+							</Label>
+							<Input
+								id="idRedshiftDatabaseInput"
+								value="{dataset>Redshift/database}"
+								enabled="false">
+								<layoutData>
+									<l:GridData
+										span="L10 M10 S12" />
+								</layoutData>
+							</Input>
+
+							<Label
+								text="Port">
+								<layoutData>
+									<l:GridData
+										span="L2 M2 S12" />
+								</layoutData>
+							</Label>
+							<Input
+								id="idRedshiftPortInput"
+								value="{dataset>Redshift/port}"
+								type="Number"
+								enabled="false">
+								<layoutData>
+									<l:GridData
+										span="L10 M10 S12" />
+								</layoutData>
+							</Input>
+
+							<Label
+								text="User name">
+								<layoutData>
+									<l:GridData
+										span="L2 M2 S12" />
+								</layoutData>
+							</Label>
+							<Input
+								id="idRedshiftUsernameInput"
+								value="{dataset>Redshift/username}"
+								enabled="false">
+								<layoutData>
+									<l:GridData
+										span="L10 M10 S12" />
+								</layoutData>
+							</Input>
+
+							<Label
+								text="Password">
+								<layoutData>
+									<l:GridData
+										span="L2 M2 S12" />
+								</layoutData>
+							</Label>
+							<Input
+								id="idRedshiftPasswordInput"
+								value="{dataset>Redshift/password}"
+								enabled="false"
+								type="Password">
+								<layoutData>
+									<l:GridData
+										span="L10 M10 S12" />
+								</layoutData>
+							</Input>
+
+							<Label
+								text=""><!-- empty text -->
+								<layoutData>
+									<l:GridData
+										span="L2 M2 S12" />
+								</layoutData>
+							</Label>
+							<CheckBox
+								id="idRedshiftRememberPasswordCheckBox"
+								selected="{= ${dataset>Redshift/remember} === 'X' ? true : false }"
+								text="Save username &amp; password?"
+								enabled="false">
+								<layoutData>
+									<l:GridData
+										span="L10 M10 S12" />
+								</layoutData>
+							</CheckBox>
+
+							<TextArea
+								id="idRedshiftQueryTextArea"
+								rows="5"
+								value="{dataset>Redshift/query}"
+								enabled="false">
+								<layoutData>
+									<l:GridData
+										span="L12 M12 S12" />
+								</layoutData>
+							</TextArea>
+						</f:content>
+					</f:SimpleForm>
+				</l:content>
+			</l:Grid>
+			<core:Fragment fragmentName="view.data.ViewDefinition" type="XML" />
+		</content>
+	</Page>
+</mvc:View>

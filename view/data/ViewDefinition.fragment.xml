@@ -1,0 +1,42 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m">
+  <Table
+    id="idTable"
+    growing="false"
+    inset="false"
+    items="{
+      path: 'dataset>Dimensions',
+      sorter: { path: 'index' }
+    }"
+    noDataText="No Definition defined..."
+    class="sapUiContentPadding ffaDataSetDefinitionTable">
+    <headerToolbar>
+      <Toolbar>
+        <Label text="Data set definition"/>
+      </Toolbar>
+    </headerToolbar>
+    <columns>
+      <Column hAlign="Left">
+        <Text text="Field name"/>
+      </Column>
+      <Column hAlign="Left">
+        <Text text="Type"/>
+      </Column>
+      <Column hAlign="Right">
+        <Text text="Position (index)"/>
+      </Column>
+    </columns>
+    <items>
+      <ColumnListItem>
+        <cells>
+          <Text text="{dataset>name}"/>
+          <Link
+            subtle="{select>/subtle}"
+            emphasized="{select>/emphasized}"
+            press="onDefinitionLinkPress"
+            text="{= ${dataset>type}.charAt(0).toUpperCase() + ${dataset>type}.slice(1) }" />
+          <ObjectNumber number="{= ${dataset>index} + 1 }"/>
+        </cells>
+      </ColumnListItem>
+    </items>
+  </Table>
+</core:FragmentDefinition>

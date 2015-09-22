@@ -17,6 +17,7 @@
     <content>
 			<SelectList
 				id="idDimensionDataTypeSelectList"
+				selectedKey="{dataset>type}"
 				selectionChange="onTypeSelectChanged">
 				<items>
 					<core:Item key="text" text="Text" />

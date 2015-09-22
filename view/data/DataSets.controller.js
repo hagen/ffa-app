@@ -35,6 +35,7 @@ sap.ui.define(['jquery.sap.global', 'view/data/Controller'],
 
       // Listen for events
       this.getEventBus().subscribe("Detail", "RefreshMaster", this.handleListRefresh, this);
+      this.getEventBus().subscribe("Master", "SelectItem", this.handleSelectMasterListItem, this);
 
       // handle route matched
       this.getRouter().getRoute("datasets").attachPatternMatched(this._onRouteMatched, this);
@@ -172,7 +173,7 @@ sap.ui.define(['jquery.sap.global', 'view/data/Controller'],
 
         // And we may also need to select the master list item, if we
         // navigated here without using the list.
-        this.maybeSelectMasterListItem(sPath);
+        this._maybeSelectMasterListItem(sPath);
       }, this));
     };
 
@@ -182,24 +183,39 @@ sap.ui.define(['jquery.sap.global', 'view/data/Controller'],
      * for navigation - rather, the user navigated with a URL
      * @param  {string} sPath Path to check selected item against
      */
-    DataSets.prototype.maybeSelectMasterListItem = function(sPath) {
-      var oList = this.getView().byId("idDataSetMasterList");
-      var aItems = oList.getItems();
+    DataSets.prototype._maybeSelectMasterListItem = function(sPath) {
 
-      for (var i = 0; i < aItems.length; i++) {
-        // Because we're using grouping, be careful not to request bindingPath from
-        // a group header. Do an instance check.
-        if (aItems[i] instanceof sap.m.StandardListItem) {
-          if (aItems[i].getBindingContext("dataset").getPath() === sPath) {
-            // Because we're single select, selecting this item will deselect
-            // all others.
-            if (!aItems[i].getSelected()) {
-              aItems[i].setSelected(true);
-              break;
+      jQuery.when(this._oMasterLoadedPromise).then(jQuery.proxy(function() {
+        var oList = this.getView().byId("idDataSetMasterList");
+        var aItems = oList.getItems();
+
+        for (var i = 0; i < aItems.length; i++) {
+          // Because we're using grouping, be careful not to request bindingPath from
+          // a group header. Do an instance check.
+          if (aItems[i] instanceof sap.m.StandardListItem) {
+            if (aItems[i].getBindingContext("dataset").getPath() === sPath) {
+              // Because we're single select, selecting this item will deselect
+              // all others.
+              if (!aItems[i].getSelected()) {
+                aItems[i].setSelected(true);
+                break;
+              }
             }
           }
         }
-      }
+      }, this));
+    };
+
+    /**
+     * If a data source specific page fires this event, we respond by selecting
+     * the matching list item in the Master list.
+     * @param  {String} sChannel The event channel
+     * @param  {String} sEvent   The event name
+     * @param  {Object} oData    Payload
+     */
+    DataSets.prototype.handleSelectMasterListItem = function(sChannel, sEvent, oData) {
+      // Hand-off - maybeSelect will do this for us
+      this._maybeSelectMasterListItem("/DataSets('" + oData.dataset_id + "')");
     };
 
     /**
@@ -225,14 +241,16 @@ sap.ui.define(['jquery.sap.global', 'view/data/Controller'],
       var oItem = oEvent.getParameter("listItem");
 
       // If the oItem is already selected, then don't re-select/and re navigate
-      if (oItem.getBindingContext("dataset").getProperty("id") === this._sId) {
+      var sId = oItem.getBindingContext("dataset").getProperty("id");
+      if (sId === this._sId) {
         return;
       }
 
       // Otherwise, we need to navigate to the correct detail view for the selected
       // data source. Start by determining the data source type /DataSource/Source
-      this.getRouter().navTo("datasets", {
-        dataset_id: oItem.getBindingContext("dataset").getProperty("id")
+      var sType = oItem.getBindingContext("dataset").getProperty("type_id").toLowerCase();
+      this.getRouter().navTo("view-" + sType, {
+        dataset_id: sId
       }, !sap.ui.Device.system.phone);
     };
 

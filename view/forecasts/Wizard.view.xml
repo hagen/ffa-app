@@ -156,8 +156,7 @@
 								},
 								sorter : [{
 									path : 'DataSource/name',
-									descending : false,
-									group : true
+									descending : false
 								}],
 								filters : [{
 									path : 'endda',

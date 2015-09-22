@@ -393,4 +393,23 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
       else
         return false;
     };
+
+    /***
+     *     ██████╗ ██████╗ ███╗   ██╗████████╗██████╗  ██████╗ ██╗     ███████╗
+     *    ██╔════╝██╔═══██╗████╗  ██║╚══██╔══╝██╔══██╗██╔═══██╗██║     ██╔════╝
+     *    ██║     ██║   ██║██╔██╗ ██║   ██║   ██████╔╝██║   ██║██║     ███████╗
+     *    ██║     ██║   ██║██║╚██╗██║   ██║   ██╔══██╗██║   ██║██║     ╚════██║
+     *    ╚██████╗╚██████╔╝██║ ╚████║   ██║   ██║  ██║╚██████╔╝███████╗███████║
+     *     ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚══════╝
+     *
+     */
+
+     /**
+      * Collects the specified control Id from the view
+      * @param  {String} sId  Control ID
+      * @return {Control}     View control
+      */
+    Controller.prototype.getControl = function (sId) {
+      return this.getView().byId(sId);
+    };
   });
