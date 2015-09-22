@@ -1,6 +1,7 @@
 jQuery.sap.declare("view.forecasts.Wizard");
 jQuery.sap.require("thirdparty.shortid.ShortId");
 jQuery.sap.require("util.DateFormatter");
+jQuery.sap.require("thirdparty.momentjs.Momentjs");
 
 // Provides controller forecasts.ForecastWizard
 sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
@@ -8,7 +9,8 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
     "use strict";
 
     var Wizard = Controller.extend("view.forecasts.Wizard", /** @lends view.forecasts.Wizard.prototype */ {
-
+      _isAllowedCheckTime : moment(),
+      _isAllowed : false
     });
 
     /**
@@ -89,11 +91,25 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
         oInput.setValue("/");
       }
 
-      // and run setup for step one.
-      this.setupStep1();
+      // First we're going to check if this user has enough data allowance to
+      // create a new data set...
+      var oPromise = jQuery.Deferred();
+      var self = this;
 
-      // Let the master list know I'm on this Folders view.
-      this.getEventBus().publish("Folders", "RouteMatched", {} /* payload */ );
+      // When the promise is resolved, we set up as per usual. If the Promise
+      // is rejected, then show the message page
+      jQuery.when(oPromise).fail(function() { // rejected - go to sad face
+        oNav.to(self.getView().byId("idOverLimitMessagePage"));
+      }).done(function() { // resolved - go to new data set page
+        // and run setup for step one.
+        self.setupStep1();
+
+        // Let the master list know I'm on this Folders view.
+        self.getEventBus().publish("Folders", "RouteMatched", {} /* payload */ );
+      });
+
+      // Now check if the user is allowed to make another forecast
+      this._isAllowedNew(oPromise);
     };
 
     /**
@@ -1181,6 +1197,145 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
       }
 
       return bValid;
+    };
+
+    /***
+     *     █████╗ ██╗     ██╗      ██████╗ ██╗    ██╗ █████╗ ███╗   ██╗ ██████╗███████╗
+     *    ██╔══██╗██║     ██║     ██╔═══██╗██║    ██║██╔══██╗████╗  ██║██╔════╝██╔════╝
+     *    ███████║██║     ██║     ██║   ██║██║ █╗ ██║███████║██╔██╗ ██║██║     █████╗
+     *    ██╔══██║██║     ██║     ██║   ██║██║███╗██║██╔══██║██║╚██╗██║██║     ██╔══╝
+     *    ██║  ██║███████╗███████╗╚██████╔╝╚███╔███╔╝██║  ██║██║ ╚████║╚██████╗███████╗
+     *    ╚═╝  ╚═╝╚══════╝╚══════╝ ╚═════╝  ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝╚══════╝
+     *
+     */
+
+    /**
+     * Determines whether the user is allowed to create any more forecasts,
+     * in accordance with the allowances of their plan.
+     * @param  {Deferred} Promise
+     * @return {Boolean}  Allowed?
+     */
+    Wizard.prototype._isAllowedNew = function(oPromise) {
+
+      // checks the total amount of data the user has against the total
+      // amount their plan allows for. if they're over, then they cannot Create
+      // a new data set until they get rid of something.
+      this.showBusyDialog({});
+
+      // read in the total amount currently used...
+      var oTotalPromise = jQuery.Deferred();
+      var iCount = 0;
+      this._readMonthsForecastCount(this.getProfileId(), oTotalPromise, function(count) {
+        iCount = count;
+      });
+
+      // and plan allowance
+      var oLimitPromise = jQuery.Deferred();
+      var iLimit = 0;
+      this._readPlanLimit(this.getProfileId(), oLimitPromise, function(limit) {
+        iLimit = limit;
+      });
+
+      // When all of our async reads have come back
+      var self = this;
+      jQuery.when(oTotalPromise).done(function() {
+        jQuery.when(oLimitPromise).done(function() {
+          // Now compare. If fTotal is greater than fLimit, then no more data sets are allowed.
+          if (iCount >= iLimit && iLimit !== 0) { // 0 means unlimited
+            // Hide busy
+            self.hideBusyDialog();
+
+            // Alert, you're over!
+            self.showInfoAlert(
+              "Yikes! You're over your plan's monthly forecast allowance! You'll have to wait until next month, or upgrade your account to continue forecasting.",
+              "Plan forecast limit reached",
+              sap.ui.Device.system.phone
+            );
+            oPromise.reject();
+          } else {
+            // Set up last checked moment
+            self._isAllowedCheckTime = moment();
+            self._isAllowed = true;
+
+            // Hide busy
+            self.hideBusyDialog();
+            oPromise.resolve();
+          }
+        });
+      });
+    };
+
+    /**
+     * Async read of the user's total forecasts for this month, and when done, executes a callback
+     * and resolves a promise. I use promises so that we don't end up Christmas treeing.
+     * @param  {String}   sProfileId Profile ID
+     * @param  {Deferred} oPromise   Deferred promise
+     * @param  {Function} fnCb       Callback function
+     */
+    Wizard.prototype._readMonthsForecastCount = function(sProfileId, oPromise, callback) {
+      // Model for reading
+      var oModel = this.getView().getModel("forecast");
+
+      // first check if the model has the data we want...
+      oModel.read("/ForecastIds", {
+        async: true,
+        filters : [new sap.ui.model.Filter({
+          path : 'month(created)',
+          operator : sap.ui.model.FilterOperator.EQ,
+          value1 : new Date(Date.now()).getMonth() + 1 // remeber, months start at 0
+        }), new sap.ui.model.Filter({
+          path : 'user',
+          operator : sap.ui.model.FilterOperator.EQ,
+          value1 : "TESTUSER"
+        })],
+        success: jQuery.proxy(function(oData, mResponse) {
+          // Callback and resolve
+          try {
+            callback(oData.results.length);
+          } catch (e) {}
+          oPromise.resolve();
+        }, this),
+        error: jQuery.proxy(function(mError) {
+          // What to do?
+        }, this)
+      });
+    };
+
+    /**
+     * Async read of the user's current plan forecast monthly limit. When done, executes a callback
+     * and resolves a promise. I use promises so that we don't end up Christmas treeing.
+     * @param  {String}   sProfileId Profile ID
+     * @param  {Deferred} oPromise   Deferred promise
+     * @param  {Function} fnCb       Callback function
+     */
+    Wizard.prototype._readPlanLimit = function(sProfileId, oPromise, fnCb) {
+      // Model for reading
+      var oModel = this.getView().getModel("profile");
+
+      // first check if the model has the data we want...
+      var sPath = "/CurrentSubscriptions('" + sProfileId + "')";
+      var oPlan = oModel.getProperty(sPath);
+      if (oPlan) {
+        // Callback and resolve
+        try {
+          fnCb(oPlan.forecast_limit);
+        } catch (e) {}
+        oPromise.resolve();
+      } else {
+        oModel.read(sPath, {
+          async: true,
+          success: jQuery.proxy(function(oData, mResponse) {
+            // Callback and resolve
+            try {
+              fnCb(oData.forecast_limit);
+            } catch (e) {}
+            oPromise.resolve();
+          }, this),
+          error: jQuery.proxy(function(mError) {
+            // What to do?
+          }, this)
+        })
+      }
     };
 
     return Wizard;

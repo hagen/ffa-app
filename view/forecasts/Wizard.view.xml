@@ -334,6 +334,15 @@
 							press="onDonePress" />
 					</customDescription>
 				</MessagePage>
+
+				<!-- Over limit message page -->
+				<MessagePage
+					id="idOverLimitMessagePage"
+					icon="sap-icon://FontAwesome/frown-o"
+					showHeader="false"
+					showNavButton="false"
+					description="You're over your plan's forecast limit. To create another forecast, you'll need to wait until next month, or upgrade your plan"
+					text="Forecast limit reached!" /> <!-- TODO Localisation -->
 	    </pages>
 	  </NavContainer>
 	</Page>

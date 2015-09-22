@@ -72,7 +72,7 @@
 		    </content>
 		  </Page>
 
-			<!-- No favorites message page -->
+			<!-- Over limit message page -->
 			<MessagePage
 				id="idMessagePage"
 				icon="sap-icon://FontAwesome/frown-o"
