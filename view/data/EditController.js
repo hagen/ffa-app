@@ -85,7 +85,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      * @param  {Event} oEvent Change event
      */
     Controller.prototype.onInputChange = function(oEvent) {
-      var sValue = oEvent.getValue();
+      var sValue = oEvent.getParameter("value");
       var oControl = oEvent.getSource();
 
       if (sValue) {
