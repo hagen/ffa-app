@@ -1,16 +1,16 @@
 <mvc:View
-	controllerName="view.data.ViewRedshift"
+	controllerName="view.data.ViewHDB"
 	xmlns="sap.m"
   xmlns:l="sap.ui.layout"
   xmlns:f="sap.ui.layout.form"
 	xmlns:core="sap.ui.core"
 	xmlns:mvc="sap.ui.core.mvc">
 	<Page
-		id="idRedshiftPage"
+		id="idHDBPage"
 		showHeader="true"
 		showNavButton="{device>isPhone}"
 		navButtonPress="onNavBackPress"
-		title="AWS Redshift">
+		title="SAP HANA">
 		<headerContent>
 			<Button
 				id="idEditButton"
@@ -24,7 +24,7 @@
 				width="auto">
 				<l:content>
 					<f:SimpleForm
-						id="idRedshiftConfigForm"
+						id="idHdbConfigForm"
 						maxContainerCols="2"
 						editable="true"
 						layout="ResponsiveGridLayout"
@@ -51,35 +51,21 @@
 									<l:GridData
 										span="L10 M10 S12" />
 								</layoutData>
+								<customData>
+									<core:CustomData key="original" value="{dataset>name}" />
+								</customData>
 							</Input>
 
 							<Label
-								text="Endpoint">
+								text="Host name">
 								<layoutData>
 									<l:GridData
 										span="L2 M2 S12" />
 								</layoutData>
 							</Label>
 							<Input
-								id="idEndpointInput"
-								value="{dataset>Redshift/endpoint}"
-								enabled="false">
-								<layoutData>
-									<l:GridData
-										span="L10 M10 S12" />
-								</layoutData>
-							</Input>
-
-							<Label
-								text="Database">
-								<layoutData>
-									<l:GridData
-										span="L2 M2 S12" />
-								</layoutData>
-							</Label>
-							<Input
-								id="idDatabaseInput"
-								value="{dataset>Redshift/database}"
+								id="idHostInput"
+								value="{dataset>Hdb/host}"
 								enabled="false">
 								<layoutData>
 									<l:GridData
@@ -96,8 +82,25 @@
 							</Label>
 							<Input
 								id="idPortInput"
-								value="{dataset>Redshift/port}"
+								value="{dataset>Hdb/port}"
 								type="Number"
+								enabled="false">
+								<layoutData>
+									<l:GridData
+										span="L10 M10 S12" />
+								</layoutData>
+							</Input>
+
+							<Label
+								text="Schema">
+								<layoutData>
+									<l:GridData
+										span="L2 M2 S12" />
+								</layoutData>
+							</Label>
+							<Input
+								id="idDatabaseInput"
+								value="{dataset>Hdb/schema}"
 								enabled="false">
 								<layoutData>
 									<l:GridData
@@ -114,12 +117,15 @@
 							</Label>
 							<Input
 								id="idUsernameInput"
-								value="{dataset>Redshift/username}"
+								value="{dataset>Hdb/username}"
 								enabled="false">
 								<layoutData>
 									<l:GridData
 										span="L10 M10 S12" />
 								</layoutData>
+								<customData>
+									<core:CustomData key="original" value="{dataset>Hdb/username}" />
+								</customData>
 							</Input>
 
 							<Label
@@ -131,13 +137,16 @@
 							</Label>
 							<Input
 								id="idPasswordInput"
-								value="{dataset>Redshift/password}"
+								value="{dataset>Hdb/password}"
 								enabled="false"
 								type="Password">
 								<layoutData>
 									<l:GridData
 										span="L10 M10 S12" />
 								</layoutData>
+								<customData>
+									<core:CustomData key="original" value="{dataset>Hdb/password}" />
+								</customData>
 							</Input>
 
 							<Label
@@ -149,7 +158,7 @@
 							</Label>
 							<CheckBox
 								id="idRememberCheckBox"
-								selected="{= ${dataset>Redshift/remember} === 'X' ? true : false }"
+								selected="{= ${dataset>Hdb/remember} === 'X' ? true : false }"
 								text="Save username &amp; password?"
 								enabled="false">
 								<layoutData>
@@ -161,7 +170,7 @@
 							<TextArea
 								id="idQueryTextArea"
 								rows="5"
-								value="{dataset>Redshift/query}"
+								value="{dataset>Hdb/query}"
 								enabled="false">
 								<layoutData>
 									<l:GridData

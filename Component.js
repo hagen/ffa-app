@@ -43,13 +43,20 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
         view: "data.DataSets",
         viewLevel: 3,
         subroutes: [{
-          pattern: "datasets/hana/:dataset_id:",
+          pattern: "datasets/hdb/:dataset_id:",
           name: "view-hdb",
-          view: "data.ViewHana",
+          view: "data.ViewHDB",
           targetControl: "idDataSetsSplitContainer",
           targetAggregation: "detailPages",
           transition : "slide",
-          viewLevel: 4
+          viewLevel: 4,
+          subroutes: [{
+            pattern: "datasets/hdb/:dataset_id:/edit",
+            name: "edit-hdb",
+            view: "data.EditHDB",
+            transition : "flip",
+            viewLevel: 5
+          }]
         },
          {
           pattern: "datasets/redshift/:dataset_id:",
@@ -58,15 +65,29 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
           targetControl: "idDataSetsSplitContainer",
           targetAggregation: "detailPages",
           transition : "slide",
-          viewLevel: 4
+          viewLevel: 4,
+          subroutes: [{
+            pattern: "datasets/redshift/:dataset_id:/edit",
+            name: "edit-redshift",
+            view: "data.EditRedshift",
+            transition : "flip",
+            viewLevel: 5
+          }]
         }, {
           pattern: "datasets/sheets/:dataset_id:",
-          name: "view-google",
+          name: "view-google", // Do not change - backend needs 'Google'
           view: "data.ViewSheets",
           targetControl: "idDataSetsSplitContainer",
           targetAggregation: "detailPages",
           transition : "slide",
-          viewLevel: 4
+          viewLevel: 4,
+          subroutes: [{
+            pattern: "datasets/sheets/:dataset_id:/edit",
+            name: "edit-google", // Do not change - backend needs 'Google'
+            view: "data.EditSheets",
+            transition : "flip",
+            viewLevel: 5
+          }]
         },
          {
           pattern: "datasets/new",

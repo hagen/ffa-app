@@ -1,12 +1,12 @@
 jQuery.sap.declare("view.data.ViewRedshift");
 
 // Provides controller view.Wizard
-sap.ui.define(["jquery.sap.global", "view/data/Controller"],
+sap.ui.define(["jquery.sap.global", "view/data/ViewController"],
   function(jQuery, Controller) {
     "use strict";
 
     var Redshift = Controller.extend("view.data.ViewRedshift", /** @lends view.data.ViewRedshift.prototype */ {
-
+      _editMode: false
     });
 
     /**
@@ -34,6 +34,16 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      */
     Redshift.prototype.onAfterRendering = function() {};
 
+    /***
+     *    ███╗   ██╗ █████╗ ██╗   ██╗
+     *    ████╗  ██║██╔══██╗██║   ██║
+     *    ██╔██╗ ██║███████║██║   ██║
+     *    ██║╚██╗██║██╔══██║╚██╗ ██╔╝
+     *    ██║ ╚████║██║  ██║ ╚████╔╝
+     *    ╚═╝  ╚═══╝╚═╝  ╚═╝  ╚═══╝
+     *
+     */
+
     /**
      * Route matched handler fires up the Wizard straight away
      */
@@ -47,7 +57,9 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
         this._sId = oParameters.arguments.dataset_id;
 
         // raise an event for the master page to select the correct list item
-        this.getEventBus().publish("Master", "SelectItem", { dataset_id : this._sId });
+        this.getEventBus().publish("Master", "SelectItem", {
+          dataset_id: this._sId
+        });
 
         // Bind the view to the data set Id
         var oPage = this.getView().byId("idRedshiftPage");
@@ -57,6 +69,15 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
           expand: "Dimensions,Redshift"
         });
       }
+    };
+
+    /**
+     * Nav back to the data set page, if we are on mobile
+     * @param  {event} oEvent Button press event
+     */
+    Redshift.prototype.onNavBackPress = function(oEvent) {
+      // nav back to the original route
+      this.getRouter().navTo("datasets", {}, !sap.ui.Device.system.phone);
     };
 
     /***
@@ -69,22 +90,16 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      *
      */
 
-     /**
-      * Start editing
-      * @param  {Event} oEvent Button press event
-      */
-     Redshift.prototype.onEditPress = function(oEvent) {
-
-     };
-
     /**
-     * Cancel editing
-     * @param  {Event} oEvent Button event
+     * Nav to redshift edit screen
+     * @param  {Event} oEvent Button press event
      */
-    Redshift.prototype.onCancelPress = function(oEvent) {
+    Redshift.prototype.onEditPress = function(oEvent) {
 
+      this.getRouter().navTo("edit-redshift", {
+        dataset_id: this._sId
+      }, !sap.ui.Device.system.phone);
     };
-
 
     return Redshift;
 

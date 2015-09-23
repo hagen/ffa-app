@@ -1,5 +1,5 @@
 <mvc:View
-	controllerName="view.data.ViewRedshift"
+	controllerName="view.data.EditRedshift"
 	xmlns="sap.m"
   xmlns:l="sap.ui.layout"
   xmlns:f="sap.ui.layout.form"
@@ -7,16 +7,23 @@
 	xmlns:mvc="sap.ui.core.mvc">
 	<Page
 		id="idRedshiftPage"
-		showHeader="true"
-		showNavButton="{device>isPhone}"
-		navButtonPress="onNavBackPress"
-		title="AWS Redshift">
-		<headerContent>
-			<Button
-				id="idEditButton"
-				text="Edit"
-				press="onEditPress" />
-		</headerContent>
+		showHeader="true">
+		<customHeader>
+			<Toolbar>
+				<Button
+					id="idCancelButton"
+					text="Cancel"
+					press="onCancelPress" />
+				<ToolbarSpacer />
+				<Title
+					text="AWS Redshift" />
+				<ToolbarSpacer />
+				<Button
+					id="idDoneButton"
+					text="Done"
+					press="onDonePress" />
+			</Toolbar>
+		</customHeader>
 		<content>
 			<l:Grid
 				defaultSpan="L12 M12 S12"
@@ -45,12 +52,15 @@
 							</Label>
 							<Input
 								id="idNameInput"
-								value="{dataset>name}"
-								enabled="false">
+								change="onInputChange"
+								value="{dataset>name}">
 								<layoutData>
 									<l:GridData
 										span="L10 M10 S12" />
 								</layoutData>
+								<customData>
+									<core:CustomData key="original" value="{dataset>name}" />
+								</customData>
 							</Input>
 
 							<Label
@@ -114,12 +124,15 @@
 							</Label>
 							<Input
 								id="idUsernameInput"
-								value="{dataset>Redshift/username}"
-								enabled="false">
+								change="onInputChange"
+								value="{dataset>Redshift/username}">
 								<layoutData>
 									<l:GridData
 										span="L10 M10 S12" />
 								</layoutData>
+								<customData>
+									<core:CustomData key="original" value="{dataset>Redshift/username}" />
+								</customData>
 							</Input>
 
 							<Label
@@ -131,13 +144,16 @@
 							</Label>
 							<Input
 								id="idPasswordInput"
+								change="onInputChange"
 								value="{dataset>Redshift/password}"
-								enabled="false"
 								type="Password">
 								<layoutData>
 									<l:GridData
 										span="L10 M10 S12" />
 								</layoutData>
+								<customData>
+									<core:CustomData key="original" value="{dataset>Redshift/password}" />
+								</customData>
 							</Input>
 
 							<Label
@@ -150,12 +166,14 @@
 							<CheckBox
 								id="idRememberCheckBox"
 								selected="{= ${dataset>Redshift/remember} === 'X' ? true : false }"
-								text="Save username &amp; password?"
-								enabled="false">
+								text="Save username &amp; password?">
 								<layoutData>
 									<l:GridData
 										span="L10 M10 S12" />
 								</layoutData>
+								<customData>
+									<core:CustomData key="original" value="{dataset>Redshift/remember}" />
+								</customData>
 							</CheckBox>
 
 							<TextArea
@@ -172,7 +190,7 @@
 					</f:SimpleForm>
 				</l:content>
 			</l:Grid>
-			<core:Fragment id="idDefinitionFragment" fragmentName="view.data.ViewDefinition" type="XML" />
+			<core:Fragment id="idDefinitionFragment" fragmentName="view.data.EditDefinition" type="XML" />
 		</content>
 	</Page>
 </mvc:View>

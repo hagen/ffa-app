@@ -1,31 +1,29 @@
 <mvc:View
-	controllerName="view.data.ViewHana"
+	controllerName="view.data.EditHDB"
 	xmlns="sap.m"
   xmlns:l="sap.ui.layout"
   xmlns:f="sap.ui.layout.form"
 	xmlns:core="sap.ui.core"
 	xmlns:mvc="sap.ui.core.mvc">
 	<Page
-		id="idHanaPage"
-		showHeader="true"
-		showNavButton="{device>isPhone}"
-		navButtonPress="onNavBackPress"
-		title="SAP HANA">
-		<headerContent>
-			<Button
-				id="idEditButton"
-				text="Edit"
-				press="onEditPress" />
-		</headerContent>
-		<footer>
+		id="idHDBPage"
+		showHeader="true">
+		<customHeader>
 			<Toolbar>
-				<ToolbarSpacer />
 				<Button
 					id="idCancelButton"
-					press="onCancelPress"
-					visible="false" />
+					text="Cancel"
+					press="onCancelPress" />
+				<ToolbarSpacer />
+				<Title
+					text="SAP HANA" />
+				<ToolbarSpacer />
+				<Button
+					id="idDoneButton"
+					text="Done"
+					press="onDonePress" />
 			</Toolbar>
-		</footer>
+		</customHeader>
 		<content>
 			<l:Grid
 				defaultSpan="L12 M12 S12"
@@ -53,13 +51,16 @@
 								</layoutData>
 							</Label>
 							<Input
-								id="idHdbNameInput"
-								value="{dataset>name}"
-								enabled="false">
+								id="idNameInput"
+								change="onInputChange"
+								value="{dataset>name}">
 								<layoutData>
 									<l:GridData
 										span="L10 M10 S12" />
 								</layoutData>
+								<customData>
+									<core:CustomData key="original" value="{dataset>name}" />
+								</customData>
 							</Input>
 
 							<Label
@@ -70,7 +71,7 @@
 								</layoutData>
 							</Label>
 							<Input
-								id="idHdbHostInput"
+								id="idHostInput"
 								value="{dataset>Hdb/host}"
 								enabled="false">
 								<layoutData>
@@ -87,7 +88,7 @@
 								</layoutData>
 							</Label>
 							<Input
-								id="idHdbPortInput"
+								id="idPortInput"
 								value="{dataset>Hdb/port}"
 								type="Number"
 								enabled="false">
@@ -105,7 +106,7 @@
 								</layoutData>
 							</Label>
 							<Input
-								id="idHdbDatabaseInput"
+								id="idDatabaseInput"
 								value="{dataset>Hdb/schema}"
 								enabled="false">
 								<layoutData>
@@ -122,13 +123,16 @@
 								</layoutData>
 							</Label>
 							<Input
-								id="idHdbUsernameInput"
-								value="{dataset>Hdb/username}"
-								enabled="false">
+								id="idUsernameInput"
+								change="onInputChange"
+								value="{dataset>Hdb/username}">
 								<layoutData>
 									<l:GridData
 										span="L10 M10 S12" />
 								</layoutData>
+								<customData>
+									<core:CustomData key="original" value="{dataset>Hdb/username}" />
+								</customData>
 							</Input>
 
 							<Label
@@ -139,14 +143,17 @@
 								</layoutData>
 							</Label>
 							<Input
-								id="idHdbPasswordInput"
+								id="idPasswordInput"
+								change="onInputChange"
 								value="{dataset>Hdb/password}"
-								enabled="false"
 								type="Password">
 								<layoutData>
 									<l:GridData
 										span="L10 M10 S12" />
 								</layoutData>
+								<customData>
+									<core:CustomData key="original" value="{dataset>Hdb/password}" />
+								</customData>
 							</Input>
 
 							<Label
@@ -157,18 +164,21 @@
 								</layoutData>
 							</Label>
 							<CheckBox
-								id="idHdbRememberPasswordCheckBox"
+								id="idRememberCheckBox"
 								selected="{= ${dataset>Hdb/remember} === 'X' ? true : false }"
 								text="Save username &amp; password?"
-								enabled="false">
+								select="onCheckBoxSelect">
 								<layoutData>
 									<l:GridData
 										span="L10 M10 S12" />
 								</layoutData>
+								<customData>
+									<core:CustomData key="original" value="{dataset>Hdb/remember}" />
+								</customData>
 							</CheckBox>
 
 							<TextArea
-								id="idHdbQueryTextArea"
+								id="idQueryTextArea"
 								rows="5"
 								value="{dataset>Hdb/query}"
 								enabled="false">
@@ -181,7 +191,7 @@
 					</f:SimpleForm>
 				</l:content>
 			</l:Grid>
-			<core:Fragment fragmentName="view.data.ViewDefinition" type="XML" />
+			<core:Fragment id="idDefinitionFragment" fragmentName="view.data.EditDefinition" type="XML" />
 		</content>
 	</Page>
 </mvc:View>

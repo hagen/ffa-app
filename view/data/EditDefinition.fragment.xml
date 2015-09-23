@@ -30,8 +30,8 @@
         <cells>
           <Text text="{dataset>name}"/>
           <Link
-            subtle="true"
-            emphasized="false"
+            subtle="false"
+            emphasized="true"
             press="onDefinitionLinkPress"
             text="{= ${dataset>type}.charAt(0).toUpperCase() + ${dataset>type}.slice(1) }" />
           <ObjectNumber number="{= ${dataset>index} + 1 }"/>

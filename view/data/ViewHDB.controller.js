@@ -1,19 +1,19 @@
-jQuery.sap.declare("view.data.ViewHana");
+jQuery.sap.declare("view.data.ViewHDB");
 
 // Provides controller view.Wizard
-sap.ui.define(["jquery.sap.global", "view/data/Controller"],
+sap.ui.define(["jquery.sap.global", "view/data/ViewController"],
   function(jQuery, Controller) {
     "use strict";
 
-    var Hana = Controller.extend("view.data.ViewHana", /** @lends view.data.ViewHana.prototype */ {
-
+    var HDB = Controller.extend("view.data.ViewHDB", /** @lends view.data.ViewHDB.prototype */ {
+      _editMode: false
     });
 
     /**
      * On init handler. We are setting up the route matched handler, because
      * it is possible to navigate directly to this page.
      */
-    Hana.prototype.onInit = function() {
+    HDB.prototype.onInit = function() {
 
       // handle route matched
       this.getRouter().getRoute("view-hdb").attachPatternMatched(this._onRouteMatched, this);
@@ -22,22 +22,32 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
     /**
      *
      */
-    Hana.prototype.onExit = function() {};
+    HDB.prototype.onExit = function() {};
 
     /**
      *
      */
-    Hana.prototype.onBeforeRendering = function() {};
+    HDB.prototype.onBeforeRendering = function() {};
 
     /**
      *
      */
-    Hana.prototype.onAfterRendering = function() {};
+    HDB.prototype.onAfterRendering = function() {};
+
+    /***
+     *    ███╗   ██╗ █████╗ ██╗   ██╗
+     *    ████╗  ██║██╔══██╗██║   ██║
+     *    ██╔██╗ ██║███████║██║   ██║
+     *    ██║╚██╗██║██╔══██║╚██╗ ██╔╝
+     *    ██║ ╚████║██║  ██║ ╚████╔╝
+     *    ╚═╝  ╚═══╝╚═╝  ╚═╝  ╚═══╝
+     *
+     */
 
     /**
      * Route matched handler fires up the Wizard straight away
      */
-    Hana.prototype._onRouteMatched = function(oEvent) {
+    HDB.prototype._onRouteMatched = function(oEvent) {
       this._checkMetaDataLoaded("dataset");
       var oParameters = oEvent.getParameters();
 
@@ -47,16 +57,27 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
         this._sId = oParameters.arguments.dataset_id;
 
         // raise an event for the master page to select the correct list item
-        this.getEventBus().publish("Master", "SelectItem", { dataset_id : this._sId });
+        this.getEventBus().publish("Master", "SelectItem", {
+          dataset_id: this._sId
+        });
 
         // Bind the view to the data set Id
-        var oPage = this.getView().byId("idHanaPage");
+        var oPage = this.getView().byId("idHDBPage");
 
         // Bind the destination page with the path and expand params
         oPage.bindElement("dataset>/DataSets('" + this._sId + "')", {
           expand: "Dimensions,Hdb"
         });
       }
+    };
+
+    /**
+     * Nav back to the data set page, if we are on mobile
+     * @param  {event} oEvent Button press event
+     */
+    HDB.prototype.onNavBackPress = function(oEvent) {
+      // nav back to the original route
+      this.getRouter().navTo("datasets", {}, !sap.ui.Device.system.phone);
     };
 
     /***
@@ -69,23 +90,17 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      *
      */
 
-     /**
-      * Start editing
-      * @param  {Event} oEvent Button press event
-      */
-     Hana.prototype.onEditPress = function(oEvent) {
-
-     };
-
     /**
-     * Cancel editing
-     * @param  {Event} oEvent Button event
+     * Nav to editing page
+     * @param  {Event} oEvent Button press event
      */
-    Hana.prototype.onCancelPress = function(oEvent) {
+    HDB.prototype.onEditPress = function(oEvent) {
 
+      this.getRouter().navTo("edit-hdb", {
+        dataset_id: this._sId
+      }, !sap.ui.Device.system.phone);
     };
 
-
-    return Hana;
+    return HDB;
 
   }, /* bExport= */ true);

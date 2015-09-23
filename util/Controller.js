@@ -216,18 +216,20 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
      */
     Controller.prototype.openBusyDialog =
       Controller.prototype.showBusyDialog = function(oParams) {
+        var d = this._oBusyDialog;
+
         // Create the fragment and open!
-        if (!this._oBusyDialog) {
-          this._oBusyDialog = sap.ui.xmlfragment("view.BusyDialog", this);
-          this.getView().addDependent(this._oBusyDialog);
+        if (!d) {
+          d = this._oBusyDialog = sap.ui.xmlfragment("view.BusyDialog", this);
+          this.getView().addDependent(d);
         }
 
         // Set title, text and cancel event
         if (oParams) {
-          this._oBusyDialog.setTitle(oParams.title);
-          this._oBusyDialog.setText(oParams.text);
+          d.setTitle(oParams.title);
+          d.setText(oParams.text);
           if (typeof oParams.onCancel === 'function') {
-            this._oBusyDialog.attachEvent('close', function(oEvent) {
+            d.attachEvent('close', function(oEvent) {
               if (oEvent.getParameter("cancelPressed")) {
                 oParams.onCancel();
               }
@@ -236,18 +238,18 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
 
           // And cancel button?
           if (oParams.showCancelButton === undefined) {
-            this._oBusyDialog.setShowCancelButton(false);
+            d.setShowCancelButton(false);
           } else {
-            this._oBusyDialog.setShowCancelButton(oParams.showCancelButton);
+            d.setShowCancelButton(oParams.showCancelButton);
           }
         } else {
-          this._oBusyDialog.setTitle("");
-          this._oBusyDialog.setText("");
-          this._oBusyDialog.setShowCancelButton(false);
+          d.setTitle("");
+          d.setText("");
+          d.setShowCancelButton(false);
         }
 
         // now show the dialog
-        this._oBusyDialog.open();
+        d.open();
       };
 
     /**
@@ -255,12 +257,16 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
      * @param  {object} oParams Params containing only text
      */
     Controller.prototype.updateBusyDialog = function(oParams) {
-      if (oParams.title) {
-        this._oBusyDialog.setTitle(oParams.title);
-      }
-
-      if (oParams.text) {
-        this._oBusyDialog.setText(oParams.text);
+      var d = this._oBusyDialog;
+      if (!d) {
+        this.showBusyDialog(oParams);
+      } else {
+        if (oParams.title) {
+          d.setTitle(oParams.title);
+        }
+        if (oParams.text) {
+          d.setText(oParams.text);
+        }
       }
     };
 
