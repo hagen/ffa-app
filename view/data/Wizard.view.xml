@@ -39,25 +39,23 @@
 		            <ObjectListItem
 		              id="idHadoopObjectListItem"
 		              title="Hadoop"
-		              icon="sap-icon://FontMfizz/hadoop"
+		              icon="images/datasources/hadoop.png"
 		              type="Active"
 		              press="onHadoopItemPress">
 		            </ObjectListItem>
 		            <ObjectListItem
-		              id="idExcelObjectListItem"
-		              title="Excel"
-		              icon="sap-icon://excel-attachment"
+		              id="idImportIOObjectListItem"
+		              title="import.io"
+		              icon="images/datasources/importio.png"
 		              type="Active"
-		              class="ffaDataSourceIconExcel"
-		              press="onExcelItemPress">
+		              press="onImportIOItemPress">
 		            </ObjectListItem>
 		            <ObjectListItem
 		              id="idSheetsObjectListItem"
 		              title="Google Docs Spreadsheet"
-		              icon="sap-icon://FontAwesome/google"
+		              icon="images/datasources/sheets.png"
 		              type="Active"
-		              press="onSheetsItemPress"
-		              class="ffaDataSourceIconGoogle">
+		              press="onSheetsItemPress">
 		            </ObjectListItem>
 								<ObjectListItem
 		              id="idCsvObjectListItem"
