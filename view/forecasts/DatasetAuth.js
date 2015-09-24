@@ -6,7 +6,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
     "use strict";
 
     var DatasetAuth = Controller.extend("view.forecasts.DatasetAuth", /** @lends view.forecasts.DatasetAuth */ {
-      _sDataSetId : ""
+      _sDataSetId: ""
     });
 
     /***
@@ -35,52 +35,52 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
       // Copy over the datset id locally so that it can be used for the dialog
       // close and test function.
       this._sDataSetId = sId;
-      
+
       // Initiate by reading in the dataset
       this._getDataset(sId, oModel,
 
         // Success callback
         jQuery.proxy(function(oDataset) {
-        // Does this Dataset Source type require authentication? Get the Data source
-        // type and check the authentication flag
-        var oReadPromise = jQuery.Deferred();
-        jQuery.when(oReadPromise)
-          .then(jQuery.proxy(function() {
-            if (bAuthReqd) {
-              this._maybePromptForAuth(sId, oDataset.type_id, oModel, oPromise);
-            } else {
-              oPromise.resolve();
-            }
-          }, this));
+          // Does this Dataset Source type require authentication? Get the Data source
+          // type and check the authentication flag
+          var oReadPromise = jQuery.Deferred();
+          jQuery.when(oReadPromise)
+            .then(jQuery.proxy(function() {
+              if (bAuthReqd) {
+                this._maybePromptForAuth(sId, oDataset.type_id, oModel, oPromise);
+              } else {
+                oPromise.resolve();
+              }
+            }, this));
 
-        // now if the authentication flag is already in the model, then we
-        // can quickly determine if auth is required. If not, then we have to
-        // read from DB
-        if (oDataset.DataSource.authentication === undefined) {
-          // Do a model read...
-          oModel.read("/DataSources('" + oDataset.type_id + "')", {
-            urlParameters: {
-              $select: "authentication"
-            },
-            async: true,
-            success: function(oData, mResponse) {
-              bAuthReqd = (oData.authentication === "X");
-              oReadPromise.resolve();
-            },
-            error: function(mError) {
+          // now if the authentication flag is already in the model, then we
+          // can quickly determine if auth is required. If not, then we have to
+          // read from DB
+          if (oDataset.DataSource.authentication === undefined) {
+            // Do a model read...
+            oModel.read("/DataSources('" + oDataset.type_id + "')", {
+              urlParameters: {
+                $select: "authentication"
+              },
+              async: true,
+              success: function(oData, mResponse) {
+                bAuthReqd = (oData.authentication === "X");
+                oReadPromise.resolve();
+              },
+              error: function(mError) {
 
-            }
-          });
-        } else {
-          bAuthReqd = (oDataset.DataSource.authentication === "X");
-          oReadPromise.resolve();
+              }
+            });
+          } else {
+            bAuthReqd = (oDataset.DataSource.authentication === "X");
+            oReadPromise.resolve();
+          }
+        }, this),
+
+        // Error callback
+        function() {
+          alert("Error reading data set");
         }
-      }, this),
-
-      // Error callback
-      function() {
-        alert("Error reading data set");
-      }
       );
     };
 
@@ -164,13 +164,13 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      *
      */
 
-     /**
-      * Read a data set from the supplied model, or read from back-end
-      * @param  {String}   sId       data set id
-      * @param  {Model}    oModel    Data set Model
-      * @param  {Function} fnSuccess Success callback
-      * @param  {Function} fnError   error callback
-      */
+    /**
+     * Read a data set from the supplied model, or read from back-end
+     * @param  {String}   sId       data set id
+     * @param  {Model}    oModel    Data set Model
+     * @param  {Function} fnSuccess Success callback
+     * @param  {Function} fnError   error callback
+     */
     DatasetAuth.prototype._getDataset = function(sId, oModel, fnSuccess, fnError) {
       var sPath = "/DataSets('" + sId + "')";
       var oObject = oModel.getObject(sPath);
@@ -322,6 +322,81 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      */
     DatasetAuth.prototype._testHdb = function(oParams) {
 
+      this._test(oParams, "hdb");
+    };
+
+    /**
+     * function to update authentication details against the Data set
+     * @param  {Object} oParams Named array of config options
+     */
+    DatasetAuth.prototype._updateHdb = function(oParams) {
+
+      this._update(oParams, "hdb");
+    };
+
+    /**
+     * function to clear  authentication details against the Data set
+     * @param  {Object} oParams Named array of config options
+     */
+    DatasetAuth.prototype._clearHdb = function(sChannel, sEvent, oData) {
+      this._clear(oData, "hdb");
+    };
+
+    /***
+     *    ██████╗ ███████╗██████╗ ███████╗██╗  ██╗██╗███████╗████████╗
+     *    ██╔══██╗██╔════╝██╔══██╗██╔════╝██║  ██║██║██╔════╝╚══██╔══╝
+     *    ██████╔╝█████╗  ██║  ██║███████╗███████║██║█████╗     ██║
+     *    ██╔══██╗██╔══╝  ██║  ██║╚════██║██╔══██║██║██╔══╝     ██║
+     *    ██║  ██║███████╗██████╔╝███████║██║  ██║██║██║        ██║
+     *    ╚═╝  ╚═╝╚══════╝╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝╚═╝        ╚═╝
+     *
+     */
+
+    /**
+     * Function to test connectivity to Redshift
+     * @param  {Object} oParams Named array of config options
+     */
+    DatasetAuth.prototype._testRedshift = function(oParams) {
+
+      this._test(oParams, "redshift");
+    };
+
+    /**
+     * function to update authentication details against the Data set
+     * @param  {Object} oParams Named array of config options
+     */
+    DatasetAuth.prototype._updateRedshift = function(oParams) {
+
+      this._update(oParams, "redshift");
+    };
+
+    /**
+     * function to clear  authentication details against the Data set
+     * @param  {Object} oParams Named array of config options
+     */
+    DatasetAuth.prototype._clearRedshift = function(sChannel, sEvent, oData) {
+      this._clear(oData, "redshift");
+    };
+
+    /***
+     *     █████╗ ██╗     ██╗         ██████╗ ██████╗
+     *    ██╔══██╗██║     ██║         ██╔══██╗██╔══██╗
+     *    ███████║██║     ██║         ██║  ██║██████╔╝
+     *    ██╔══██║██║     ██║         ██║  ██║██╔══██╗
+     *    ██║  ██║███████╗███████╗    ██████╔╝██████╔╝
+     *    ╚═╝  ╚═╝╚══════╝╚══════╝    ╚═════╝ ╚═════╝
+     *
+     */
+    /**
+     * Function to test connectivity to HANA
+     * @param  {Object} oParams     Named array of config options
+     * @param  {String} sDataSource Inflected data source type
+     */
+    DatasetAuth.prototype._test = function(oParams, sDataSource) {
+
+      // Inflect data source
+      var s = sDataSource.charAt(0).toUpperCase() + sDataSource.slice(1);
+
       // update the username and password
       var oPayload = {
         username: oParams.username,
@@ -329,7 +404,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
       };
 
       // Test HANA; success call back if connection could be made
-      oParams.model.update("/HdbTest('" + oParams.id + "')", oPayload, {
+      oParams.model.update("/" + s + "Test('" + oParams.id + "')", oPayload, {
         async: true,
         merge: true,
         success: jQuery.proxy(function(oData, mResponse) {
@@ -344,8 +419,12 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
     /**
      * function to update authentication details against the Data set
      * @param  {Object} oParams Named array of config options
+     * @param  {String} sDataSource Inflected data source type
      */
-    DatasetAuth.prototype._updateHdb = function(oParams) {
+    DatasetAuth.prototype._update = function(oParams, sDataSource) {
+
+      // Inflect data source
+      var s = sDataSource.charAt(0).toUpperCase() + sDataSource.slice(1);
 
       // update the username and password
       var oPayload = {
@@ -355,7 +434,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
       };
 
       // Test HANA; success call back if connection could be made
-      oParams.model.update("/Hdb('" + oParams.id + "')", oPayload, {
+      oParams.model.update("/" + s + "('" + oParams.id + "')", oPayload, {
         async: true,
         merge: true,
         success: jQuery.proxy(function(oData, mResponse) {
@@ -370,16 +449,20 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
     };
 
     /**
-     * function to clear  authentication details against the Data set
-     * @param  {Object} oParams Named array of config options
+     * function to clear authentication details against the Data set
+     * @param  {Object} oData       Named array of config options
+     * @param  {String} sDataSource Data source type
      */
-    DatasetAuth.prototype._clearHdb = function(sChannel, sEvent, oData) {
+    DatasetAuth.prototype._clear = function(oData, sDataSource) {
+
+      // Inflect data source
+      var s = sDataSource.charAt(0).toUpperCase() + sDataSource.slice(1);
 
       // Grab the data set Model
       var oModel = this.getView().getModel("dataset");
 
       // Does this Dataset want it's auth details cleared?
-      var sPath = "/Hdb('" + oData.dataset_id + "')",
+      var sPath = "/" + s + "('" + oData.dataset_id + "')",
         sRemember = oModel.getProperty(sPath + "/remember"),
         oPromise = jQuery.Deferred();
 
