@@ -3,14 +3,13 @@ jQuery.sap.require("thirdparty.shortid.ShortId");
 jQuery.sap.require("util.DateFormatter");
 jQuery.sap.require("thirdparty.momentjs.Momentjs");
 
-// Provides controller forecasts.ForecastWizard
-sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
+sap.ui.define(['jquery.sap.global', 'view/forecasts/DatasetAuth'],
   function(jQuery, Controller) {
     "use strict";
 
     var Wizard = Controller.extend("view.forecasts.Wizard", /** @lends view.forecasts.Wizard.prototype */ {
-      _isAllowedCheckTime : moment(),
-      _isAllowed : false
+      _isAllowedCheckTime: moment(),
+      _isAllowed: false
     });
 
     /**
@@ -19,9 +18,9 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
     Wizard.prototype.onInit = function() {
       // Our folder Id globals
       this._sFolderId = "";
-      this._iStep = 1;
       this._aBatchOps = [];
       this._oFields = {
+        date : "",
         forecast: "",
         variables: []
       };
@@ -98,15 +97,17 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
 
       // When the promise is resolved, we set up as per usual. If the Promise
       // is rejected, then show the message page
-      jQuery.when(oPromise).fail(function() { // rejected - go to sad face
-        oNav.to(self.getView().byId("idOverLimitMessagePage"));
-      }).done(function() { // resolved - go to new data set page
-        // and run setup for step one.
-        self.setupStep1();
+      jQuery.when(oPromise)
+        .fail(function() { // rejected - go to sad face
+          oNav.to(self.getView().byId("idOverLimitMessagePage"));
+        })
+        .done(function() { // resolved - go to new data set page
+          // and run setup for step one.
+          self.setupNamePage();
 
-        // Let the master list know I'm on this Folders view.
-        self.getEventBus().publish("Folders", "RouteMatched", {} /* payload */ );
-      });
+          // Let the master list know I'm on this Folders view.
+          self.getEventBus().publish("Folders", "RouteMatched", {} /* payload */ );
+        });
 
       // Now check if the user is allowed to make another forecast
       this._isAllowedNew(oPromise);
@@ -117,19 +118,33 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
      * @param  {object} oEvent Button press event
      */
     Wizard.prototype.onBackPress = function(oEvent) {
-      // Decrement step
-      this._iStep--;
 
-      // set page Title
-      this._setPageTitle("Step " + this._iStep);
+      var oNav = this._getNavContainer(),
+        oCurrentPage = oNav.getCurrentPage();
 
-      // set back button activation
-      if (this._iStep === 1) {
+      // Collect this page's destiantions in custom data.
+      var sPrevId = oCurrentPage.data("prev"),
+        sNextId = oCurrentPage.data("next");
+
+      // The previous page has no prev page, then disable the back button
+      var oPrevPage = this.getView().byId(sPrevId);
+      if (oPrevPage.data("prev")) {
         this.getView().byId("idBackButton").setEnabled(false);
       }
 
+      // And next button
+      var oNextButton = this.getView().byId("idNextButton");
+      if (sNextId) {
+        oNextButton.setEnabled(true);
+      } else {
+        oNextButton.setEnabled(false);
+      }
+
+      // set page Title
+      this._setPageTitle(oPrevPage.getTitle());
+
       // Nav back
-      this.getView().byId("idForecastWizardNavContainer").back();
+      oNav.back();
     };
 
     /**
@@ -154,9 +169,6 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
 
       // Reset all pages...
       this._reset();
-
-      // We also need to send the wizard back to page 1
-      this.getView().byId("idForecastWizardNavContainer").backToPage(this.getView().createId("idNewForecastWizardPage1"));
     };
 
     /**
@@ -166,41 +178,65 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
      */
     Wizard.prototype.onNextPress = function(oEvent) {
 
+      var oNav = this._getNavContainer(),
+        oCurrentPage = oNav.getCurrentPage();
+
+      // Collect this page's destiantions in custom data.
+      var sPrevId = oCurrentPage.data("prev"),
+        sNextId = oCurrentPage.data("next"),
+        fnValidate = oCurrentPage.data("validate");
+
+      var oNextPage = this.getView().byId(sNextId),
+        fnSetup = oNextPage.data("setup");
+
       // Validate the details in the step.
       // If all checks are passed, then go to the next view.
-      var fn = "validateStep" + this._iStep;
-      if (typeof this[fn] === "function") {
-        if (!this["validateStep" + this._iStep].apply(this, [])) {
-          return;
-        }
+      if (typeof this[fnValidate] !== "function") {
+        // If there's no validation function for this step, then go forwards.
+        oNav.to(this.getView().byId(sNextId));
+        return;
       }
 
-      // Next step!
-      this._iStep++;
+      // Otherwise, we're going to call the validation step.
+      this[fnValidate].apply(this, [
+        jQuery.proxy(function() {
 
-      // and page
-      var sPage = "idNewForecastWizardPage" + this._iStep;
+          // set page Title
+          this._setPageTitle(oNextPage.getTitle());
 
-      // set page Title
-      this._setPageTitle("Step " + this._iStep);
+          // set back button activation
+          var oBackButton = this.getView().byId("idBackButton");
+          if (sPrevId) {
+            oBackButton.setEnabled(true);
+          } else {
+            oBackButton.setEnabled(false);
+          }
 
-      // set back button activation
-      if (this._iStep > 1) {
-        this.getView().byId("idBackButton").setEnabled(true);
-      }
+          // And next button
+          var oNextButton = this.getView().byId("idNextButton");
+          if (sNextId) {
+            oNextButton.setEnabled(true);
+          } else {
+            oNextButton.setEnabled(false);
+          }
 
-      // Perform optional page set up.
-      try {
-        var oPromise = this["setupStep" + this._iStep].apply(this, []);
-        // when the promise is resolved, we can navigate.
-        jQuery.when(oPromise).then(jQuery.proxy(function() {
-          // Navigate to the next view
-          this.getView().byId("idForecastWizardNavContainer").to(this.getView().byId(sPage))
-        }, this));
-      } catch (e) {
-        // No setup step. Navigate immediately
-        this.getView().byId("idForecastWizardNavContainer").to(this.getView().byId(sPage))
-      }
+          // Perform optional page set up.
+          try {
+            var oPromise = this[fnSetup].apply(this, []);
+            // when the promise is resolved, we can navigate.
+            jQuery.when(oPromise).then(jQuery.proxy(function() {
+              // Navigate to the next view
+              oNav.to(this.getView().byId(sNextId));
+            }, this));
+          } catch (e) {
+            // No setup step. Navigate immediately
+            oNav.to(this.getView().byId(sNextId));
+          }
+        }, this), // Success callback
+        jQuery.proxy(function() {
+
+        }, this) // Error callback
+      ]);
     };
 
     /**
@@ -208,7 +244,7 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
      * @param  {[type]} oEvent [description]
      * @return {[type]}        [description]
      */
-    Wizard.prototype.onDonePress = function(oEvent) {
+    Wizard.prototype.onDoneLinkPress = function(oEvent) {
       this.getRouter().navTo("forecast-from-folder", {
         folder_id: this._sFolderId,
         forecast_id: this._sForecastId
@@ -216,9 +252,11 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
 
       // Raise an event to signal the end of all forecast processing.
       // The user must now go home, or go to the forecast.
-      this.getEventBus().publish("Forecast", "Finished", {
-        forecast_id: this._sForecastId
-      });
+      this.getEventBus().publish("Forecast", "Finished", { forecast_id: this._sForecastId });
+
+      // If we've recorded username and password during this process, now
+      // is a good time to get rid of them...
+      this.getEventBus().publish("Wizard", "ClearAuth", { dataset_id : this._sDataSetId });
 
     };
 
@@ -235,6 +273,15 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
       this.getEventBus().publish("Forecast", "Finished", {
         forecast_id: this._sForecastId
       });
+    };
+
+    /**
+     * Navigate within the NavContainer backwards (no routing occurs here)
+     * @return  {Control}    Nav container control
+     */
+    Wizard.prototype._getNavContainer = function(oEvent) {
+
+      return this.getView().byId("idNavContainer");
     };
 
     /***
@@ -261,9 +308,6 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
      */
     Wizard.prototype._reset = function() {
 
-      // Back to beginning
-      this._iStep = 1;
-
       // Page 1
       var oInput = this.getView().byId("idNewForecastNameInput");
       oInput.setValue("");
@@ -285,8 +329,28 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
         });
       }
 
+      // If we've recorded username and password during this process, now
+      // is a good time to get rid of them...
+      this.getEventBus().publish("Wizard", "ClearAuth", { dataset_id : this._sDataSetId });
+
       // Page 3
-      var oTable = this.getView().byId(sap.ui.core.Fragment.createId("idForecastWizardForecastFragment", "idForecastFieldTable"));
+      var oTable = this.getView().byId(
+        sap.ui.core.Fragment.createId("idDateFieldsFragment", "idDateFieldTable")
+      );
+      var aItems = oTable.getItems();
+      if (aItems.length !== 0) {
+        jQuery.each(aItems, function(index, item) {
+          if (item.getSelected()) {
+            item.setSelected(false);
+            return;
+          }
+        });
+      }
+
+      // Page 3
+      var oTable = this.getView().byId(
+        sap.ui.core.Fragment.createId("idForecastFieldsFragment", "idForecastFieldTable")
+      );
       var aItems = oTable.getItems();
       if (aItems.length !== 0) {
         jQuery.each(aItems, function(index, item) {
@@ -298,7 +362,9 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
       }
 
       // Page 4
-      oTable = this.getView().byId(sap.ui.core.Fragment.createId("idForecastWizardVariablesFragment", "idForecastVariablesTable"));
+      oTable = this.getView().byId(
+        sap.ui.core.Fragment.createId("idVariableFieldsFragment", "idForecastVariablesTable")
+      );
       aItems = oTable.getItems();
       if (aItems.length !== 0) {
         jQuery.each(aItems, function(index, item) {
@@ -329,12 +395,15 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
       this._sForecastId = "";
       this._sDataSetId = "";
       this._sCacheId = "";
-      this._iStep = 1;
       this._aBatchOps = [];
       this._oFields = {
+        date : "",
         forecast: "",
         variables: []
       };
+
+      // We also need to send the wizard back to page 1
+      this._getNavContainer().backToTop();
     };
 
     /**
@@ -366,7 +435,7 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
       this.getView().byId("idNextButton").setVisible(false);
 
       // Nav back to start page...
-      this.getView().byId("idForecastWizardNavContainer").backToTop();
+      this._getNavContainer().backToTop();
     };
 
     /***
@@ -383,7 +452,7 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
      * Refresh the cache
      * @return {[type]} [description]
      */
-    Wizard.prototype._refreshCache = function() {
+    Wizard.prototype._startCacheRefresh = function() {
       this._oCachePromise = jQuery.Deferred();
 
       // If we've already tried to create, abort, so we can do it again.
@@ -430,13 +499,14 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
         endda: new Date(0) // not required
       };
     };
+
     /***
-     *    ███████╗████████╗███████╗██████╗      ██╗
-     *    ██╔════╝╚══██╔══╝██╔════╝██╔══██╗    ███║
-     *    ███████╗   ██║   █████╗  ██████╔╝    ╚██║
-     *    ╚════██║   ██║   ██╔══╝  ██╔═══╝      ██║
-     *    ███████║   ██║   ███████╗██║          ██║
-     *    ╚══════╝   ╚═╝   ╚══════╝╚═╝          ╚═╝
+     *    ███╗   ██╗ █████╗ ███╗   ███╗███████╗
+     *    ████╗  ██║██╔══██╗████╗ ████║██╔════╝
+     *    ██╔██╗ ██║███████║██╔████╔██║█████╗
+     *    ██║╚██╗██║██╔══██║██║╚██╔╝██║██╔══╝
+     *    ██║ ╚████║██║  ██║██║ ╚═╝ ██║███████╗
+     *    ╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝
      *
      */
 
@@ -444,14 +514,11 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
      * Set up for Step 1. Create a unique forecast ID
      * @return {object} Promise
      */
-    Wizard.prototype.setupStep1 = function() {
+    Wizard.prototype.setupNamePage = function() {
       var oPromise = jQuery.Deferred();
       if (!this._sForecastId) {
         this._sForecastId = ShortId.generate(10);
       }
-
-      // set page Title
-      this._setPageTitle("Step 1");
 
       // return
       oPromise.resolve();
@@ -461,34 +528,35 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
     /**
      * Validates the details of step 1. If it's valid, returns true. If not,
      * show error and returns false.
-     * @return {boolean} Valid step details
+     * @param  {Function} done  Done callback
+     * @param  {Function} error Error callback
      */
-    Wizard.prototype.validateStep1 = function() {
+    Wizard.prototype.validateNamePage = function(done, error) {
       // Must have a name...
       var oInput = this.getView().byId("idNewForecastNameInput");
       var sName = oInput.getValue();
       if (sName === "") {
         oInput.setValue("My new forecast")
-                .setValueState(sap.ui.core.ValueState.Error)
-                .setValueStateText("You must name your forecast")
-                .setShowValueStateMessage(true);
-        return false;
+          .setValueState(sap.ui.core.ValueState.Error)
+          .setValueStateText("You must name your forecast")
+          .setShowValueStateMessage(true);
+        error();
       } else {
-        oInput.setValueState(sap.ui.core.ValueState.Error)
-                .setValueStateText("You must name your forecast")
-                .setShowValueStateMessage(false);
+        oInput.setValueState(sap.ui.core.ValueState.None)
+          .setValueStateText("")
+          .setShowValueStateMessage(false);
         // supply the name to the new forecast model
-        return true;
+        done();
       }
     };
 
     /***
-     *    ███████╗████████╗███████╗██████╗     ██████╗
-     *    ██╔════╝╚══██╔══╝██╔════╝██╔══██╗    ╚════██╗
-     *    ███████╗   ██║   █████╗  ██████╔╝     █████╔╝
-     *    ╚════██║   ██║   ██╔══╝  ██╔═══╝     ██╔═══╝
-     *    ███████║   ██║   ███████╗██║         ███████╗
-     *    ╚══════╝   ╚═╝   ╚══════╝╚═╝         ╚══════╝
+     *    ██████╗  █████╗ ████████╗ █████╗ ███████╗███████╗████████╗███████╗
+     *    ██╔══██╗██╔══██╗╚══██╔══╝██╔══██╗██╔════╝██╔════╝╚══██╔══╝██╔════╝
+     *    ██║  ██║███████║   ██║   ███████║███████╗█████╗     ██║   ███████╗
+     *    ██║  ██║██╔══██║   ██║   ██╔══██║╚════██║██╔══╝     ██║   ╚════██║
+     *    ██████╔╝██║  ██║   ██║   ██║  ██║███████║███████╗   ██║   ███████║
+     *    ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚══════╝╚══════╝   ╚═╝   ╚══════╝
      *
      */
 
@@ -497,7 +565,7 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
      * already 'set up'.
      * @return {object} Promise
      */
-    Wizard.prototype.setupStep2 = function() {
+    Wizard.prototype.setupDatasetPage = function() {
       var oPromise = jQuery.Deferred();
       oPromise.resolve();
       return oPromise;
@@ -532,70 +600,85 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
       oTile.setIcon("sap-icon://accept");
       oTile.toggleStyleClass(sClass);
 
-      // simulate skipping to next page
+      // simulate skipping to next page and a validation of the page.
       this.onNextPress(null);
     };
 
     /**
      * Validates the details of step 2. If it's valid, returns true. If not,
      * show error and returns false.
-     * @return {boolean} Valid step details
+     * @param  {Function} done  Done callback
+     * @param  {Function} error Error callback
      */
-    Wizard.prototype.validateStep2 = function() {
-      // If a dataset has not been selected, remind the user that this
-      // must be done...
-      var bValid = false;
-
-      // Quick checks; I do these separately, because I can't be sure the global
-      // is going to be there, so the first check is actually checking for existence.
-      if (!this._sDataSetId) {
-        bValid = false;
-      } else if (this._sDataSetId === "") {
-        bValid = false;
-      } else {
-        bValid = true;
-      }
+    Wizard.prototype.validateDatasetPage = function(done, error) {
 
       // If not valid, show error... or continue
-      if (!bValid) {
-
+      if (!this._sDataSetId) {
+        // Show error
         this.showInfoAlert(
           "Oops - looks like you forgot to pick a data set!",
           "Select a data set",
           false /* bCompact */
         );
-      } else {
-
-        // Do a cache refresh now!
-        this._refreshCache();
+        return error();
       }
 
-      // And return
-      return bValid;
+      // We're now busy, as we have some things to check!
+      this.showBusyDialog({});
+
+      // If this data set requires authentication, then we will prompt the user
+      // for their login details now...
+      var oPromise = jQuery.Deferred();
+
+      // Maybe prompt the user for authentication
+      // NOTE: this function lives down in the DatasetAuth Controller
+      this._maybeAuthenticateDataset(this._sDataSetId, oPromise);
+      
+      jQuery.when(oPromise)
+        // if the promise is resolved, then we can advance
+        .done(jQuery.proxy(function() {
+          // begin cache refresh
+          this._startCacheRefresh();
+
+          // Not busy
+          this.hideBusyDialog();
+
+          // Done
+          done();
+        }, this))
+        // if not, then do not go anywhere...
+        .fail(jQuery.proxy(function() {
+
+          // Not busy
+          this.hideBusyDialog();
+
+          // we don't go anywhere
+          error();
+        }, this));
     };
 
     /***
-     *    ███████╗████████╗███████╗██████╗     ██████╗
-     *    ██╔════╝╚══██╔══╝██╔════╝██╔══██╗    ╚════██╗
-     *    ███████╗   ██║   █████╗  ██████╔╝     █████╔╝
-     *    ╚════██║   ██║   ██╔══╝  ██╔═══╝      ╚═══██╗
-     *    ███████║   ██║   ███████╗██║         ██████╔╝
-     *    ╚══════╝   ╚═╝   ╚══════╝╚═╝         ╚═════╝
+     *    ██████╗  █████╗ ████████╗███████╗
+     *    ██╔══██╗██╔══██╗╚══██╔══╝██╔════╝
+     *    ██║  ██║███████║   ██║   █████╗
+     *    ██║  ██║██╔══██║   ██║   ██╔══╝
+     *    ██████╔╝██║  ██║   ██║   ███████╗
+     *    ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚══════╝
      *
      */
 
     /**
-     * Lists the avaiable columns in the data set, excluding Date,
+     * Lists the avaiable columns in the data set,
      * allowing the user to pick their forecast field.
      */
-    Wizard.prototype.setupStep3 = function() {
+    Wizard.prototype.setupDatePage = function() {
 
       // Eventually, we'll return a promise
       var oPromise = jQuery.Deferred();
 
       // Bind the page to our DataSet...
       var sPath = "/DataSets('" + this._sDataSetId + "')";
-      var oPage = this.getView().byId("idNewForecastWizardPage3");
+      var oPage = this.getView().byId("idDatePage");
       oPage.bindElement("dataset>" + sPath, {
         parameters: {
           expand: "Dimensions"
@@ -604,7 +687,111 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
 
       // Bind the variables table to the data definition, but REMOVE the forecast
       // field(s).
-      var oTable = this.getView().byId(sap.ui.core.Fragment.createId("idForecastWizardForecastFragment", "idForecastFieldTable"));
+      var oTable = this.getView().byId(
+        sap.ui.core.Fragment.createId("idDateFieldsFragment", "idDateFieldTable")
+      );
+
+      // Bind table rows (items)
+      oTable.bindItems({
+        path: "dataset>Dimensions",
+        sorter: [new sap.ui.model.Sorter("index", false)],
+        filters: [new sap.ui.model.Filter({
+          path: "type",
+          operator: sap.ui.model.FilterOperator.NE,
+          value1: "text"
+        })],
+        template: sap.ui.xmlfragment("view.forecasts.DateField")
+      });
+
+      // for this particular table, we'll also bind to the select event, so we can skip
+      // to the next page upon select.
+      oTable.attachSelectionChange({}, function(oEvent) {
+        var oItem = oEvent.getParameter("listItem");
+        if (oItem.getSelected() === true) {
+          // navigate to next page.
+          this.onNextPress(null);
+        }
+      }, this);
+
+      // Return the promise
+      oPromise.resolve();
+      return oPromise;
+    };
+
+    /**
+     * The user must select a single date field to use, and it must be of type
+     * Date.
+     * @param  {Function} done  Done callback
+     * @param  {Function} error Error callback
+     */
+    Wizard.prototype.validateDatePage = function(done, error) {
+      // Make sure a field has been selected.
+      var oTable = this.getView().byId(sap.ui.core.Fragment.createId("idDateFieldsFragment", "idDateFieldTable"));
+      var oItem = null;
+
+      // Spin through items, and make sure only one is selected, and that it is of type Date
+      var aItems = oTable.getSelectedItems();
+      if (aItems.length === 0) {
+        this.showInfoAlert(
+          "Eeep! No Date field was selected. We really, really need this...",
+          "Date field selection",
+          false /* bCompact */
+        );
+        return error();
+      } else {
+        // This is a single select list, so there's only one item to pick
+        oItem = aItems[0];
+      }
+
+      // if this is not type date, we have a problem...
+      var oContext = oItem.getBindingContext("dataset");
+      if (oContext.getProperty("type").toLowerCase() !== "date") {
+        this.showInfoAlert(
+          "Erm, that's not a Date field. Please only select Date fields...",
+          "Date field selection",
+          false /* bCompact */
+        );
+        return error();
+      }
+
+      // Remember this dimension as the date dimension.
+      this._oFields.date = oContext.getProperty("id");
+      done();
+    };
+
+    /***
+     *    ███████╗ ██████╗ ██████╗ ███████╗ ██████╗ █████╗ ███████╗████████╗
+     *    ██╔════╝██╔═══██╗██╔══██╗██╔════╝██╔════╝██╔══██╗██╔════╝╚══██╔══╝
+     *    █████╗  ██║   ██║██████╔╝█████╗  ██║     ███████║███████╗   ██║
+     *    ██╔══╝  ██║   ██║██╔══██╗██╔══╝  ██║     ██╔══██║╚════██║   ██║
+     *    ██║     ╚██████╔╝██║  ██║███████╗╚██████╗██║  ██║███████║   ██║
+     *    ╚═╝      ╚═════╝ ╚═╝  ╚═╝╚══════╝ ╚═════╝╚═╝  ╚═╝╚══════╝   ╚═╝
+     *
+     */
+
+    /**
+     * Lists the avaiable columns in the data set, excluding Date,
+     * allowing the user to pick their forecast field.
+     */
+    Wizard.prototype.setupForecastPage = function() {
+
+      // Eventually, we'll return a promise
+      var oPromise = jQuery.Deferred();
+
+      // Bind the page to our DataSet...
+      var sPath = "/DataSets('" + this._sDataSetId + "')";
+      var oPage = this.getView().byId("idForecastPage");
+      oPage.bindElement("dataset>" + sPath, {
+        parameters: {
+          expand: "Dimensions"
+        }
+      });
+
+      // Bind the variables table to the data definition, but REMOVE the forecast
+      // field(s).
+      var oTable = this.getView().byId(
+        sap.ui.core.Fragment.createId("idForecastFieldsFragment", "idForecastFieldTable")
+      );
 
       // Bind table rows (items)
       oTable.bindItems({
@@ -643,11 +830,14 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
     /**
      * In Step 4, the user MUST select a field to forecast. If no such field
      * is selected, the step is invalid.
-     * @return {boolean} Valid step details
+     * @param  {Function} done  Done callback
+     * @param  {Function} error Error callback
      */
-    Wizard.prototype.validateStep3 = function() {
+    Wizard.prototype.validateForecastPage = function(done, error) {
       // Make sure a field has been selected.
-      var oTable = this.getView().byId(sap.ui.core.Fragment.createId("idForecastWizardForecastFragment", "idForecastFieldTable"));
+      var oTable = this.getView().byId(
+        sap.ui.core.Fragment.createId("idForecastFieldsFragment", "idForecastFieldTable")
+      );
       var oItem = null;
 
       // Spin through items, and make sure only one is selected, and that it is of type Date
@@ -658,25 +848,37 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
           "Forecast field selection",
           false /* bCompact */
         );
-        return false;
+        return error();
       } else {
         // This is a single select list, so there's only one item to pick
         oItem = aItems[0];
       }
 
-      // Remember this dimension as the date dimension.
-      this._oFields.forecast = oItem.getBindingContext("dataset").getProperty("id");
+      // if this is not type date, we have a problem...
+      var oContext = oItem.getBindingContext("dataset");
+      var sType = oContext.getProperty("type").toLowerCase();
+      if (!(sType !== "number" || sType !== "decimal")) {
+        var sInflectedType = sType.charAt(0).toUpperCase() + sType.slice(1);
+        this.showInfoAlert(
+          "Oops! Unfortunately you can't forecast " + sInflectedType + " fields. Please only select Number/Decimal type fields",
+          "Forecast field selection",
+          false /* bCompact */
+        );
+        return error();
+      }
 
-      return true;
+      // Remember this dimension as the date dimension.
+      this._oFields.forecast = oContext.getProperty("id");
+      done();
     };
 
     /***
-     *    ███████╗████████╗███████╗██████╗     ██╗  ██╗
-     *    ██╔════╝╚══██╔══╝██╔════╝██╔══██╗    ██║  ██║
-     *    ███████╗   ██║   █████╗  ██████╔╝    ███████║
-     *    ╚════██║   ██║   ██╔══╝  ██╔═══╝     ╚════██║
-     *    ███████║   ██║   ███████╗██║              ██║
-     *    ╚══════╝   ╚═╝   ╚══════╝╚═╝              ╚═╝
+     *    ██╗   ██╗ █████╗ ██████╗ ██╗ █████╗ ██████╗ ██╗     ███████╗███████╗
+     *    ██║   ██║██╔══██╗██╔══██╗██║██╔══██╗██╔══██╗██║     ██╔════╝██╔════╝
+     *    ██║   ██║███████║██████╔╝██║███████║██████╔╝██║     █████╗  ███████╗
+     *    ╚██╗ ██╔╝██╔══██║██╔══██╗██║██╔══██║██╔══██╗██║     ██╔══╝  ╚════██║
+     *     ╚████╔╝ ██║  ██║██║  ██║██║██║  ██║██████╔╝███████╗███████╗███████║
+     *      ╚═══╝  ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═╝╚═════╝ ╚══════╝╚══════╝╚══════╝
      *
      */
 
@@ -684,14 +886,14 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
      * Sets up the page for step 4. Now we are selecting - of the remaining fields -
      * which are to be used as variables. Use a Multi select table for this.
      */
-    Wizard.prototype.setupStep4 = function() {
+    Wizard.prototype.setupVariablesPage = function() {
 
       // Eventually, we'll return a promise
       var oPromise = jQuery.Deferred();
 
       // Bind the page to our DataSet...
       var sPath = "/DataSets('" + this._sDataSetId + "')";
-      var oPage = this.getView().byId("idNewForecastWizardPage4");
+      var oPage = this.getView().byId("idVariablesPage");
       oPage.bindElement("dataset>" + sPath, {
         parameters: {
           expand: "Dimensions,Cache"
@@ -700,7 +902,9 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
 
       // Bind the variables table to the data definition, but REMOVE the forecast
       // field(s).
-      var oTable = this.getView().byId(sap.ui.core.Fragment.createId("idForecastWizardVariablesFragment", "idForecastVariablesTable"));
+      var oTable = this.getView().byId(
+        sap.ui.core.Fragment.createId("idVariableFieldsFragment", "idForecastVariablesTable")
+      );
 
       // Bind table rows/items, but remove the date and forecast field
       oTable.bindItems({
@@ -736,14 +940,17 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
      * maybe we need to suggest they do so?
      * Additionally, we also need to check that the fields selected are of type
      * Number (we can't use strings to forecast on).
-     * @return {boolean} Valid step details
+     * @param  {Function} done  Done callback
+     * @param  {Function} error Error callback
      */
-    Wizard.prototype.validateStep4 = function() {
+    Wizard.prototype.validateVariablesPage = function(done, error) {
       // get the selected table items
       // for each, check the context binding and get the id.
       // if the type is Date, then we need to exclude this from the selection
       // by unchecking the box.
-      var oTable = this.getView().byId(sap.ui.core.Fragment.createId("idForecastWizardVariablesFragment", "idForecastVariablesTable"));
+      var oTable = this.getView().byId(
+        sap.ui.core.Fragment.createId("idVariableFieldsFragment", "idForecastVariablesTable")
+      );
 
       // reset variables container
       this._oFields.variables = [];
@@ -767,17 +974,16 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
         }
       }, this));
 
-      // return true
-      return true;
+      done();
     };
 
     /***
-     *    ███████╗████████╗███████╗██████╗     ███████╗
-     *    ██╔════╝╚══██╔══╝██╔════╝██╔══██╗    ██╔════╝
-     *    ███████╗   ██║   █████╗  ██████╔╝    ███████╗
-     *    ╚════██║   ██║   ██╔══╝  ██╔═══╝     ╚════██║
-     *    ███████║   ██║   ███████╗██║         ███████║
-     *    ╚══════╝   ╚═╝   ╚══════╝╚═╝         ╚══════╝
+     *    ██████╗  █████╗ ██████╗  █████╗ ███╗   ███╗███████╗
+     *    ██╔══██╗██╔══██╗██╔══██╗██╔══██╗████╗ ████║██╔════╝
+     *    ██████╔╝███████║██████╔╝███████║██╔████╔██║███████╗
+     *    ██╔═══╝ ██╔══██║██╔══██╗██╔══██║██║╚██╔╝██║╚════██║
+     *    ██║     ██║  ██║██║  ██║██║  ██║██║ ╚═╝ ██║███████║
+     *    ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝
      *
      */
 
@@ -788,7 +994,7 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
      * training data (the minimum for which is determined by the horizon), and a
      * validation period, if required (defaults to the same as the horizon).
      */
-    Wizard.prototype.setupStep5 = function() {
+    Wizard.prototype.setupParamsPage = function() {
 
       // Eventually, we'll return a promise
       var oPromise = jQuery.Deferred();
@@ -808,7 +1014,7 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
       jQuery.when(this._oCachePromise).then(jQuery.proxy(function() {
 
         // Bind the Page to the Cache Header
-        var oPage = this.getView().byId("idNewForecastWizardPage5");
+        var oPage = this.getView().byId("idParamsPage");
         oPage.bindElement("forecast>" + sPath);
 
         var oToDatePicker = this.getView().byId("idToDatePicker");
@@ -873,39 +1079,39 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
      * Okay, we have everything we need for a forecast. Let's check the horizon, effective
      * date, validation and training periods all check out.
      * Submit the batch jobs, to create the forecast and variables, then run it.
-     * @return {boolean} Valid step details
+     * @param  {Function} done  Done callback
+     * @param  {Function} error Error callback
      */
-    Wizard.prototype.validateStep5 = function() {
+    Wizard.prototype.validateParamsPage = function(done, error) {
+
+      var get = jQuery.proxy(this.getControl, this);
 
       // Flag
-      var bValid = false;
+      var bValid = true;
 
       // Effective Date
-      var oInput = this.getView().byId("idToDatePicker");
-      bValid = this._validateToDatePicker(oInput);
-      if (!bValid) {
-        return bValid;
+      if (!this._validateToDatePicker(get("idToDatePicker"))) {
+        bValid = false;
       }
 
       // Horizon input
-      oInput = this.getView().byId("idHorizonInput");
-      bValid = this._validateHorizonInput(oInput);
-      if (!bValid) {
-        return bValid;
+      if (!this._validateHorizonInput(get("idHorizonInput"))) {
+        bValid = false;
       }
 
       // From date
-      oInput = this.getView().byId("idFromDatePicker");
-      bValid = this._validateFromDatePicker(oInput);
-      if (!bValid) {
-        return bValid;
+      if (!this._validateFromDatePicker(get("idFromDatePicker"))) {
+        bValid = false;
       }
 
       // Validation input
-      oInput = this.getView().byId("idValidationInput");
-      bValid = this._validateValidationInput(oInput);
+      if (!this._validateValidationInput(get("idValidationInput"))) {
+        bValid = false;
+      }
+
+      // If not valid, return
       if (!bValid) {
-        return bValid;
+        return error();
       }
 
       // We need to collect all the relevant dets for a new forecast.
@@ -939,7 +1145,7 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
           }));
       };
 
-      return bValid;
+      done();
     };
 
     /**
@@ -968,26 +1174,26 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
         horizon: parseInt(get("idHorizonInput").getValue(), 10),
         validation: parseInt(get("idValidationInput").getValue(), 10),
         smoothing: (get("idSmoothingCheckBox").getSelected() ? "X" : " "),
-        frequency : parseInt(get("idFrequencySelect").getSelectedKey(), 10),
+        frequency: parseInt(get("idFrequencySelect").getSelectedKey(), 10),
         running: " ",
         favorite: " "
       };
     };
 
     /***
-     *    ███████╗████████╗███████╗██████╗      ██████╗
-     *    ██╔════╝╚══██╔══╝██╔════╝██╔══██╗    ██╔════╝
-     *    ███████╗   ██║   █████╗  ██████╔╝    ███████╗
-     *    ╚════██║   ██║   ██╔══╝  ██╔═══╝     ██╔═══██╗
-     *    ███████║   ██║   ███████╗██║         ╚██████╔╝
-     *    ╚══════╝   ╚═╝   ╚══════╝╚═╝          ╚═════╝
+     *    ██████╗  ██████╗ ███╗   ██╗███████╗
+     *    ██╔══██╗██╔═══██╗████╗  ██║██╔════╝
+     *    ██║  ██║██║   ██║██╔██╗ ██║█████╗
+     *    ██║  ██║██║   ██║██║╚██╗██║██╔══╝
+     *    ██████╔╝╚██████╔╝██║ ╚████║███████╗
+     *    ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝╚══════╝
      *
      */
 
     /**
      * The forecast is now running. Would they like a notficiation when it's done?
      */
-    Wizard.prototype.setupStep6 = function() {
+    Wizard.prototype.setupDonePage = function() {
 
       // Indicate the forecast is commencing.
       this.showBusyDialog({
@@ -995,6 +1201,7 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
         text: "Firing up the Predicto-matic - one moment please...",
         showCancelButton: false
       });
+
       var oCreatedPromise = jQuery.Deferred();
       var oRunPromise = jQuery.Deferred();
       var oModel = this.getView().getModel("forecast");
@@ -1005,9 +1212,9 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
           // we can resolve the creation promise
           oCreatedPromise.resolve();
           this._aBatchOps = [];
-        }, this), jQuery.proxy(function(oError) {
+        }, this),
+        jQuery.proxy(function(oError) {
           // we can resolve the creation promise
-          alert("Error submitting batch");
           //oCreatedPromise.resolve();
         }, this),
         /* bAsync= */
@@ -1033,7 +1240,7 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
             oRunPromise.resolve();
           }, this),
           error: jQuery.proxy(function(mError) {
-            alert("error running forecast");
+
             this.closeBusyDialog();
             //oRunPromise.resolve();
           }, this),
@@ -1048,10 +1255,11 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
     /**
      * Validates the details of step 7 - this is just collecting a user's
      * notification request
-     * @return {boolean} Valid step details
+     * @param  {Function} done  Done callback
+     * @param  {Function} error Error callback
      */
-    Wizard.prototype.validateStep6 = function() {
-      return true;
+    Wizard.prototype.validateDonePage = function(done, error) {
+      done();
     };
 
     /***
@@ -1287,14 +1495,14 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
       // first check if the model has the data we want...
       oModel.read("/ForecastIds", {
         async: true,
-        filters : [new sap.ui.model.Filter({
-          path : 'month(created)',
-          operator : sap.ui.model.FilterOperator.EQ,
-          value1 : new Date(Date.now()).getMonth() + 1 // remeber, months start at 0
+        filters: [new sap.ui.model.Filter({
+          path: 'month(created)',
+          operator: sap.ui.model.FilterOperator.EQ,
+          value1: new Date(Date.now()).getMonth() + 1 // remeber, months start at 0
         }), new sap.ui.model.Filter({
-          path : 'user',
-          operator : sap.ui.model.FilterOperator.EQ,
-          value1 : "TESTUSER"
+          path: 'user',
+          operator: sap.ui.model.FilterOperator.EQ,
+          value1: "TESTUSER"
         })],
         success: jQuery.proxy(function(oData, mResponse) {
           // Callback and resolve

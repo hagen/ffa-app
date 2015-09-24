@@ -2,8 +2,7 @@ jQuery.sap.declare("view.forecasts.Rerun");
 jQuery.sap.require("thirdparty.shortid.ShortId");
 jQuery.sap.require("util.DateFormatter");
 
-// Provides controller forecasts.ForecastRerun
-sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
+sap.ui.define(['jquery.sap.global', 'view/forecasts/DatasetAuth'],
   function(jQuery, Controller) {
     "use strict";
 
@@ -220,31 +219,58 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
      * @param  {Event} oEvent Button press event
      */
     Rerun.prototype.onRerunPress = function (oEvent) {
+
       if (!this.validateParameters()) {
         return;
       }
 
-      // Update the forecast with the new details. Updating the forecast returns
-      // a promise.
-      jQuery.when(this._updateForecast()).then(jQuery.proxy(function() {
-        // Now we can re-run. Re run returns a promise, so
-        // just wait until it's resolved
-        jQuery.when(this._rerun()).then(jQuery.proxy(function() {
-          this.getEventBus().publish("Rerun", "Complete");
+      // We're now busy, as we have some things to check!
+      this.showBusyDialog({});
 
-          // Update the busy dialog
-          this.updateBusyDialog({
-            title : "All done",
-            text : "Right, looks like it's finished! I'll take you back to the forecast"
-          });
-          jQuery.sap.delayedCall(1500, this, function() {
-            this.hideBusyDialog();
-            // back we go!
-            this.getView().byId("idRerunPage").fireNavButtonPress();
-          }, []);
-          // and nav back to the forecast
+      // Collect the forecast data set Id
+      var sDatasetId = this.getView().getModel("forecast").getProperty("/Forecasts('" + this._sForecastId + "')/dataset_id");
+
+      // Firstly, we'll check if the attached data set requires auth or not.
+      // Maybe prompt the user for authentication
+      var oPromise = jQuery.Deferred();
+
+      // NOTE: this function lives down in the DatasetAuth Controller
+      this._maybeAuthenticateDataset(sDatasetId, oPromise);
+
+      jQuery.when(oPromise)
+        // if the promise is resolved, then we can advance
+        .done(jQuery.proxy(function() {
+          // Update the forecast with the new details. Updating the forecast returns
+          // a promise.
+          jQuery.when(this._updateForecast()).then(jQuery.proxy(function() {
+            // Now we can re-run. Re run returns a promise, so
+            // just wait until it's resolved
+            jQuery.when(this._rerun()).then(jQuery.proxy(function() {
+              this.getEventBus().publish("Rerun", "Complete");
+
+              // Update the busy dialog
+              this.updateBusyDialog({
+                title : "All done",
+                text : "Right, looks like it's finished! I'll take you back to the forecast"
+              });
+              jQuery.sap.delayedCall(1500, this, function() {
+                this.hideBusyDialog();
+                // back we go!
+                this.getView().byId("idRerunPage").fireNavButtonPress();
+              }, []);
+              // and nav back to the forecast
+            }, this));
+          }, this));
+
+          // Not busy
+          this.hideBusyDialog();
+        }, this))
+        // if not, then do not go anywhere...
+        .fail(jQuery.proxy(function() {
+
+          // Not busy
+          this.hideBusyDialog();
         }, this));
-      }, this));
     };
 
     /***
@@ -535,7 +561,7 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/Controller'],
         return this.getView().byId(sId);
       }, this);
 
-      var oModel = oView.getModel("forecast");
+      var oModel = this.getView().getModel("forecast");
       var oForecast = {
         train_from : new Date(get("idFromDatePicker").getValue()),
         train_to : new Date(get("idToDatePicker").getValue()),

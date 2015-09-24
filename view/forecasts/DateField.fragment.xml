@@ -1,0 +1,11 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m">
+  <ColumnListItem
+    selected="{= ${dataset>type} === 'date' ? true : false }">
+    <cells>
+      <Text  text="{dataset>name}"/>
+      <Link
+        text="{= ${dataset>type}.charAt(0).toUpperCase() + ${dataset>type}.slice(1) }" />
+      <ObjectNumber  number="{= ${dataset>index} + 1 }" />
+    </cells>
+  </ColumnListItem>
+</core:FragmentDefinition>
