@@ -48,15 +48,21 @@
 			</Toolbar>
 		</footer>
 	  <NavContainer
-	    id="idForecastWizardNavContainer">
+	    id="idNavContainer">
 	    <pages>
 
 				<!-- Page 1 -->
 	      <Page
-	    		id="idNewForecastWizardPage1"
-	    		title="New forecast Wizard"
+	    		id="idNamePage"
+	    		title="Name your Forecast"
 	    		enableScrolling="false"
 	    		showHeader="false">
+					<customData>
+						<core:CustomData key="prev" value="" />
+						<core:CustomData key="next" value="idDatasetPage" />
+						<core:CustomData key="setup" value="setupNamePage" />
+						<core:CustomData key="validate" value="validateNamePage" />
+					</customData>
 	    		<content>
 	          <l:Grid
 	            defaultSpan="L12 M12 S12"
@@ -124,10 +130,16 @@
 
 	      <!-- Page 2 -->
 	      <Page
-	    		id="idNewForecastWizardPage2"
+	    		id="idDatasetPage"
 	    		title="Select data set"
 	    		enableScrolling="true"
 	    		showHeader="false">
+					<customData>
+						<core:CustomData key="prev" value="idNamePage" />
+						<core:CustomData key="next" value="idDatePage" />
+						<core:CustomData key="setup" value="setupDatasetPage" />
+						<core:CustomData key="validate" value="validateDatasetPage" />
+					</customData>
 	    		<content>
 	          <l:Grid
 	            defaultSpan="L12 M12 S12"
@@ -177,12 +189,21 @@
 	    		</content>
 	      </Page>
 
-				<!-- Page 3 -->
-	      <Page
-	    		id="idNewForecastWizardPage3"
-	    		title="Forecast field"
+
+
+
+
+				<Page
+	    		id="idDatePage"
+	    		title="Date field"
 	    		enableScrolling="false"
 	    		showHeader="false">
+					<customData>
+						<core:CustomData key="prev" value="idDatasetPage" />
+						<core:CustomData key="next" value="idForecastPage" />
+						<core:CustomData key="setup" value="setupDatePage" />
+						<core:CustomData key="validate" value="validateDatePage" />
+					</customData>
 	    		<content>
 	          <l:Grid
 	            defaultSpan="L12 M12 S12"
@@ -190,16 +211,56 @@
 	            class="sapUiSmallMargin">
 	            <l:content>
 	              <Title
-	                text="Step 3 - Select forecast field"
+	                text="Step 3 - Select date field"
+	                level="H1"
+	                titleStyle="H1" />
+								<Text text="And we're off! Alright! I've listed your data set fields
+									below - to get things rolling, could you please select the field
+									that represents Date. If you have multiple Date fields, you'll need to
+									pick the one holding daily date values." />
+								<!-- Column selection -->
+								<core:Fragment
+									id="idDateFieldsFragment"
+									fragmentName="view.forecasts.DateFields"
+									type="XML" />
+	            </l:content>
+	          </l:Grid>
+					</content>
+	      </Page>
+
+
+
+
+
+
+	      <Page
+	    		id="idForecastPage"
+	    		title="Forecast field"
+	    		enableScrolling="false"
+	    		showHeader="false">
+					<customData>
+						<core:CustomData key="prev" value="idDatasetPage" />
+						<core:CustomData key="next" value="idVariablesPage" />
+						<core:CustomData key="setup" value="setupForecastPage" />
+						<core:CustomData key="validate" value="validateForecastPage" />
+					</customData>
+	    		<content>
+	          <l:Grid
+	            defaultSpan="L12 M12 S12"
+	            width="auto"
+	            class="sapUiSmallMargin">
+	            <l:content>
+	              <Title
+	                text="Step 4 - Select forecast field"
 	                level="H1"
 	                titleStyle="H1" />
 								<Text text="Great, thanks for that. Could you now identify the field
 									you'd like to forecast (this is the field for which you'll be creating
 									future values for). Note, all Text based fields have been removed from
-									this listing." />
+									this listing as we can only forecast Number and Decimal types." />
 								<!-- Column selection -->
 								<core:Fragment
-									id="idForecastWizardForecastFragment"
+									id="idForecastFieldsFragment"
 									fragmentName="view.forecasts.ForecastFields"
 									type="XML" />
 	            </l:content>
@@ -207,12 +268,19 @@
 					</content>
 	      </Page>
 
-				<!-- Page 4 -->
+
+
 	      <Page
-	    		id="idNewForecastWizardPage4"
+	    		id="idVariablesPage"
 	    		title="Variable fields"
 	    		enableScrolling="false"
 	    		showHeader="false">
+					<customData>
+						<core:CustomData key="prev" value="idForecastPage" />
+						<core:CustomData key="next" value="idParamsPage" />
+						<core:CustomData key="setup" value="setupVariablesPage" />
+						<core:CustomData key="validate" value="validateVariablesPage" />
+					</customData>
 	    		<content>
 	          <l:Grid
 	            defaultSpan="L12 M12 S12"
@@ -220,7 +288,7 @@
 	            class="sapUiSmallMargin">
 	            <l:content>
 	              <Title
-	                text="Step 4 - Select forecast variable fields"
+	                text="Step 5 - Select forecast variable fields"
 	                level="H1"
 	                titleStyle="H1" />
 								<Text text="Now that you have selected your forecast field, you're also able
@@ -230,7 +298,7 @@
 									forecast field, selecting it as a variable may adversely affect your forecast." />
 								<!-- Column selection -->
 								<core:Fragment
-									id="idForecastWizardVariablesFragment"
+									id="idVariableFieldsFragment"
 									fragmentName="view.forecasts.VariableFields"
 									type="XML" />
 	            </l:content>
@@ -238,12 +306,19 @@
 					</content>
 	      </Page>
 
-				<!-- Page 5 -->
+
+
 	      <Page
-	    		id="idNewForecastWizardPage5"
+	    		id="idParamsPage"
 	    		title="Frequency and effective date"
 	    		enableScrolling="false"
 	    		showHeader="false">
+					<customData>
+						<core:CustomData key="prev" value="idVariablesPage" />
+						<core:CustomData key="next" value="idDonePage" />
+						<core:CustomData key="setup" value="setupParamsPage" />
+						<core:CustomData key="validate" value="validateParamsPage" />
+					</customData>
 	    		<content>
 	          <l:Grid
 	            defaultSpan="L12 M12 S12"
@@ -251,7 +326,7 @@
 	            class="sapUiSmallMargin">
 	            <l:content>
 	              <Title
-	                text="Step 5 - set your frequency and effective date"
+	                text="Step 6 - set your frequency and effective date"
 	                level="H1"
 	                titleStyle="H1" />
 								<Text text="The data set you've supplied has training data from {
@@ -301,14 +376,6 @@
 											displayFormat="dd/MM/yyyy"
 											change="onFromDateChange" />
 
-										<Label
-											text="Validation period" />
-										<Input
-											id="idValidationInput"
-											type="Number"
-											description="days"
-											change="onValidationChange"/>
-
 										<Label text="Training data frequency" />
 										<Select
 											id="idFrequencySelect">
@@ -328,6 +395,14 @@
 											</layoutData>
 										</Button>
 
+										<Label
+											text="Validation period" />
+										<Input
+											id="idValidationInput"
+											type="Number"
+											description="days"
+											change="onValidationChange"/>
+
 										<Label text="" />
 										<CheckBox
 											id="idSmoothingCheckBox"
@@ -341,15 +416,21 @@
 
 				<!-- Page 6 -->
 				<MessagePage
-					id="idNewForecastWizardPage6"
+					id="idDonePage"
 					icon="sap-icon://FontAwesome/check"
 					text="All done! The future is told... check out your forecast using the link below."
 					showHeader="false">
+					<customData>
+						<core:CustomData key="prev" value="" />
+						<core:CustomData key="next" value="" />
+						<core:CustomData key="setup" value="setupDonePage" />
+						<core:CustomData key="validate" value="validateDonePage" />
+					</customData>
 					<customDescription>
 						<Link
 							id="idDoneLink"
 							text="Go to forecast"
-							press="onDonePress" />
+							press="onDoneLinkPress" />
 					</customDescription>
 				</MessagePage>
 

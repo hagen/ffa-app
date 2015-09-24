@@ -3,25 +3,24 @@
 	xmlns:form="sap.ui.layout.form"
 	xmlns:core="sap.ui.core">
 	<Dialog
-		title="Edit forecast name"
+		title="Authentication required"
 		horizontalScrolling="false"
 		verticalScrolling="false"
 		showHeader="true">
 		<beginButton>
 			<Button
-				id="idEditForecastNameSaveBtn"
-				text="Save"
-				press="onForecastNameSave"
-				class="ffaEmphasizedBtn"/>
+				id="idAuthSave"
+				text="OK"
+				press="onAuthSavePress"/>
 		</beginButton>
 		<endButton>
 			<Button
 				text="Cancel"
-				press="onForecastNameCancel"/>
+				press="onAuthCancelPress"/>
 		</endButton>
 		<content>
 			<form:SimpleForm
-				id="idEditForecastForm"
+				id="idAuthForm"
 				minWidth="800"
 				maxContainerCols="1"
 				editable="true"
@@ -35,15 +34,25 @@
 				class="editableForm">
 				<form:content>
 					<Label
-						text="Forecast name"
+						text="Username"
 						required="true"/>
 					<Input
-						id="idEditForecastName"
-						placeholder="Forecast name..."
-						type="Text"
-						maxLength="80"
-						width="100%"
-						value="{forecast>name}" />
+						id="idUsernameInput"
+						type="Text"/>
+
+					<Label
+						text="Password"
+						required="true"/>
+					<Input
+						id="idPasswordInput"
+						type="Password"/>
+
+					<Label
+						text=""/>
+					<CheckBox
+						id="idRememberCheckBox"
+						selected="false"
+						text="Remember username &amp; password?" />
 				</form:content>
 			</form:SimpleForm>
 		</content>

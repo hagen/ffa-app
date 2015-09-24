@@ -35,7 +35,7 @@ sap.ui.core.routing.Router.extend("com.ffa.dash.MyRouter", {
 	 * 	<li> data : the data passed to the navContainers livecycle events</li>
 	 * </ul>
 	 */
-	myNavToWithoutHash : function (oOptions) {
+	navToWithoutHash : function (oOptions) {
 		var oApp = sap.ui.getCore().byId("idContainer");
 
 		// Load view, add it to the page aggregation, and navigate to it

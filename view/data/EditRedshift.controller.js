@@ -259,11 +259,6 @@ sap.ui.define(["jquery.sap.global", "view/data/EditController"],
      */
     Redshift.prototype.onCheckBoxSelect = function(oEvent) {
 
-      // Can't do anything if we're not in edit mode
-      if (!this._editMode) {
-        return;
-      }
-
       // if this is selected, then enable the username/password
       var bSelected = oEvent.getParameter("selected");
       var get = jQuery.proxy(this.getControl, this);
