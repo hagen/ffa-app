@@ -45,8 +45,33 @@ sap.ui.define(["jquery.sap.global", "view/settings/Controller"],
       // Bind this page to the Social Id...
       var oPage = this.getView().byId("idAccountPage");
       oPage.bindElement("profile>/Profiles('TESTUSER')", {
-        expand : 'CacheTotal,ForecastCount',
-        select : 'CacheTotal/mb,ForecastCount/count'
+        expand: 'CacheTotal,ForecastCount,CurrentSubscription/Plan',
+        select: 'CacheTotal/mb,ForecastCount/count,CurrentSubscription/Plan/data_limit,CurrentSubscription/Plan/forecast_limit'
+      });
+
+      // Now bind the forecast count for this month to the object number
+      var oNum = this.getView().byId("idForecastCountObjectNumber");
+      var oModel = this.getView().getModel("forecast");
+      oModel.read("/Forecasts", {
+        urlParameters: {
+          $select: 'id'
+        },
+        filters: [new sap.ui.model.Filter({
+          path: 'user',
+          operator: 'EQ',
+          value1: 'TESTUSER'
+        }), new sap.ui.model.Filter({
+          path : 'month(created)',
+          operator : 'EQ',
+          value1 : new Date(Date.now()).getMonth() + 1 // Months start at 0
+        }), new sap.ui.model.Filter({
+          path: 'endda',
+          operator: 'GT',
+          value1: new Date(Date.now())
+        })],
+        success: function(oData, mResponse) {
+          oNum.setNumber(oData.results.length);
+        }
       });
     };
 
@@ -68,7 +93,7 @@ sap.ui.define(["jquery.sap.global", "view/settings/Controller"],
      * @param  {[type]} oEvent [description]
      * @return {[type]}        [description]
      */
-    Account.prototype.onChangePlanPress = function (oEvent) {
+    Account.prototype.onChangePlanPress = function(oEvent) {
       // If Enterprise, no changes are allowed
       var oModel = this.getView().getModel("profile");
 
@@ -96,8 +121,8 @@ sap.ui.define(["jquery.sap.global", "view/settings/Controller"],
      * @param  {[type]}  oModel [description]
      * @return {Boolean}        [description]
      */
-    Account.prototype._isEnterprise = function (oModel) {
-      if(!oModel) {
+    Account.prototype._isEnterprise = function(oModel) {
+      if (!oModel) {
         oModel = this.getView().getModel("profile");
       }
 
@@ -105,11 +130,11 @@ sap.ui.define(["jquery.sap.global", "view/settings/Controller"],
       var sPlan = oModel.getProperty("/CurrentProfilePlan('TESTUSER')/plan_type_id");
       if (sPlan === undefined) {
         oModel.read("/CurrentProfilePlan('TESTUSER')", {
-          async : false,
-          success : jQuery.proxy(function(oData, mResponse) {
+          async: false,
+          success: jQuery.proxy(function(oData, mResponse) {
             sPlan = oData.plan_type_id;
           }, this),
-          error : jQuery.proxy(function(mError) {
+          error: jQuery.proxy(function(mError) {
             this._maybeHandleAuthError(mError);
             sPlan = "";
           }, this)
@@ -130,15 +155,15 @@ sap.ui.define(["jquery.sap.global", "view/settings/Controller"],
      *
      */
 
-     /**
-      * User wishes to terminate their account completely. This will cancel
-      * their account and billing. If there has been any activity during the month
-      * the user will be charged a pro-rated amount, as it appears they are trying
-      * to get some services for free.
-      * @param  {[type]} oEvent [description]
-      * @return {[type]}        [description]
-      */
-    Account.prototype.onTerminatePress = function (oEvent) {
+    /**
+     * User wishes to terminate their account completely. This will cancel
+     * their account and billing. If there has been any activity during the month
+     * the user will be charged a pro-rated amount, as it appears they are trying
+     * to get some services for free.
+     * @param  {[type]} oEvent [description]
+     * @return {[type]}        [description]
+     */
+    Account.prototype.onTerminatePress = function(oEvent) {
       // body...
     };
 

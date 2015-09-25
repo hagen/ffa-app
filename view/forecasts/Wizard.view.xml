@@ -161,6 +161,7 @@
 	    			<TileContainer
 	    				id="idDatasetsTileContainer"
 	    				allowAdd="false"
+							height="80%"
 	            tiles="{
 								path: 'dataset>/DataSets',
 								parameters : {

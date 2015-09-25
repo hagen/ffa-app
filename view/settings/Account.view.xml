@@ -86,23 +86,18 @@
 						<ObjectNumber
 							emphasized="true"
 							class="ffaObjectNumberFontSize3rem"
-							unit="MB data"
+							unit="/ {profile>CurrentSubscription/Plan/data_limit} MB data"
 							state="None"
 							number="{= ${profile>CacheTotal/mb} > 0 ? ${profile>CacheTotal/mb} : '0.00' }">
-							<layoutData>
-								<l:GridData span="L8 M8 S12" />
-							</layoutData>
 						</ObjectNumber>
 
 						<ObjectNumber
+							id="idForecastCountObjectNumber"
 							emphasized="true"
 							class="ffaObjectNumberFontSize3rem"
-							unit="{= ${profile>ForecastCount/count} === 1 ? 'forecast' : 'forecasts' }"
+							unit="/ {profile>CurrentSubscription/Plan/forecast_limit} forecasts this month"
 							state="Success"
-							number="{= ${profile>ForecastCount/count} ? ${profile>ForecastCount/count} : 0 }">
-							<layoutData>
-								<l:GridData span="L4 M4 S12" />
-							</layoutData>
+							number="0">
 						</ObjectNumber>
 					</l:content>
 				</l:Grid>
