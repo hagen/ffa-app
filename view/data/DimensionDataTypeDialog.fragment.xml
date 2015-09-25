@@ -25,7 +25,7 @@
 					<core:Item key="decimal" text="Decimal" />
 					<core:Item key="date" text="Date" />
 				</items>
-    </SelectList>
+    	</SelectList>
     </content>
   </Dialog>
 </core:FragmentDefinition>

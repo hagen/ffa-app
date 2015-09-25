@@ -298,7 +298,7 @@ sap.ui.define(['jquery.sap.global', 'view/data/Controller'],
 
       // and because the toggle function switches all list items into Inactive
       // mode, we may need to reselect the currently routed dataset, if any.
-      this.maybeSelectMasterListItem("/DataSets('" + this._sId + "')");
+      this._maybeSelectMasterListItem("/DataSets('" + this._sId + "')");
     };
 
     /**
@@ -308,54 +308,108 @@ sap.ui.define(['jquery.sap.global', 'view/data/Controller'],
      * @param  {object} oEvent Delete button pressed (contains parameter listItem)
      */
     DataSets.prototype.onMasterDeletePress = function(oEvent) {
+
+      // Busy!
+      this.showBusyDialog({});
+
       var oList = this.getView().byId("idDataSetMasterList");
-      oList.setBusy(true);
-      var bRefresh = false;
 
       // Delete via. batch job
       var oModel = this.getView().getModel("dataset");
-      oList.getSelectedItems().forEach(function(item, index) {
-        var sId = item.getBindingContext("dataset").getProperty("id");
-        this._aBatchOps.push(oModel.createBatchOperation("/DataSets('" + sId + "')", "DELETE"));
+      var aItems = oList.getSelectedItems();
 
-        // If this data set is currently displayed, then trigger a Refresh
-        // of data set detail Page
-        if (sId = this._sId) {
-          bRefresh = true;
-        }
-      }, this);
+      // Check we have items...
+      if (aItems.length === 0) {
+        this.hideBusyDialog();
+        this.showInfoAlert(
+          "You haven't selected any data sets - nothing to delete!",
+          "No data sets selected",
+          sap.ui.Device.system.phone
+        );
+        return;
+      }
 
-      // How many data sets are we deleting here?
-      var iCount = this._aBatchOps.length;
+      // We're going to display a dialog list of data sets that can be deleted,
+      // and those that cannot. if there are attached forecasts, the dataset
+      // cannot be deleted.
+      var aFilters = [];
+      aItems.forEach(function(item, index) {
+        aFilters.push(new sap.ui.model.Filter({
+          path: 'id',
+          operator: sap.ui.model.FilterOperator.EQ,
+          value1: item.getBindingContext("dataset").getProperty("id")
+        }));
+      });
 
-      // Declare a promise, so we can determine what to do after batch is submitted
-      var oPromise = jQuery.Deferred();
-      jQuery.when(oPromise).done(jQuery.proxy(function() {
+      // Now open the list dialog.
+      var d = this._oDeletionDialog;
+      if (!d) {
+        this._oDeletionDialog = d = sap.ui.xmlfragment("idDeletionFragment", "view.data.DeletionListDialog", this);
+        this.getView().addDependent(d);
+      }
 
-        // All okay!
-        sap.m.MessageToast.show(iCount === 1 ? "Data set deleted" : "Data sets deleted");
+      // Now we bind the list inside the dialog to our filter list of datasets
+      var oList = sap.ui.core.Fragment.byId("idDeletionFragment", "idList"),
+        oTemplate = new sap.m.StandardListItem({
+          adaptTitleSize: true,
+          icon: "sap-icon://{dataset>DataSource/icon}",
+          title: "{dataset>name}",
+          type: "Active",
+          info: {
+            path: "dataset>Forecasts",
+            filters: [
+              new sap.ui.model.Filter({
+                path: 'endda',
+                operator: sap.ui.model.FilterOperator.GT,
+                value1: new Date(Date.now())
+              })
+            ],
+            formatter: function(collection) {
+              if (collection) {
+                var length = collection.length;
+                return (length > 1 ? length + " forecasts" : length + " forecast");
+              }
+              return "OK";
+            }
+          },
+          infoState: {
+            path: "dataset>Forecasts",
+            filters: [
+              new sap.ui.model.Filter({
+                path: 'endda',
+                operator: sap.ui.model.FilterOperator.GT,
+                value1: new Date(Date.now())
+              })
+            ],
+            formatter: function(collection) {
+              if (collection) {
+                return (collection.length > 0 ? sap.ui.core.ValueState.Error : sap.ui.core.ValueState.Success);
+              }
+              return sap.ui.core.ValueState.Success;
+            }
+          }
+        });
 
-        // Display the
-        if (bRefresh) {
-          this.getRouter().navTo("datasets", {}, !sap.ui.Device.system.phone);
-        }
+      // Bind the list with our rather large function template
+      oList.bindItems({
+        path: 'dataset>/DataSets',
+        parameters: {
+          expand: "Forecasts",
+          select: "Forecasts/id"
+        },
+        filters: aFilters,
+        sorter: [new sap.ui.model.Sorter({
+          path: 'type_id',
+          descending: false
+        })],
+        template: oTemplate
+      });
 
-        // Not busy
-        oList.setBusy(false);
+      // Not busy!
+      jQuery.sap.delayedCall(1000, this, this.hideBusyDialog, [{}]);
 
-        // Trigger press of the Done button to exit Select mode
-        this.getView().byId("idMasterDoneButton").firePress();
-      }, this)).fail(jQuery.proxy(function() {
-
-        // Not busy
-        oList.setBusy(false);
-
-        // Error
-        sap.m.MessageToast.show("Deleting Data Sets failed");
-      }, this))
-
-      // Submit deletion batch job
-      this.submitBatch(false /* bUpdate model */ , oPromise);
+      // open the dialog...
+      jQuery.sap.delayedCall(0, d, d.open, []);
     };
 
     /**
@@ -396,6 +450,105 @@ sap.ui.define(['jquery.sap.global', 'view/data/Controller'],
       oButton = oView.byId("idMasterDeleteButton").setVisible(bSelect);
     };
 
+    /***
+     *    ██████╗ ███████╗██╗     ███████╗████████╗███████╗    ██████╗ ██╗ █████╗ ██╗      ██████╗  ██████╗
+     *    ██╔══██╗██╔════╝██║     ██╔════╝╚══██╔══╝██╔════╝    ██╔══██╗██║██╔══██╗██║     ██╔═══██╗██╔════╝
+     *    ██║  ██║█████╗  ██║     █████╗     ██║   █████╗      ██║  ██║██║███████║██║     ██║   ██║██║  ███╗
+     *    ██║  ██║██╔══╝  ██║     ██╔══╝     ██║   ██╔══╝      ██║  ██║██║██╔══██║██║     ██║   ██║██║   ██║
+     *    ██████╔╝███████╗███████╗███████╗   ██║   ███████╗    ██████╔╝██║██║  ██║███████╗╚██████╔╝╚██████╔╝
+     *    ╚═════╝ ╚══════╝╚══════╝╚══════╝   ╚═╝   ╚══════╝    ╚═════╝ ╚═╝╚═╝  ╚═╝╚══════╝ ╚═════╝  ╚═════╝
+     *
+     */
+
+    /**
+     * Close the deletion dialog and delete all the items.
+     * @param  {oEvent} oEvent Button press event
+     */
+    DataSets.prototype.onDialogCancelPress = function(oEvent) {
+      // Close the dialog and clear the list
+      var d = this._oDeletionDialog;
+      if (d) {
+        d.close();
+        sap.ui.core.Fragment.byId("idDeletionFragment", "idList").destroyItems();
+      }
+    };
+
+    /**
+     * When the user selects delete, we remove only those list item datasets
+     * where the info state is Success
+     * @param  {Event} oEvent Button press event
+     */
+    DataSets.prototype.onDialogDeletePress = function(oEvent) {
+      // Delete those data sets that are allowed to be deleted
+      var oList = sap.ui.core.Fragment.byId("idDeletionFragment", "idList"),
+        aItems = oList.getItems(),
+        oModel = this.getView().getModel("dataset"),
+        bRefresh = false;
+
+      // Busy
+      this.showBusyDialog({});
+
+      // For all remaining items, perform deletion.
+      aItems.forEach(function(item, index) {
+        // we do not delete data sets that are not in successful state, because
+        // they have children forecasts dependent on them
+        if (item.getInfoState() !== sap.ui.core.ValueState.Success) {
+          return;
+        }
+
+        // Delete!
+        var sId = item.getBindingContext("dataset").getProperty("id");
+        this._aBatchOps.push(oModel.createBatchOperation("/DataSets('" + sId + "')", "DELETE"));
+
+        // If this data set is currently displayed, then trigger a Refresh
+        // of data set detail Page
+        if (sId = this._sId) {
+          bRefresh = true;
+        }
+      }, this);
+
+      // How many data sets are we deleting here?
+      var iCount = this._aBatchOps.length;
+
+      // Tidy up function
+      var tidy = jQuery.proxy(function() {
+        // Not busy...
+        this.hideBusyDialog();
+
+        // Close popup
+        this.onDialogCancelPress(null);
+      }, this);
+
+      // Declare a promise, so we can determine what to do after batch is submitted
+      var oPromise = jQuery.Deferred();
+      jQuery.when(oPromise).done(jQuery.proxy(function() {
+
+        // Tidy up...
+        tidy();
+
+        // All okay!
+        sap.m.MessageToast.show(iCount === 1 ? "Data set deleted" : "Data sets deleted");
+
+        // Display the datasets page, with nothing selected, because we've just deleted
+        // the currently viewing data set
+        if (bRefresh) {
+          this.getRouter().navTo("datasets", {}, !sap.ui.Device.system.phone);
+        }
+
+        // Trigger press of the Done button to exit Select mode
+        this.getView().byId("idMasterDoneButton").firePress();
+      }, this)).fail(jQuery.proxy(function() {
+
+        // Tidy up...
+        tidy();
+
+        // Error
+        sap.m.MessageToast.show("Deleting Data Sets failed");
+      }, this))
+
+      // Submit deletion batch job
+      this.submitBatch(false /* bUpdate model */ , oPromise);
+    };
     /***
      *    ██████╗  █████╗ ████████╗ ██████╗██╗  ██╗
      *    ██╔══██╗██╔══██╗╚══██╔══╝██╔════╝██║  ██║
