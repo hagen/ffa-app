@@ -1,6 +1,6 @@
 jQuery.sap.declare("view.App");
 jQuery.sap.require("thirdparty.font-awesome.FontAwesomeIconPool");
-jQuery.sap.require("thirdparty.font-mfizz.FontMFizzIconPool");
+jQuery.sap.require("thirdparty.font-mfizz.FontMfizzIconPool");
 
 // Provides controller view.App
 sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
@@ -29,7 +29,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
 	App.prototype.onAfterRendering = function() {};
 
 	App.prototype._checkAuth = function () {
-		
+
 	};
 
 	return App;
