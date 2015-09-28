@@ -76,12 +76,12 @@ sap.ui.define(['jquery.sap.global', 'view/data/Controller'],
      */
 
      /**
-      * User is configuring HDFS
+      * User is configuring Import IO
       * @param  {object} oEvent Button click event
       */
      Wizard.prototype.onImportIOItemPress = function(oEvent) {
-       // Coming soon.
-       this._alertComingSoon();
+       // Create the fragment and open!
+       this.getRouter().navTo("importio", {}, !sap.ui.Device.system.phone);
      };
 
     /***
@@ -99,7 +99,7 @@ sap.ui.define(['jquery.sap.global', 'view/data/Controller'],
      */
     Wizard.prototype.onHanaItemPress = function(oEvent) {
       // Create the fragment and open!
-      this.getRouter().navTo("hana", {}, !sap.ui.Device.system.phone);
+      this.getRouter().navTo("hdb", {}, !sap.ui.Device.system.phone);
     };
 
     /***
@@ -172,8 +172,12 @@ sap.ui.define(['jquery.sap.global', 'view/data/Controller'],
      * @param  {object} oEvent Button/tile press event
      */
     Wizard.prototype.onCsvItemPress = function(oEvent) {
-      // Create the fragment and open!
-      this.getRouter().navTo("csv", {}, !sap.ui.Device.system.phone);
+      this.showInfoAlert(
+        "Firstly, thanks so much for your interest in uploading data to the Predictive Console."
+        + " We've made an active decision not to allow file uploads (like CSV), preferring instead to have you"
+        + " set up a Google Sheets document, or make use of a cloud platform like Import.IO. Once you've"
+        + " uploaded your data there, come on back and set up your data set with the corresponding data source.",
+        "Age of the cloud");
     };
 
     /***

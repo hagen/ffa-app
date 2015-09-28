@@ -1,5 +1,5 @@
 <mvc:View
-	controllerName="view.data.GoogleSheets"
+	controllerName="view.data.CreateSheets"
 	xmlns="sap.m"
 	xmlns:mvc="sap.ui.core.mvc"
   xmlns:l="sap.ui.layout"
@@ -88,19 +88,16 @@
 										</layoutData>
 									</Input>
 
-									<core:Icon
-										id="idHelpIcon"
-										src="sap-icon://question-mark"
-										size="1.5rem"
-										activeColor="#007cc0"
-										hoverColor="#007cc0"
-										press="onHelpIconPress"
-										class="ffaIconTinyMarginTop">
-										<core:layoutData>
+									<Button
+										id="idHelpButton"
+										icon="sap-icon://FontAwesome/question"
+										type="Transparent"
+										press="onHelpPress">
+										<layoutData>
 											<l:GridData
 												span="L1 M1 S1" />
-										</core:layoutData>
-									</core:Icon>
+										</layoutData>
+									</Button>
 
 									<Label
 										text="" />
@@ -112,7 +109,7 @@
 							</f:SimpleForm>
 
 							<f:SimpleForm
-		            id="idRedshiftTestConsoleForm"
+		            id="idTestConsoleForm"
 		            maxContainerCols="1"
 		            editable="true"
 		            layout="ResponsiveGridLayout"
@@ -149,19 +146,12 @@
 					<Panel
 						headerText=""
 						class="sapUiSmallMarginTop">
-						<Text text="{= ${device>/isTouch} ?
-							'These are the columns I could find in your spreadsheet. Please
+						<Text text="These are the columns I could find in your spreadsheet. Please
 							review them, make sure everything looks okay, then Save. Please also take note
 							that at least one of these columns must be of type Date. If none of these columns
 							represent date, please add this column to the spreadsheet. However, if your Date
-							column is here, but isn\'t listed as type Date, you can change the column data type
-							by tapping on the data type link.' :
-						 'These are the columns I could find in your spreadsheet. Please
-							review them, make sure everything looks okay, then Save. Please also take note
-							that at least one of these columns must be of type Date. If none of these columns
-							represent date, please add this column to the spreadsheet. However, if your Date
-							column is here, but isn\'t listed as type Date, you can change the column data type
-							by clicking on the data type link.' }" />
+							column is here, but isn't listed as type Date, you can change the column data type
+							by hitting the data type link." />
 					</Panel>
 					<Table
 						id="idDimensionsTable"

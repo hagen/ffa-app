@@ -1,5 +1,5 @@
 <mvc:View
-	controllerName="view.data.Hana"
+	controllerName="view.data.CreateRedshift"
 	xmlns="sap.m"
 	xmlns:mvc="sap.ui.core.mvc"
   xmlns:l="sap.ui.layout"
@@ -42,7 +42,7 @@
 			id="idNavContainer">
 			<pages>
 				<Page
-					id="idPageStart"
+					id="idPage1"
 					showHeader="false"
 					enableScrolling="true">
 					<l:Grid
@@ -50,7 +50,7 @@
 		        width="auto">
 		        <l:content>
 		          <f:SimpleForm
-		            id="idHanaConfigForm"
+		            id="idRedshiftConfigForm"
 		            maxContainerCols="2"
 		            editable="true"
 		            layout="ResponsiveGridLayout"
@@ -66,24 +66,24 @@
 		                text="Dataset name"
 										required="true" />
 		              <Input
-		                id="idNameInput"
-										value="{hana>/name}"
+		                id="idRedshiftNameInput"
+										value="{redshift>/name}"
 										change="onInputChange">
 										<customData>
-											<core:CustomData key="error" value="Every good data set needs a name!" />
+											<core:CustomData key="error" value="Please supply a data set name" />
 										</customData>
 		              </Input>
 
 		              <Label
-		                text="HANA host"
+		                text="Redshift endpoint"
 										required="true" />
 		              <Input
-		                id="idHostInput"
-										value="{hana>/host}"
-										placeholder="e.g. hana.company.com"
+		                id="idRedshiftEndpointInput"
+										value="{redshift>/endpoint}"
+										placeholder="e.g. cluster.c63cnbrlgreen.ap-southeast-3.redshift.amazonaws.com"
 										change="onInputChange">
 										<customData>
-											<core:CustomData key="error" value="You didn't give me the host. I'll need the host." />
+											<core:CustomData key="error" value="Please supply the Redshift endpoint (hostname)" />
 										</customData>
 		              </Input>
 
@@ -91,56 +91,58 @@
 		                text="Port"
 										required="true" />
 		              <Input
-		                id="idPortInput"
-										value="{hana>/port}"
+		                id="idRedshiftPortInput"
+										value="{redshift>/port}"
 										type="Number"
-										placeholder="e.g. 30015"
+										placeholder="e.g. 5439"
 										change="onInputChange">
 										<customData>
-											<core:CustomData key="error" value="Please specify your HANA port (default is 30015 - yours is probably the same)" />
+											<core:CustomData key="error" value="Please supply the endpoint port number" />
 										</customData>
 		              </Input>
 
 									<Label
-										text="Schema"
-										required="true"/>
-									<Input
-										id="idSchemaInput"
+		                text="Database"
+										required="true" />
+		              <Input
+		                id="idRedshiftDatabaseInput"
+										value="{redshift>/database}"
 										change="onInputChange">
 										<customData>
-											<core:CustomData key="error" value="Erm, without a schema I have no idea where I'm looking!" />
+											<core:CustomData key="error" value="Please supply a Redshift database name" />
 										</customData>
-									</Input>
+		              </Input>
 
 									<Label
 		                text="User name" />
 		              <Input
-		                id="idUsernameInput"
-										value="{hana>/username}">
+		                id="idRedshiftUsernameInput"
+										value="{redshift>/username}">
 		              </Input>
 
 									<Label
 		                text="Password" />
 		              <Input
-		                id="idPasswordInput"
-										value="{hana>/password}"
+		                id="idRedshiftPasswordInput"
+										value="{redshift>/password}"
 										type="Password">
 		              </Input>
 
 									<Label
 										text="" />
 									<CheckBox
-										id="idRememberCheckBox"
-										selected="{hana>/remember}"
+										id="idRedshiftRememberPasswordCheckBox"
+										selected="{redshift>/remember}"
 										text="Save username &amp; password?"/>
 
 									<Label
 										text="Query method" />
 									<Select
-										id="idQueryMethodSelect">
+										id="idQueryMethodSelect"
+										value="{redshift>/query_type}">
 										<items>
-											<core:Item key="views" text="HANA View" />
-											<core:Item key="tables" text="HANA Table" />
+											<core:Item key="views" text="Redshift View" />
+											<core:Item key="tables" text="Redshift Table" />
 											<core:Item key="query" text="Write custom SQL query" />
 										</items>
 									</Select>
@@ -158,7 +160,7 @@
 		          </f:SimpleForm>
 
 							<f:SimpleForm
-		            id="idHanaTestConsoleForm"
+		            id="idRedshiftTestConsoleForm"
 		            maxContainerCols="1"
 		            editable="true"
 		            layout="ResponsiveGridLayout"
@@ -206,7 +208,7 @@
 		        width="auto">
 		        <l:content>
 		          <f:SimpleForm
-		            id="idHanaQueryForm"
+		            id="idRedshiftQueryForm"
 		            maxContainerCols="1"
 		            editable="true"
 		            layout="ResponsiveGridLayout"
@@ -230,15 +232,15 @@
 		                id="idQueryTextArea"
 										rows="5"
 										columns="20"
-										value="{hana>/query}"
-										placeholder='e.g. select * from "SCHEMA"."package.path.to.data_table";'>
+										value="{redshift>/query}"
+										placeholder="e.g. select * from data_table">
 										<layoutData>
 											<l:GridData
 												span="L12 M12 S12" />
 										</layoutData>
 									</TextArea>
 									<Button
-										id="idHanaTestButton"
+										id="idRedshiftTestButton"
 										press="onQueryPress"
 										type="Emphasized"
 										text="Test">
@@ -251,7 +253,7 @@
 		          </f:SimpleForm>
 
 							<f:SimpleForm
-		            id="idHanaConsoleForm"
+		            id="idRedshiftConsoleForm"
 		            maxContainerCols="1"
 		            editable="true"
 		            layout="ResponsiveGridLayout"
@@ -287,7 +289,7 @@
 				██║   ██║██║█████╗  ██║ █╗ ██║███████╗
 				╚██╗ ██╔╝██║██╔══╝  ██║███╗██║╚════██║
 				 ╚████╔╝ ██║███████╗╚███╔███╔╝███████║
-					╚═══╝  ╚═╝╚══════╝ ╚══╝╚══╝ ╚══════╝
+				  ╚═══╝  ╚═╝╚══════╝ ╚══╝╚══╝ ╚══════╝
 				-->
 
 				<Page
@@ -295,8 +297,8 @@
 					enableScrolling="false"
 					showHeader="false">
 					<l:Grid
-						defaultSpan="L12 M12 S12"
-						width="auto">
+		        defaultSpan="L12 M12 S12"
+		        width="auto">
 						<l:content>
 							<Panel
 								expandable="false"
@@ -306,24 +308,26 @@
 									or select from the drop-down. It's important to ensure your	database user has privileges to read
 									from the view you select here." />
 							</Panel>
-							<f:SimpleForm
-								id="idViewForm"
-								maxContainerCols="1"
-								editable="true"
-								layout="ResponsiveGridLayout"
-								labelSpanL="3"
-								labelSpanM="3"
-								emptySpanL="4"
-								emptySpanM="4"
-								columnsL="1"
-								columnsM="1"
-								class="editableForm">
-								<f:content>
-
-									<Label text="View">
+		          <f:SimpleForm
+		            id="idRedshiftViewForm"
+		            maxContainerCols="1"
+		            editable="true"
+		            layout="ResponsiveGridLayout"
+		            labelSpanL="3"
+		            labelSpanM="3"
+		            emptySpanL="4"
+		            emptySpanM="4"
+		            columnsL="1"
+		            columnsM="1"
+		            class="editableForm">
+		            <f:content>
+									<Label text="">
+										<layoutData>
+											<l:GridData span="L3 M3 S1" />
+										</layoutData>
 									</Label>
-									<ComboBox
-										id="idViewsComboBox"
+		              <ComboBox
+		                id="idViewsComboBox"
 										change="onViewChange">
 										<layoutData>
 											<l:GridData span="L6 M6 S10" />
@@ -334,19 +338,19 @@
 											<l:GridData span="L3 M3 S1" />
 										</layoutData>
 									</Label>
-								</f:content>
-							</f:SimpleForm>
-						</l:content>
-					</l:Grid>
+		            </f:content>
+		          </f:SimpleForm>
+		        </l:content>
+		      </l:Grid>
 				</Page>
 
 				<!--
 				████████╗ █████╗ ██████╗ ██╗     ███████╗███████╗
 				╚══██╔══╝██╔══██╗██╔══██╗██║     ██╔════╝██╔════╝
-					 ██║   ███████║██████╔╝██║     █████╗  ███████╗
-					 ██║   ██╔══██║██╔══██╗██║     ██╔══╝  ╚════██║
-					 ██║   ██║  ██║██████╔╝███████╗███████╗███████║
-					 ╚═╝   ╚═╝  ╚═╝╚═════╝ ╚══════╝╚══════╝╚══════╝
+				   ██║   ███████║██████╔╝██║     █████╗  ███████╗
+				   ██║   ██╔══██║██╔══██╗██║     ██╔══╝  ╚════██║
+				   ██║   ██║  ██║██████╔╝███████╗███████╗███████║
+				   ╚═╝   ╚═╝  ╚═╝╚═════╝ ╚══════╝╚══════╝╚══════╝
 				-->
 
 				<Page
@@ -354,9 +358,9 @@
 					enableScrolling="false"
 					showHeader="false">
 					<l:Grid
-						defaultSpan="L12 M12 S12"
-						width="auto">
-						<l:content>
+		        defaultSpan="L12 M12 S12"
+		        width="auto">
+		        <l:content>
 							<Panel
 								expandable="false"
 								headerText="">
@@ -365,24 +369,26 @@
 									or select from the drop-down. It's important to ensure your	database user has privileges to read
 									from the table you select here." />
 							</Panel>
-							<f:SimpleForm
-								id="idTableForm"
-								maxContainerCols="1"
-								editable="true"
-								layout="ResponsiveGridLayout"
-								labelSpanL="3"
-								labelSpanM="3"
-								emptySpanL="4"
-								emptySpanM="4"
-								columnsL="1"
-								columnsM="1"
-								class="editableForm">
-								<f:content>
-
-									<Label text="Table">
+		          <f:SimpleForm
+		            id="idRedshiftTableForm"
+		            maxContainerCols="1"
+		            editable="true"
+		            layout="ResponsiveGridLayout"
+		            labelSpanL="3"
+		            labelSpanM="3"
+		            emptySpanL="4"
+		            emptySpanM="4"
+		            columnsL="1"
+		            columnsM="1"
+		            class="editableForm">
+		            <f:content>
+									<Label text="">
+										<layoutData>
+											<l:GridData span="L3 M3 S1" />
+										</layoutData>
 									</Label>
-									<ComboBox
-										id="idTablesComboBox"
+		              <ComboBox
+		                id="idTablesComboBox"
 										change="onTableChange">
 										<layoutData>
 											<l:GridData span="L6 M6 S10" />
@@ -393,10 +399,10 @@
 											<l:GridData span="L3 M3 S1" />
 										</layoutData>
 									</Label>
-								</f:content>
-							</f:SimpleForm>
-						</l:content>
-					</l:Grid>
+		            </f:content>
+		          </f:SimpleForm>
+		        </l:content>
+		      </l:Grid>
 				</Page>
 			</pages>
 		</NavContainer>

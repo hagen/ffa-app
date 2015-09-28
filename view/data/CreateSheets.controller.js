@@ -1,11 +1,11 @@
-jQuery.sap.declare("view.data.GoogleSheets");
+jQuery.sap.declare("view.data.CreateSheets");
 
 // Provides controller view.Wizard
 sap.ui.define(["jquery.sap.global", "view/data/Controller"],
   function(jQuery, Controller) {
     "use strict";
 
-    var Sheets = Controller.extend("view.data.GoogleSheets", /** @lends view.data.GoogleSheets.prototype */ {
+    var Sheets = Controller.extend("view.data.CreateSheets", /** @lends view.data.CreateSheets.prototype */ {
 
     });
 
@@ -117,17 +117,17 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      * When the help icon is pressed, show help :)
      * @param  {object} oEvent Icon press event
      */
-    Sheets.prototype.onHelpIconPress = function(oEvent) {
+    Sheets.prototype.onHelpPress = function(oEvent) {
       alert("Help");
     };
 
     /***
-     *    ██████╗ ██████╗ ██╗██╗   ██╗ █████╗ ████████╗███████╗
-     *    ██╔══██╗██╔══██╗██║██║   ██║██╔══██╗╚══██╔══╝██╔════╝
-     *    ██████╔╝██████╔╝██║██║   ██║███████║   ██║   █████╗
-     *    ██╔═══╝ ██╔══██╗██║╚██╗ ██╔╝██╔══██║   ██║   ██╔══╝
-     *    ██║     ██║  ██║██║ ╚████╔╝ ██║  ██║   ██║   ███████╗
-     *    ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═══╝  ╚═╝  ╚═╝   ╚═╝   ╚══════╝
+     *    ████████╗███████╗███████╗████████╗
+     *    ╚══██╔══╝██╔════╝██╔════╝╚══██╔══╝
+     *       ██║   █████╗  ███████╗   ██║
+     *       ██║   ██╔══╝  ╚════██║   ██║
+     *       ██║   ███████╗███████║   ██║
+     *       ╚═╝   ╚══════╝╚══════╝   ╚═╝
      *
      */
 
@@ -179,6 +179,16 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
       });
     };
 
+    /***
+     *    ███████╗ █████╗ ██╗   ██╗███████╗
+     *    ██╔════╝██╔══██╗██║   ██║██╔════╝
+     *    ███████╗███████║██║   ██║█████╗
+     *    ╚════██║██╔══██║╚██╗ ██╔╝██╔══╝
+     *    ███████║██║  ██║ ╚████╔╝ ███████╗
+     *    ╚══════╝╚═╝  ╚═╝  ╚═══╝  ╚══════╝
+     *
+     */
+
     /**
      * [function description]
      * @return {[type]} [description]
@@ -202,7 +212,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
         title: "Saving",
         text: "Saving your Sheet - one moment please..."
       });
-      
+
       // Refresh the dataset listing by raising an event (subscribers will do
       // the work)
       this.getEventBus().publish("Detail", "RefreshMaster", {});
@@ -214,7 +224,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
         this.closeBusyDialog();
 
         // Navigate to the new data set...
-        this.getRouter().navTo("datasets", {
+        this.getRouter().navTo("view-google", {
           dataset_id: this._sId
         }, !sap.ui.Device.system.phone);
 
@@ -222,6 +232,31 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
         this.onBackPress(null /* oEvent*/ );
       });
     };
+
+    /**
+     * [function description]
+     * @return {[type]} [description]
+     */
+    Sheets.prototype._getData = function() {
+      // Collect the key we're to use
+      return {
+        id: ShortId.generate(10),
+        key: this.getView().byId("idKeyInput").getValue(),
+        title: this.getView().byId("idNameInput").getValue(),
+        headers: (this.getView().byId("idHeadersCheckbox").getSelected() ? "X" : " "),
+        created_by: this.getUserId()
+      };
+    };
+
+    /***
+     *    ██╗   ██╗ █████╗ ██╗     ██╗██████╗  █████╗ ████████╗███████╗
+     *    ██║   ██║██╔══██╗██║     ██║██╔══██╗██╔══██╗╚══██╔══╝██╔════╝
+     *    ██║   ██║███████║██║     ██║██║  ██║███████║   ██║   █████╗
+     *    ╚██╗ ██╔╝██╔══██║██║     ██║██║  ██║██╔══██║   ██║   ██╔══╝
+     *     ╚████╔╝ ██║  ██║███████╗██║██████╔╝██║  ██║   ██║   ███████╗
+     *      ╚═══╝  ╚═╝  ╚═╝╚══════╝╚═╝╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚══════╝
+     *
+     */
 
     /**
      * Given the name and key input fields, this checks they both have a value,
@@ -240,7 +275,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
         oNameInput.setValueStateText("You must provide a name");
         bName = false;
       } else {
-        oNameInput.setValueState(sap.ui.core.ValueState.Success);
+        oNameInput.setValueState(sap.ui.core.ValueState.None);
         oNameInput.setValueStateText("");
         bName = true;
       }
@@ -250,28 +285,13 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
         oKeyInput.setValueStateText("You must provide a Sheet key");
         bKey = false;
       } else {
-        oKeyInput.setValueState(sap.ui.core.ValueState.Success);
+        oKeyInput.setValueState(sap.ui.core.ValueState.None);
         oKeyInput.setValueStateText("");
         bKey = true;
       }
 
       // AND the result
       return bName && bKey;
-    };
-
-    /**
-     * [function description]
-     * @return {[type]} [description]
-     */
-    Sheets.prototype._getData = function() {
-      // Collect the key we're to use
-      return {
-        id: ShortId.generate(10),
-        key: this.getView().byId("idKeyInput").getValue(),
-        title: this.getView().byId("idNameInput").getValue(),
-        headers: (this.getView().byId("idHeadersCheckbox").getSelected() ? "X" : " "),
-        created_by: this.getUserId()
-      };
     };
 
     /***

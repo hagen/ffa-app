@@ -88,8 +88,22 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
             transition : "flip",
             viewLevel: 5
           }]
-        },
-         {
+        }, {
+          pattern: "datasets/importio/:dataset_id:",
+          name: "view-importio",
+          view: "data.ViewImportIO",
+          targetControl: "idDataSetsSplitContainer",
+          targetAggregation: "detailPages",
+          transition : "slide",
+          viewLevel: 4,
+          subroutes: [{
+            pattern: "datasets/importio/:dataset_id:/edit",
+            name: "edit-importio",
+            view: "data.EditImportIO",
+            transition : "flip",
+            viewLevel: 5
+          }]
+        }, {
           pattern: "datasets/new",
           name: "new-dataset",
           view: "data.Wizard",
@@ -99,7 +113,7 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
           subroutes : [{
             pattern: "datasets/new/redshift",
             name: "redshift",
-            view: "data.Redshift",
+            view: "data.CreateRedshift",
             targetControl: "idContainer",
             targetAggregation: "pages",
             transition : "flip",
@@ -107,23 +121,23 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
           }, {
             pattern: "datasets/new/sheets",
             name: "sheets",
-            view: "data.GoogleSheets",
+            view: "data.CreateSheets",
             targetControl: "idContainer",
             targetAggregation: "pages",
             transition : "flip",
             viewLevel: 5
           }, {
             pattern: "datasets/new/hana",
-            name: "hana",
-            view: "data.Hana",
+            name: "hdb",
+            view: "data.CreateHDB",
             targetControl: "idContainer",
             targetAggregation: "pages",
             transition : "flip",
             viewLevel: 5
           }, {
-            pattern: "datasets/new/csv",
-            name: "csv",
-            view: "data.CSV",
+            pattern: "datasets/new/importio",
+            name: "importio",
+            view: "data.CreateImportIO",
             targetControl: "idContainer",
             targetAggregation: "pages",
             transition : "flip",
