@@ -105,7 +105,8 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
 
       // The rest of this code assumes you are not using a library.
       // It can be made less wordy if you use one.
-      this._submitForm("http://hagen.forefrontanalytics.com.au/auth/local/login", "post", {
+      var oModel = this.getView().getModel("env");
+      this._submitForm(oModel.getProperty("/host") + "/auth/local/login", "post", {
         email: oEmailInput.getValue(),
         password: oPasswordInput.getValue()
       });
@@ -157,7 +158,8 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
 
       // The rest of this code assumes you are not using a library.
       // It can be made less wordy if you use one.
-      this._submitForm("http://hagen.forefrontanalytics.com.au/auth/local/register", "post", {
+      var oModel = this.getView().getModel("env");
+      this._submitForm(oModel.getProperty("/host") + "/auth/local/register", "post", {
         email: oEmailInput.getValue(),
         password: oPasswordInput.getValue(),
         lastname: oLastnameInput.getValue(),
@@ -393,7 +395,8 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
      * @param  {[type]} oEvent [description]
      */
     Login.prototype.onGooglePress = function(oEvent) {
-      window.location.href = "http://hagen.forefrontanalytics.com.au/auth/google";
+      var oModel = this.getView().getModel("env");
+      window.location.href = oModel.getProperty("/host") + "/auth/google";
     };
 
     /**
@@ -401,7 +404,8 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
      * @param  {[type]} oEvent [description]
      */
     Login.prototype.onTwitterPress = function(oEvent) {
-      window.location.href = "http://hagen.forefrontanalytics.com.au/auth/twitter";
+      var oModel = this.getView().getModel("env");
+      window.location.href = oModel.getProperty("/host") + "/auth/twitter";
     };
 
     /**
@@ -409,7 +413,8 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
      * @param  {[type]} oEvent [description]
      */
     Login.prototype.onLinkedInPress = function(oEvent) {
-      window.location.href = "http://hagen.forefrontanalytics.com.au/auth/linkedin";
+      var oModel = this.getView().getModel("env");
+      window.location.href = oModel.getProperty("/host") + "/auth/linkedin";
     };
 
     /**
@@ -417,7 +422,8 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
      * @param  {[type]} oEvent [description]
      */
     Login.prototype.onSCNPress = function(oEvent) {
-      window.location.href = "http://hagen.forefrontanalytics.com.au/auth/scn";
+      var oModel = this.getView().getModel("env");
+      window.location.href = oModel.getProperty("/host") + "/auth/scn";
     };
 
     return Login;

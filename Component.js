@@ -19,7 +19,6 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
         staticsOdataUrl: "/fa/ppo/drop3/xs/services/static.xsodata",
         functionOdataUrl: "/fa/ppo/drop3/xs/services/function.xsodata",
         vizOdataUrl: "/fa/ppo/drop3/xs/services/viz.xsodata",
-        userJsonUrl: "http://localhost:8080/auth/api/user",
       }
     },
     routing: {
@@ -48,29 +47,28 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
           view: "data.ViewHDB",
           targetControl: "idDataSetsSplitContainer",
           targetAggregation: "detailPages",
-          transition : "slide",
+          transition: "slide",
           viewLevel: 4,
           subroutes: [{
             pattern: "datasets/hdb/:dataset_id:/edit",
             name: "edit-hdb",
             view: "data.EditHDB",
-            transition : "flip",
+            transition: "flip",
             viewLevel: 5
           }]
-        },
-         {
+        }, {
           pattern: "datasets/redshift/:dataset_id:",
           name: "view-redshift",
           view: "data.ViewRedshift",
           targetControl: "idDataSetsSplitContainer",
           targetAggregation: "detailPages",
-          transition : "slide",
+          transition: "slide",
           viewLevel: 4,
           subroutes: [{
             pattern: "datasets/redshift/:dataset_id:/edit",
             name: "edit-redshift",
             view: "data.EditRedshift",
-            transition : "flip",
+            transition: "flip",
             viewLevel: 5
           }]
         }, {
@@ -79,13 +77,13 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
           view: "data.ViewSheets",
           targetControl: "idDataSetsSplitContainer",
           targetAggregation: "detailPages",
-          transition : "slide",
+          transition: "slide",
           viewLevel: 4,
           subroutes: [{
             pattern: "datasets/sheets/:dataset_id:/edit",
             name: "edit-google", // Do not change - backend needs 'Google'
             view: "data.EditSheets",
-            transition : "flip",
+            transition: "flip",
             viewLevel: 5
           }]
         }, {
@@ -94,13 +92,13 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
           view: "data.ViewImportIO",
           targetControl: "idDataSetsSplitContainer",
           targetAggregation: "detailPages",
-          transition : "slide",
+          transition: "slide",
           viewLevel: 4,
           subroutes: [{
             pattern: "datasets/importio/:dataset_id:/edit",
             name: "edit-importio",
             view: "data.EditImportIO",
-            transition : "flip",
+            transition: "flip",
             viewLevel: 5
           }]
         }, {
@@ -110,13 +108,13 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
           targetControl: "idDataSetsSplitContainer",
           targetAggregation: "detailPages",
           viewLevel: 4,
-          subroutes : [{
+          subroutes: [{
             pattern: "datasets/new/redshift",
             name: "redshift",
             view: "data.CreateRedshift",
             targetControl: "idContainer",
             targetAggregation: "pages",
-            transition : "flip",
+            transition: "flip",
             viewLevel: 5
           }, {
             pattern: "datasets/new/sheets",
@@ -124,7 +122,7 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
             view: "data.CreateSheets",
             targetControl: "idContainer",
             targetAggregation: "pages",
-            transition : "flip",
+            transition: "flip",
             viewLevel: 5
           }, {
             pattern: "datasets/new/hana",
@@ -132,7 +130,7 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
             view: "data.CreateHDB",
             targetControl: "idContainer",
             targetAggregation: "pages",
-            transition : "flip",
+            transition: "flip",
             viewLevel: 5
           }, {
             pattern: "datasets/new/importio",
@@ -140,7 +138,7 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
             view: "data.CreateImportIO",
             targetControl: "idContainer",
             targetAggregation: "pages",
-            transition : "flip",
+            transition: "flip",
             viewLevel: 5
           }]
         }]
@@ -187,20 +185,20 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
           targetAggregation: "detailPages",
           viewLevel: 4,
           subroutes: [{
-	          pattern: "workbench/folders/new",
-	          name: "new-forecast-from-root",
-	          view: "forecasts.Wizard",
-	          targetControl: "idWorkbenchSplitContainer",
-	          targetAggregation: "detailPages",
-	          viewLevel: 5
-	        }, {
-	          pattern: "workbench/folders/:folder_id:/new",
-	          name: "new-forecast-from-folder",
-	          view: "forecasts.Wizard",
-	          targetControl: "idContainer",
-	          targetAggregation: "pages",
-	          viewLevel: 5
-	        }, {
+            pattern: "workbench/folders/new",
+            name: "new-forecast-from-root",
+            view: "forecasts.Wizard",
+            targetControl: "idWorkbenchSplitContainer",
+            targetAggregation: "detailPages",
+            viewLevel: 5
+          }, {
+            pattern: "workbench/folders/:folder_id:/new",
+            name: "new-forecast-from-folder",
+            view: "forecasts.Wizard",
+            targetControl: "idContainer",
+            targetAggregation: "pages",
+            viewLevel: 5
+          }, {
             pattern: "workbench/folders/:folder_id:/forecasts/{forecast_id}/:tab:",
             name: "forecast-from-folder",
             view: "forecasts.Forecasts",
@@ -237,7 +235,7 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
         view: "forecasts.Adjust",
         targetControl: "idContainer",
         targetAggregation: "pages",
-        transition : "flip",
+        transition: "flip",
         viewLevel: 6
       }, {
         pattern: "rerun/{forecast_id}/:return_route:",
@@ -245,14 +243,14 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
         view: "forecasts.Rerun",
         targetControl: "idContainer",
         targetAggregation: "pages",
-        transition : "flip",
+        transition: "flip",
         viewLevel: 6
       }, {
         pattern: "settings",
         name: "settings",
         view: "settings.Menu",
         viewLevel: 2,
-        subroutes : [{
+        subroutes: [{
           pattern: "settings/profile",
           name: "profile",
           view: "settings.Profile",
@@ -276,7 +274,7 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
           viewLevel: 3,
           targetControl: "idSettingsSplitContainer",
           targetAggregation: "detailPages",
-          subroutes : [{
+          subroutes: [{
             pattern: "settings/account/change",
             name: "change-plan",
             view: "plans.Change",
@@ -403,57 +401,144 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
     mDeviceModel.setDefaultBindingMode("OneWay");
     this.setModel(mDeviceModel, "device");
 
-    var oHeaders = {Authorization : 'Bearer ' + _token };
+    // Because we are authenticating against Node first, and this application
+    // if effectively stateless (being dependent on API calls), the only plausible
+    // means of authentication is through bearer tokens. When the user logs in, they
+    // will always have a bearer token accompanying their authenticated redirect, so
+    // we'll reuse this token for all subsequent OData calls.
+    var oHeaders = {
+      Authorization: 'Bearer ' + _token
+    };
+
+    /***
+     *    ██████╗  █████╗ ████████╗ █████╗ ███████╗███████╗████████╗
+     *    ██╔══██╗██╔══██╗╚══██╔══╝██╔══██╗██╔════╝██╔════╝╚══██╔══╝
+     *    ██║  ██║███████║   ██║   ███████║███████╗█████╗     ██║
+     *    ██║  ██║██╔══██║   ██║   ██╔══██║╚════██║██╔══╝     ██║
+     *    ██████╔╝██║  ██║   ██║   ██║  ██║███████║███████╗   ██║
+     *    ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚══════╝╚══════╝   ╚═╝
+     *
+     */
     var oDSModel = new sap.ui.model.odata.ODataModel(mConfig.serviceConfig.datasetOdataUrl, {
-      headers : oHeaders
+      headers: oHeaders
     });
     oDSModel.setDefaultBindingMode("OneWay");
     this.setModel(oDSModel, "dataset");
 
-    // Create and set datasets domain model to the component
+    /***
+     *    ███████╗ ██████╗ ██████╗ ███████╗ ██████╗ █████╗ ███████╗████████╗
+     *    ██╔════╝██╔═══██╗██╔══██╗██╔════╝██╔════╝██╔══██╗██╔════╝╚══██╔══╝
+     *    █████╗  ██║   ██║██████╔╝█████╗  ██║     ███████║███████╗   ██║
+     *    ██╔══╝  ██║   ██║██╔══██╗██╔══╝  ██║     ██╔══██║╚════██║   ██║
+     *    ██║     ╚██████╔╝██║  ██║███████╗╚██████╗██║  ██║███████║   ██║
+     *    ╚═╝      ╚═════╝ ╚═╝  ╚═╝╚══════╝ ╚═════╝╚═╝  ╚═╝╚══════╝   ╚═╝
+     *
+     */
     var oFModel = new sap.ui.model.odata.ODataModel(mConfig.serviceConfig.forecastOdataUrl, {
-      headers : oHeaders
+      headers: oHeaders
     });
     oFModel.setDefaultBindingMode("TwoWay");
     this.setModel(oFModel, "forecast");
 
-    // Create and set datasets domain model to the component
+    /***
+     *    ██████╗ ██████╗  ██████╗ ███████╗██╗██╗     ███████╗
+     *    ██╔══██╗██╔══██╗██╔═══██╗██╔════╝██║██║     ██╔════╝
+     *    ██████╔╝██████╔╝██║   ██║█████╗  ██║██║     █████╗
+     *    ██╔═══╝ ██╔══██╗██║   ██║██╔══╝  ██║██║     ██╔══╝
+     *    ██║     ██║  ██║╚██████╔╝██║     ██║███████╗███████╗
+     *    ╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝╚══════╝
+     *
+     */
     var oPModel = new sap.ui.model.odata.ODataModel(mConfig.serviceConfig.profileOdataUrl, {
-      headers : oHeaders
+      headers: oHeaders
     });
     oPModel.setDefaultBindingMode("TwoWay");
     this.setModel(oPModel, "profile");
 
+    /***
+     *    ███████╗██╗   ██╗███╗   ██╗ ██████╗████████╗██╗ ██████╗ ███╗   ██╗
+     *    ██╔════╝██║   ██║████╗  ██║██╔════╝╚══██╔══╝██║██╔═══██╗████╗  ██║
+     *    █████╗  ██║   ██║██╔██╗ ██║██║        ██║   ██║██║   ██║██╔██╗ ██║
+     *    ██╔══╝  ██║   ██║██║╚██╗██║██║        ██║   ██║██║   ██║██║╚██╗██║
+     *    ██║     ╚██████╔╝██║ ╚████║╚██████╗   ██║   ██║╚██████╔╝██║ ╚████║
+     *    ╚═╝      ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝
+     *
+     */
+
     var oFuncModel = new sap.ui.model.odata.ODataModel(mConfig.serviceConfig.functionOdataUrl, {
-      headers : oHeaders
+      headers: oHeaders
     });
     oFuncModel.setDefaultBindingMode("OneWay");
     this.setModel(oFuncModel, "function");
 
+    /***
+     *    ███████╗████████╗ █████╗ ████████╗██╗ ██████╗███████╗
+     *    ██╔════╝╚══██╔══╝██╔══██╗╚══██╔══╝██║██╔════╝██╔════╝
+     *    ███████╗   ██║   ███████║   ██║   ██║██║     ███████╗
+     *    ╚════██║   ██║   ██╔══██║   ██║   ██║██║     ╚════██║
+     *    ███████║   ██║   ██║  ██║   ██║   ██║╚██████╗███████║
+     *    ╚══════╝   ╚═╝   ╚═╝  ╚═╝   ╚═╝   ╚═╝ ╚═════╝╚══════╝
+     *
+     */
+
     var oSModel = new sap.ui.model.odata.ODataModel(mConfig.serviceConfig.staticsOdataUrl, {
-      headers : oHeaders
+      headers: oHeaders
     });
     oSModel.setDefaultBindingMode("OneWay");
     oSModel.setSizeLimit(300);
     this.setModel(oSModel, "static");
 
+    /***
+     *    ██╗   ██╗██╗███████╗
+     *    ██║   ██║██║╚══███╔╝
+     *    ██║   ██║██║  ███╔╝
+     *    ╚██╗ ██╔╝██║ ███╔╝
+     *     ╚████╔╝ ██║███████╗
+     *      ╚═══╝  ╚═╝╚══════╝
+     *
+     */
+
     var oVizModel = new sap.ui.model.odata.ODataModel(mConfig.serviceConfig.vizOdataUrl, {
-      headers : oHeaders
+      headers: oHeaders
     });
     oSModel.setDefaultBindingMode("TwoWay");
     this.setModel(oVizModel, "viz");
 
+    /***
+     *    ██╗   ██╗███████╗███████╗██████╗
+     *    ██║   ██║██╔════╝██╔════╝██╔══██╗
+     *    ██║   ██║███████╗█████╗  ██████╔╝
+     *    ██║   ██║╚════██║██╔══╝  ██╔══██╗
+     *    ╚██████╔╝███████║███████╗██║  ██║
+     *     ╚═════╝ ╚══════╝╚══════╝╚═╝  ╚═╝
+     *
+     */
+
     jQuery.ajax({
-      url : 'auth/api/user',
+      url: 'auth/api/user',
       type: 'GET',
-      headers : oHeaders,
-      async : false,
-      success : jQuery.proxy(function(data) {
+      headers: oHeaders,
+      async: false,
+      success: jQuery.proxy(function(data) {
         var oUModel = new sap.ui.model.json.JSONModel(data);
         oUModel.setDefaultBindingMode("OneWay");
         this.setModel(oUModel, "user");
       }, this)
     })
+
+    /***
+     *    ███████╗███╗   ██╗██╗   ██╗
+     *    ██╔════╝████╗  ██║██║   ██║
+     *    █████╗  ██╔██╗ ██║██║   ██║
+     *    ██╔══╝  ██║╚██╗██║╚██╗ ██╔╝
+     *    ███████╗██║ ╚████║ ╚████╔╝
+     *    ╚══════╝╚═╝  ╚═══╝  ╚═══╝
+     *
+     */
+    
+    var oUrlModel = new sap.ui.model.json.JSONModel("env/settings.json");
+    oUrlModel.setDefaultBindingMode("OneWay");
+    this.setModel(oUrlModel, "env");
 
     this.getRouter().initialize();
   },
