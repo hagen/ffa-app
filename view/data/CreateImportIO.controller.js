@@ -41,8 +41,10 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
       // Testing only
       this._mIO = new sap.ui.model.json.JSONModel({
         id: ShortId.generate(10),
-        name: "ImportIO test",
-        url: "https://api.import.io/store/data/c1a66d70-4a5f-4e0e-ba6b-56ffb82c381f/_query?input/webpage/url=http%3A%2F%2Fwww.timeanddate.com%2Fholidays%2Fgermany%2F&_user=9c877574-9734-4c33-b37e-f379490ee7ae&_apikey=9c87757497344c33b37ef379490ee7aeae42db154e63f66607c7b89654bcb48f58f35115d41d18ae8db493b4db743bbd868652c9c6f255827bc8cb3715f038d9e205e6f9a6d9421987b8861f89372250"
+        name: "",
+        //name: "ImportIO test",
+        url: ""
+        //url: "https://api.import.io/store/data/c1a66d70-4a5f-4e0e-ba6b-56ffb82c381f/_query?input/webpage/url=http%3A%2F%2Fwww.timeanddate.com%2Fholidays%2Fgermany%2F&_user=9c877574-9734-4c33-b37e-f379490ee7ae&_apikey=9c87757497344c33b37ef379490ee7aeae42db154e63f66607c7b89654bcb48f58f35115d41d18ae8db493b4db743bbd868652c9c6f255827bc8cb3715f038d9e205e6f9a6d9421987b8861f89372250"
       });
 
       this.getView().setModel(this._mIO, "importio");

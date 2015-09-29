@@ -41,8 +41,10 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
       // Testing only
       this._mSheets = new sap.ui.model.json.JSONModel({
         id: ShortId.generate(10),
-        name: "BHP stock prices",
-        key: "1MnR5fxrZMrtqZxjtJhKYRtDythV9QUi34DQdnEO5YlQ",
+        name: "",
+        //name: "BHP stock prices",
+        key: "",
+        //key: "1MnR5fxrZMrtqZxjtJhKYRtDythV9QUi34DQdnEO5YlQ",
         has_headers: true
       });
 
