@@ -283,11 +283,11 @@ sap.ui.define(['jquery.sap.global', 'view/data/Controller'],
     /**
      * Async read of the user's total cache store, and when done, executes a callback
      * and resolves a promise. I use promises so that we don't end up Christmas treeing.
-     * @param  {String}   sProfileId Profile ID
-     * @param  {Deferred} oPromise   Deferred promise
-     * @param  {Function} fnCb       Callback function
+     * @param  {String}   sProfileId  Profile ID
+     * @param  {Deferred} oPromise    Deferred promise
+     * @param  {Function} fnCallback  Callback function
      */
-    Wizard.prototype._readCacheTotalKb = function(sProfileId, oPromise, callback) {
+    Wizard.prototype._readCacheTotalKb = function(sProfileId, oPromise, fnCallback) {
       // Model for reading
       var oModel = this.getView().getModel("forecast");
 
@@ -297,7 +297,7 @@ sap.ui.define(['jquery.sap.global', 'view/data/Controller'],
       if (oTotal) {
         // Callback and resolve
         try {
-          callback(parseInt(oTotal.kb, 10));
+          fnCallback(parseInt(oTotal.kb, 10));
         } catch (e) {}
         oPromise.resolve();
       } else {
@@ -306,12 +306,15 @@ sap.ui.define(['jquery.sap.global', 'view/data/Controller'],
           success: jQuery.proxy(function(oData, mResponse) {
             // Callback and resolve
             try {
-              callback(parseInt(oData.kb, 10));
+              fnCallback(parseInt(oData.kb, 10));
             } catch (e) {}
             oPromise.resolve();
           }, this),
           error: jQuery.proxy(function(mError) {
-            // What to do?
+            // What to do? Note, this could be because the user is NEW and has
+            // no data!
+            fnCallback(0);
+            oPromise.resolve();
           }, this)
         })
       }
@@ -320,11 +323,11 @@ sap.ui.define(['jquery.sap.global', 'view/data/Controller'],
     /**
      * Async read of the user's current plan limit. When done, executes a callback
      * and resolves a promise. I use promises so that we don't end up Christmas treeing.
-     * @param  {String}   sProfileId Profile ID
-     * @param  {Deferred} oPromise   Deferred promise
-     * @param  {Function} fnCb       Callback function
+     * @param  {String}   sProfileId  Profile ID
+     * @param  {Deferred} oPromise    Deferred promise
+     * @param  {Function} fnCallback  Callback function
      */
-    Wizard.prototype._readPlanLimitKb = function(sProfileId, oPromise, fnCb) {
+    Wizard.prototype._readPlanLimitKb = function(sProfileId, oPromise, fnCallback) {
       // Model for reading
       var oModel = this.getView().getModel("profile");
 
@@ -334,7 +337,7 @@ sap.ui.define(['jquery.sap.global', 'view/data/Controller'],
       if (oPlan) {
         // Callback and resolve
         try {
-          fnCb(oPlan.data_limit * 1000);
+          fnCallback(oPlan.data_limit * 1000);
         } catch (e) {}
         oPromise.resolve();
       } else {
@@ -344,12 +347,15 @@ sap.ui.define(['jquery.sap.global', 'view/data/Controller'],
             // Callback and resolve
             try {
               // data limit is in mb - multiply by 1000 for kb
-              fnCb(oData.data_limit * 1000);
+              fnCallback(oData.data_limit * 1000);
             } catch (e) {}
             oPromise.resolve();
           }, this),
           error: jQuery.proxy(function(mError) {
-            // What to do?
+            // What to do? Note, this could be because the user is NEW and has
+            // no forecasts!
+            fnCallback(0);
+            oPromise.resolve();
           }, this)
         })
       }
