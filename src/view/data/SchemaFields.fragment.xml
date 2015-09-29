@@ -1,0 +1,23 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m">
+  <Table
+    growing="false"
+    id="idFieldsTable"
+    inset="false"
+    noDataText="No Definition defined..."
+    mode="SingleSelectLeft"
+    class="sapUiContentPadding ffaDataSetDefinitionTable">
+    <columns>
+      <Column hAlign="Left">
+        <Text  text="Field name"/>
+      </Column>
+      <Column hAlign="Left">
+        <Text  text="Type"/>
+      </Column>
+      <Column hAlign="Right">
+        <Text  text="Position (index)"/>
+      </Column>
+    </columns>
+    <items>
+    </items>
+  </Table>
+</core:FragmentDefinition>

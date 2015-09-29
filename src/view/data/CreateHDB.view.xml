@@ -106,6 +106,7 @@
 										required="true"/>
 									<Input
 										id="idSchemaInput"
+										value="{hana>/schema}"
 										change="onInputChange">
 										<customData>
 											<core:CustomData key="error" value="Erm, without a schema I have no idea where I'm looking!" />
@@ -398,6 +399,36 @@
 						</l:content>
 					</l:Grid>
 				</Page>
+
+				<Page
+					id="idPageDefinition"
+					enableScrolling="true"
+					title="Data set definition"
+					showHeader="false">
+					<content>
+						<Panel
+							expandable="false"
+							headerText="">
+							<Text
+								text="Lastly, please pick the field that represents Date. Additionally, if you notice that
+								any of the fields listed below are not of the correct type, you may change them
+								by hitting the data type link." />
+						</Panel>
+						<l:Grid
+							defaultSpan="L12 M12 S12"
+							width="auto"
+							class="sapUiSmallMargin">
+							<l:content>
+								<!-- Column selection -->
+								<core:Fragment
+									id="idFieldsFragment"
+									fragmentName="view.data.SchemaFields"
+									type="XML" />
+							</l:content>
+						</l:Grid>
+					</content>
+				</Page>
+
 			</pages>
 		</NavContainer>
 	</Page>

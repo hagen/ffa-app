@@ -20,7 +20,7 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/DatasetAuth'],
       this._sFolderId = "";
       this._aBatchOps = [];
       this._oFields = {
-        date : "",
+        date: "",
         forecast: "",
         variables: []
       };
@@ -252,11 +252,15 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/DatasetAuth'],
 
       // Raise an event to signal the end of all forecast processing.
       // The user must now go home, or go to the forecast.
-      this.getEventBus().publish("Forecast", "Finished", { forecast_id: this._sForecastId });
+      this.getEventBus().publish("Forecast", "Finished", {
+        forecast_id: this._sForecastId
+      });
 
       // If we've recorded username and password during this process, now
       // is a good time to get rid of them...
-      this.getEventBus().publish("Wizard", "ClearAuth", { dataset_id : this._sDataSetId });
+      this.getEventBus().publish("Wizard", "ClearAuth", {
+        dataset_id: this._sDataSetId
+      });
 
     };
 
@@ -331,7 +335,9 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/DatasetAuth'],
 
       // If we've recorded username and password during this process, now
       // is a good time to get rid of them...
-      this.getEventBus().publish("Wizard", "ClearAuth", { dataset_id : this._sDataSetId });
+      this.getEventBus().publish("Wizard", "ClearAuth", {
+        dataset_id: this._sDataSetId
+      });
 
       // Page 3
       var oTable = this.getView().byId(
@@ -397,7 +403,7 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/DatasetAuth'],
       this._sCacheId = "";
       this._aBatchOps = [];
       this._oFields = {
-        date : "",
+        date: "",
         forecast: "",
         variables: []
       };
@@ -633,7 +639,7 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/DatasetAuth'],
       // Maybe prompt the user for authentication
       // NOTE: this function lives down in the DatasetAuth Controller
       this._maybeAuthenticateDataset(this._sDataSetId, oPromise);
-      
+
       jQuery.when(oPromise)
         // if the promise is resolved, then we can advance
         .done(jQuery.proxy(function() {
@@ -1125,7 +1131,16 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/DatasetAuth'],
         oForecast
       ));
 
-      // add the new batch operation
+      // Add the date field, selected by the user
+      this._aBatchOps.push(oModel.createBatchOperation(
+        "/Fields",
+        "POST", {
+          forecast_id: this._sForecastId,
+          dimension_id: this._oFields.date,
+          type: "date"
+        }));
+
+      // Add the forecast field, which we will predict
       this._aBatchOps.push(oModel.createBatchOperation(
         "/Fields",
         "POST", {
@@ -1134,7 +1149,7 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/DatasetAuth'],
           type: "forecast"
         }));
 
-      // add the new batch operation
+      // And add any variable fields
       for (var i = 0; i < this._oFields.variables.length; i++) {
         this._aBatchOps.push(oModel.createBatchOperation(
           "/Fields",

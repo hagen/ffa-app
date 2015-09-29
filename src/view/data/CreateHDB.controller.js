@@ -1,11 +1,11 @@
 jQuery.sap.declare("view.data.CreateHDB");
 
 // Provides controller view.Wizard
-sap.ui.define(["jquery.sap.global", "view/data/Controller"],
+sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
   function(jQuery, Controller) {
     "use strict";
 
-    var Hana = Controller.extend("view.data.CreateHDB", /** @lends view.data.CreateHDB.prototype */ {
+    var Hdb = Controller.extend("view.data.CreateHDB", /** @lends view.data.CreateHDB.prototype */ {
 
     });
 
@@ -13,7 +13,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      * On init handler. We are setting up the route matched handler, because
      * it is possible to navigate directly to this page.
      */
-    Hana.prototype.onInit = function() {
+    Hdb.prototype.onInit = function() {
 
       // handle route matched
       this.getRouter().getRoute("hdb").attachPatternMatched(this._onRouteMatched, this);
@@ -22,36 +22,38 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
     /**
      *
      */
-    Hana.prototype.onExit = function() {};
+    Hdb.prototype.onExit = function() {};
 
     /**
      *
      */
-    Hana.prototype.onBeforeRendering = function() {};
+    Hdb.prototype.onBeforeRendering = function() {};
 
     /**
      *
      */
-    Hana.prototype.onAfterRendering = function() {};
+    Hdb.prototype.onAfterRendering = function() {};
 
     /**
      * Route matched handler fires up the Wizard straight away
      */
-    Hana.prototype._onRouteMatched = function(oEvent) {
+    Hdb.prototype._onRouteMatched = function(oEvent) {
 
       // Testing only
       this._mHana = new sap.ui.model.json.JSONModel({
         id: ShortId.generate(10),
-        name: "",
-        // name: "HANA dataset",
-        host: "",
-        // host: "hana.forefrontanalytics.com.au",
-        port: null,
-        // port: 30015,
-        username: "",
-        // username: "HDITTMER",
-        password: "",
-        // password: "H4n4isdumb",
+        // name: "",
+        name: "HANA dataset",
+        // host: "",
+        host: "hana.forefrontanalytics.com.au",
+        // port: null,
+        port: 30015,
+        // schema : "",
+        schema: "HDITTMER",
+        // username: "",
+        username: "HDITTMER",
+        // password: "",
+        password: "H4n4isdumb",
         remember: false,
         query: "",
         created_by: this.getUserId()
@@ -75,7 +77,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      * @param  {[type]} oEvent [description]
      * @return {[type]}        [description]
      */
-    Hana.prototype.onCancelPress = function(oEvent) {
+    Hdb.prototype.onCancelPress = function(oEvent) {
       // nav back to main Page
       try {
         this.getView().byId("idNavContainer").back();
@@ -87,12 +89,11 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
 
     /**
      * This handler is used either to advance the configuration page
-     * to the query page, or save the query. When advancing to the next page,
-     * we will firstly test the connection. If all goes well, update the text
-     * for this button to 'Save'.
+     * to the next page. When advancing to the next page,
+     * we will firstly test the connection. If all goes well, advance.
      * @param  {object} oEvent Button press event
      */
-    Hana.prototype.onNextPress = function(oEvent) {
+    Hdb.prototype.onNextPress = function(oEvent) {
 
       var oButton = oEvent.getSource();
 
@@ -115,7 +116,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
         // it will be run.
         jQuery.when(oPromise).done(jQuery.proxy(function() {
           // Collect the type the user has selected
-          var sInflectedType = this._getQueryType(true /* bInflect */);
+          var sInflectedType = this._getQueryType(true /* bInflect */ );
 
           // perform page set up.
           var oPage = this.getView().byId("idPage" + sInflectedType);
@@ -124,15 +125,16 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
             this[fn].apply(this, []);
           }
 
-          // Button is now bound to the save action
-          oButton.detachPress(this.onNextPress, this)
-            .attachPress(this.onSavePress, this)
-            .setText("Save");
-          this.getView().byId("idBackButton").setEnabled(true);
-
           // advance to the next page
           var oNav = this.getView().byId("idNavContainer");
           oNav.to(oPage, "slide");
+
+          // Button is now bound to the save action
+          oButton.detachPress(this.onNextPress, this)
+            .attachPress(this.onNextNextPress, this);
+
+          // Back button now goes back only one page, to the previous.
+          this.getView().byId("idBackButton").setEnabled(true);
 
           // Not busy now
           this.hideBusyDialog();
@@ -151,13 +153,88 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
     };
 
     /**
-     *
+     * This is the second Next button, and will advance to the definition
+     * page, after firstly collecting the table/view/query resultset defintion.
+     * @param  {Event} oEvent Button press event
+     */
+    Hdb.prototype.onNextNextPress = function(oEvent) {
+
+      // Collect button from event source
+      var oButton = oEvent.getSource();
+
+      // set screen to busy
+      this.openBusyDialog({
+        title: "Reading",
+        text: "Reading the query definition - one moment please..."
+      });
+
+      // Save the redshift data...
+      this.getView().getModel("dataset").create("/Hdb", this._getData(), {
+        success: jQuery.proxy(function(oData, mResponse) {
+
+          // Now, we'll retain the sId for this data set, as we'll need it For
+          // updating any schema fields, and for setting the date field
+          this._sId = oData.id;
+
+          // Button is now bound to the save action
+          oButton.detachPress(this.onNextNextPress, this)
+            .attachPress(this.onSavePress, this)
+            .setText("Save");
+
+          // Back button now goes back only one page, to the previous.
+          this.getView().byId("idBackButton").detachPress(this.onBackPress, this)
+            .attachPress(this.onBackBackPress, this);
+
+          // Collect the nav container and the next page, and nav
+          var oNav = this.getView().byId("idNavContainer");
+          var oPage = this.getView().byId("idPageDefinition");
+          oPage.bindElement("dataset>/DataSets('" + this._sId + "')", {
+            parameters: {
+              expand: "Dimensions"
+            }
+          });
+
+          // Bind the variables table to the data definition, but REMOVE the forecast
+          // field(s).
+          var oTable = this.getView().byId(
+            sap.ui.core.Fragment.createId("idFieldsFragment", "idFieldsTable")
+          );
+
+          // Bind table rows (items)
+          oTable.bindItems({
+            path: "dataset>Dimensions",
+            sorter: [new sap.ui.model.Sorter("index", false)],
+            template: sap.ui.xmlfragment("view.data.SchemaField", this)
+          });
+
+          // Now we nav...
+          oNav.to(oPage, "slide");
+
+          // Not busy any more
+          this.closeBusyDialog();
+        }, this),
+        error: jQuery.proxy(function(mError) {
+
+          // Handle connection test errors
+          this._handleSaveError(mError);
+
+          // not busy any more
+          this.closeBusyDialog();
+        }, this),
+        async: true,
+      });
+    };
+
+    /**
+     * The back button takes us back a page, but we need to determine if it's
+     * at the every beginning or not. We also need to update what happens
+     * to the Next button.
      * @param  {object} oEvent Button press event
      */
-    Hana.prototype.onBackPress = function(oEvent) {
+    Hdb.prototype.onBackPress = function(oEvent) {
       // Button is now bound to the save action
       var oButton = this.getView().byId("idNextButton");
-      oButton.detachPress(this.onSavePress, this)
+      oButton.detachPress(this.onNextNextPress, this)
         .attachPress(this.onNextPress, this)
         .setText("Next");
 
@@ -173,19 +250,102 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
     };
 
     /**
-     * This handler is used either to advance the configuration page
-     * to the query page, or save the query. When advancing to the next page,
-     * we will firstly test the connection. If all goes well, update the text
-     * for this button to 'Save'.
+     * When we are on the third/last page, the back button has a special role
+     * to play. It is only taking us back one page, but it must be to the
+     * correct page (either of table, view, or query).
      * @param  {object} oEvent Button press event
      */
-    Hana.prototype.onSavePress = function(oEvent) {
+    Hdb.prototype.onBackBackPress = function(oEvent) {
+
+      // Now the back button only needs to go back to the start page, so Update
+      // the handler accordingly
+      oEvent.getSource().detachPress(this.onBackBackPress, this)
+        .attachPress(this.onBackPress, this);
+
+      // Button is now bound to the save action
+      this.getView().byId("idNextButton").detachPress(this.onSavePress, this)
+        .attachPress(this.onNextNextPress, this)
+        .setText("Next");
+
+      // Collect the type the user has selected
+      var sInflectedType = this._getQueryType(true /* bInflect */ );
+
+      // Head back, boi!
+      var sPageId = this.getView().createId("idPage" + sInflectedType);
+      this.getView().byId("idNavContainer").backToPage(sPageId);
+
+      // Delete the data set we've just created...
+      this.getView().getModel("dataset").remove("/DataSets('" + this._sId + "')");
+    };
+
+    /**
+     * Saving the data set means checking there is one date field selected. Once
+     * this check is validated, we will then check if there are any modifications
+     * to the data types. An update of the date dimension is fired, along With
+     * updates to any other dimension data types.
+     * @param  {object} oEvent Button press event
+     */
+    Hdb.prototype.onSavePress = function(oEvent) {
 
       // set screen to busy
       this.openBusyDialog({
         title: "Saving",
         text: "Saving your HANA configuration - one moment please..."
       });
+
+      // Spin through the table items, and check that there is one of type
+      // date.
+      if (!this.isDateSelected()) {
+        return;
+      }
+
+      // Otherwise, we are good to save.
+      this.saveDimensions(jQuery.proxy(function() {
+          // Refresh the dataset listing by raising an event (subscribers will do
+          // the work)
+          this.getEventBus().publish("Detail", "RefreshMaster", {});
+
+          // Update the screen, then close.
+          this.updateBusyDialog({
+            text: "All done! Finishing up..."
+          });
+
+          // Timed close.
+          jQuery.sap.delayedCall(1500, this, function() {
+            // NOt busy any more
+            this.closeBusyDialog();
+
+            // Send the nav container back to start
+            try {
+              this.getView().byId("idNavContainer").backToTop();
+            } catch (e) {}
+
+            // Navigate to the new data set...
+            this.getRouter().navTo("view-hdb", {
+              dataset_id: oData.id
+            }, !sap.ui.Device.system.phone);
+
+            // Reset the Next buttons
+            this.getView().byId("idNextButton").setText("Next")
+              .detach(this.onSavePress, this)
+              .attach(this.onNextPress, this);
+
+            // Reset the back buttons
+            this.getView().byId("idBackButton").setEnabled(false)
+              .detach(this.onBackBackPress, this)
+              .attach(this.onBackPress, this);
+          });
+        }, this),
+
+        jQuery.proxy(function() { // error
+
+          // Handle connection test errors
+          this._handleSaveError(mError);
+
+          // not busy any more
+          this.closeBusyDialog();
+        }, this)
+      );
 
       // Save the redshift data...
       this.getView().getModel("dataset").create("/Hdb", this._getData(), {
@@ -207,7 +367,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
 
             // Send the nav container back to start
             try {
-              this.getView().byId("idNavContainer").back();
+              this.getView().byId("idNavContainer").backToTop();
             } catch (e) {}
 
             // Navigate to the new data set...
@@ -248,7 +408,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      * to the next screen.
      * @return {boolean} Is the screen valid?
      */
-    Hana.prototype._validateConnection = function() {
+    Hdb.prototype._validateConnection = function() {
 
       // Valid
       var bValid = true;
@@ -274,7 +434,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      * @param  {Control} oControl The ComboBox control
      * @return {boolean}          Is valid?
      */
-    Hana.prototype._validateViews = function(oControl) {
+    Hdb.prototype._validateViews = function(oControl) {
 
       // Valid
       var bValid = true;
@@ -300,7 +460,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      * @param  {Control} oControl The ComboBox table listing control
      * @return {boolean}          Is valid?
      */
-    Hana.prototype._validateTables = function(oControl) {
+    Hdb.prototype._validateTables = function(oControl) {
 
       // Valid
       var bValid = true;
@@ -327,7 +487,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      * @param  {[type]} oControl [description]
      * @return {[type]}          [description]
      */
-    Hana.prototype._validateQuery = function(oControl) {
+    Hdb.prototype._validateQuery = function(oControl) {
 
       // Valid
       var bValid = true;
@@ -359,7 +519,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      * correct validation technique. Tables/Views/Query are the three possibilities
      * @return {boolean} Is valid?
      */
-    Hana.prototype._validateSave = function() {
+    Hdb.prototype._validateSave = function() {
 
       // Valid
       var bValid = true;
@@ -389,7 +549,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      * which are name, endpoint, port and database.
      * @return {Array} All mandatory controls in array
      */
-    Hana.prototype._getMandtControls = function() {
+    Hdb.prototype._getMandtControls = function() {
       // Shortcut
       var control = jQuery.proxy(this._control, this);
       return [
@@ -406,7 +566,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      * again when trying to progress.
      * @param  {event} oEvent Change Event
      */
-    Hana.prototype.onInputChange = function(oEvent) {
+    Hdb.prototype.onInputChange = function(oEvent) {
 
       // Validate onChange value
       var oControl = oEvent.getSource();
@@ -434,7 +594,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      * With the supplied details, we're going to test the connection.
      * @return {[type]} [description]
      */
-    Hana.prototype._test = function(oPromise) {
+    Hdb.prototype._test = function(oPromise) {
 
       // Test HANA; success call back if connection could be made
       this.getView().getModel("dataset").create("/HdbTest", this._getData(), {
@@ -469,7 +629,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      * Set up the views page
      * @return {[type]} [description]
      */
-    Hana.prototype.setupPageQuery = function() {
+    Hdb.prototype.setupPageQuery = function() {
 
       // set screen to busy
       this.openBusyDialog({
@@ -500,7 +660,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      * Run the query against the redshift connection.
      * @param  {event} oEvent Button press event
      */
-    Hana.prototype.onQueryPress = function(oEvent) {
+    Hdb.prototype.onQueryPress = function(oEvent) {
       // Check the user has entered a query...
       var sQuery = this.getView().byId("idQueryTextArea").getValue();
       if (!sQuery) {
@@ -549,7 +709,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      * Set up the views page
      * @return {[type]} [description]
      */
-    Hana.prototype.setupPageViews = function() {
+    Hdb.prototype.setupPageViews = function() {
       this._bindEntityComboBox(this.getView().byId("idViewsComboBox"));
     };
 
@@ -567,7 +727,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      * Set up the views page
      * @return {[type]} [description]
      */
-    Hana.prototype.setupPageTables = function() {
+    Hdb.prototype.setupPageTables = function() {
       // Bind the page to the Redshift Id
       this._bindEntityComboBox(this.getView().byId("idTablesComboBox"));
     };
@@ -577,7 +737,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      * @param  {[type]} oComboBox [description]
      * @return {[type]}           [description]
      */
-    Hana.prototype._bindEntityComboBox = function(oComboBox) {
+    Hdb.prototype._bindEntityComboBox = function(oComboBox) {
       oComboBox.bindItems({
         path: 'dataset>/HdbEntities',
         filters: [new sap.ui.model.Filter({
@@ -611,7 +771,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      * @param  {[type]} mError [description]
      * @return {[type]}        [description]
      */
-    Hana.prototype._handleTestError = function(mError) {
+    Hdb.prototype._handleTestError = function(mError) {
       // Something went wrong!
       var oConsole = this.getView().byId("idTestConsoleTextArea");
       if (!mError) {
@@ -626,7 +786,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      * @param  {[type]} mError [description]
      * @return {[type]}        [description]
      */
-    Hana.prototype._handleSaveError = function(mError) {
+    Hdb.prototype._handleSaveError = function(mError) {
       // Something went wrong!
       var oConsole = this.getView().byId("idSaveConsoleTextArea");
       this._populateConsole(mError, oConsole);
@@ -638,7 +798,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      * @param  {[type]} oConsole [description]
      * @return {[type]}          [description]
      */
-    Hana.prototype._populateConsole = function(vError, oConsole) {
+    Hdb.prototype._populateConsole = function(vError, oConsole) {
       var sMessage = "";
 
       if (typeof vError === "object") {
@@ -666,7 +826,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      * @param  {[type]} oEvent [description]
      * @return {[type]}        [description]
      */
-    Hana.prototype.onHelpPress = function(oEvent) {
+    Hdb.prototype.onHelpPress = function(oEvent) {
       // show the query type help pop-up
       alert("Help!");
     };
@@ -686,7 +846,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      * Retrieves data from the model, does some formatting, and returns.
      * @return {object} OData object
      */
-    Hana.prototype._getData = function() {
+    Hdb.prototype._getData = function() {
 
       var value = jQuery.proxy(this._value, this);
 
@@ -735,11 +895,11 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      * as we use this value often. Also, optionally returns inflected
      * @return {[type]} [description]
      */
-    Hana.prototype._getQueryType = function(bInflect) {
+    Hdb.prototype._getQueryType = function(bInflect) {
       var sType = this.getView().byId("idQueryMethodSelect").getSelectedKey();
       return (bInflect ? sType.charAt(0).toUpperCase() + sType.slice(1) : sType.toLowerCase());
     };
 
-    return Hana;
+    return Hdb;
 
   }, /* bExport= */ true);

@@ -1,4 +1,4 @@
-jQuery.sap.declare("view.data.EditController");
+jQuery.sap.declare("view.data.CreateController");
 jQuery.sap.require("thirdparty.shortid.ShortId");
 
 // Provides controller util.Controller
@@ -6,7 +6,8 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
   function(jQuery, DataController) {
     "use strict";
 
-    var Controller = DataController.extend("view.data.EditController", /** @lends view.data.EditController */ {
+    var Controller = DataController.extend("view.data.CreateController", /** @lends view.data.CreateController */ {
+      _sId: "",
       _oLink: null,
       _aLinks: []
     });
@@ -79,21 +80,6 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
       }
     };
 
-    /**
-     * handles value change for input controls. Only checks that the field
-     * is populated, then clears the error state.
-     * @param  {Event} oEvent Change event
-     */
-    Controller.prototype.onInputChange = function(oEvent) {
-      var sValue = oEvent.getParameter("value");
-      var oControl = oEvent.getSource();
-
-      if (sValue) {
-        oControl.setValueState(sap.ui.core.ValueState.None)
-          .setValueStateText("");
-      }
-    };
-
     /***
      *    ██████╗  █████╗ ████████╗ ██████╗██╗  ██╗
      *    ██╔══██╗██╔══██╗╚══██╔══╝██╔════╝██║  ██║
@@ -105,11 +91,75 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      */
 
     /**
+     * Grab the select item from the definition table, and make sure it is of
+     * type Date. If not, then prompt the user to select. Note, we are comparing
+     * the text of the Link control within the table's row items, as this is
+     * a true reflection of the intended field type
+     * @return {Boolean} Is a date field selected?
+     */
+    Controller.prototype.isDateSelected = function() {
+      var oTable = this.getView().byId(
+        sap.ui.core.Fragment.createId("idFieldsFragment", "idFieldsTable")
+      );
+
+      // get the selected item, and check its type is Date
+      var aItems = oTable.getSelectedItems() || [];
+      if (aItems.length < 1) {
+        this.showErrorAlert(
+          "You must first select a Date field before continuing",
+          "Select date field",
+          sap.ui.Device.system.phone
+        );
+        return false;
+      }
+
+      // else, we deal with the first item only
+      var oItem = aItems[0];
+
+      // use the item's text to check, as the item may have changed type before
+      // saving, and we haven't yet persisted to the model. The link Control
+      // is the second in the list of items
+      var aItems = oItem.getItems()[1].getText().toLowerCase();
+      var sType = "";
+      aItems.forEach(function(control, index) {
+        if (control instanceof sap.m.Link) {
+          sType = control.getText().toLowerCase();
+          return;
+        }
+      }, this);
+
+      // Now we have the type. Let's make sure it's Date
+      if (sType !== 'date') {
+        this.showErrorAlert(
+          "The selected field is not of type Date. Please only select fields marked as Date type",
+          "Invalid Date field",
+          sap.ui.Device.system.phone
+        );
+        return false;
+      }
+
+      // All good, return happy
+      return true;
+    };
+
+    /**
+     * Firstly, we take any changes to the types of the fields in the table, by
+     * checking their CustomData for an 'original' key. If found, this field
+     * needs it's type updated to the value in the Link text
+     * @param  {Function} fnSuccess Success callback
+     * @param  {Function} fnError   Error callback
+     */
+    Controller.prototype.saveDimensions = function(fnSuccess, fnError) {
+
+
+    };
+
+    /**
      * Builds a batch request using the supplied
      * @param  {Model} oModel OData Model
      * @return {Array}        Batch operations
      */
-    Controller.prototype._createDimensionsBatch = function(oModel) {
+    Controller.prototype.createDimensionsBatch = function(oModel) {
 
       // Collect batch requests
       var aBatch = [];
