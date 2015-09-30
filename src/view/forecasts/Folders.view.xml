@@ -11,24 +11,22 @@
 				id="idFoldersPage"
 				title="/"
 				enableScrolling="false"
-				showNavButton="false">
+				showNavButton="{device>/isPhone}"
+				navButtonPress="onNavBackPress">
 				<footer>
 					<Toolbar>
 						<Button
 							id="idFolderEditButton"
 							text="Edit"
-							press="onEditButtonPress">
-							<customData>
-								<core:CustomData key="edit" value="false" writeToDom="false" />
-							</customData>
-						</Button>
+							press="onFoldersEditPress" />
 						<ToolbarSpacer />
 						<Button
 							id="idNewFolderButton"
 							icon="sap-icon://add"
-							press="onFoldersAddButtonPress" />
+							press="onFoldersAddPress" />
 					</Toolbar>
 				</footer>
+
 				<content>
 					<TileContainer
 						id="idFoldersTileContainer"
@@ -63,14 +61,12 @@
 				<footer>
 					<Toolbar>
 						<Button
+							id="idForecastEditButton"
 							text="Edit"
-							press="onEditButtonPress">
-							<customData>
-								<core:CustomData key="edit" value="false" writeToDom="false" />
-							</customData>
-						</Button>
+							press="onForecastsEditPress" />
 						<ToolbarSpacer />
 						<Button
+							id="idNewForecastButton"
 							icon="sap-icon://add"
 							press="onNewForecastPress" />
 					</Toolbar>

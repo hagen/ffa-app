@@ -41,7 +41,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      * @param  {object} oEvent Route matched event
      */
     Folders.prototype._onRouteMatched = function(oEvent) {
-  		this._checkMetaDataLoaded("forecast");
+      this._checkMetaDataLoaded("forecast");
 
       // Let the master list know I'm on this Folders view.
       this.getEventBus().publish("Folders", "RouteMatched", {} /* payload */ );
@@ -60,7 +60,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
     Folders.prototype._showFoldersForecasts = function() {
 
       var bVisible = false;
-			var oTileContainer = this.getView().byId("idFoldersTileContainer");
+      var oTileContainer = this.getView().byId("idFoldersTileContainer");
 
       // get the folders list and load up the correct folder listing.
       var oTemplate = new sap.m.StandardTile({
@@ -78,7 +78,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
       // If the folder Id is populated, we need to go to the forecast page in our
       // nav container.
       if (!this._sFolderId) {
-        if(this._hasTopLevel()) {
+        if (this._hasTopLevel()) {
           this._showFoldersPage(
             this.getView().byId("idFoldersNavContainer") /* nav container */ ,
             this.getView().byId("idFoldersPage") /* root page */ ,
@@ -95,7 +95,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
         // Message page
         var oMessagePage = this.getView().byId("idFoldersMessagePage");
         oMessagePage.setVisible(bVisible);
-  			oTileContainer.setVisible(!bVisible);
+        oTileContainer.setVisible(!bVisible);
       } else {
         this._showForecastsPage(
           this.getView().byId("idFoldersNavContainer") /* nav container */ ,
@@ -113,7 +113,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      * proxy server.
      * @return {Boolean} [description]
      */
-    Folders.prototype._hasTopLevel = function () {
+    Folders.prototype._hasTopLevel = function() {
       var aFilters = [new sap.ui.model.Filter({
         path: "endda",
         operator: sap.ui.model.FilterOperator.EQ,
@@ -230,7 +230,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      * @param  {object} oEvent Button press event
      */
     Folders.prototype.onNavBackPress = function(oEvent) {
-      this.getRouter().myNavBack("dash");
+      this.getRouter().myNavBack("workbench");
     };
 
     /**
@@ -245,47 +245,77 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
     };
 
     /***
-     *    ████████╗ ██████╗  ██████╗ ██╗     ██████╗  █████╗ ██████╗
-     *    ╚══██╔══╝██╔═══██╗██╔═══██╗██║     ██╔══██╗██╔══██╗██╔══██╗
-     *       ██║   ██║   ██║██║   ██║██║     ██████╔╝███████║██████╔╝
-     *       ██║   ██║   ██║██║   ██║██║     ██╔══██╗██╔══██║██╔══██╗
-     *       ██║   ╚██████╔╝╚██████╔╝███████╗██████╔╝██║  ██║██║  ██║
-     *       ╚═╝    ╚═════╝  ╚═════╝ ╚══════╝╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
+     *    ███████╗ ██████╗ ██╗     ██████╗ ███████╗██████╗ ███████╗
+     *    ██╔════╝██╔═══██╗██║     ██╔══██╗██╔════╝██╔══██╗██╔════╝
+     *    █████╗  ██║   ██║██║     ██║  ██║█████╗  ██████╔╝███████╗
+     *    ██╔══╝  ██║   ██║██║     ██║  ██║██╔══╝  ██╔══██╗╚════██║
+     *    ██║     ╚██████╔╝███████╗██████╔╝███████╗██║  ██║███████║
+     *    ╚═╝      ╚═════╝ ╚══════╝╚═════╝ ╚══════╝╚═╝  ╚═╝╚══════╝
      *
      */
 
     /**
      * When the edit button is pressed, the tiles go into edit/delete mode.
+     * Note, because there are two screens with forecasts/folders displayed, we
+     * need to pick the currently displayed page, and then pick the correct
+     * tile container.
      * @param  {[type]} oEvent [description]
-     * @return {[type]}        [description]
      */
-    Folders.prototype.onEditButtonPress = function(oEvent) {
+    Folders.prototype.onFoldersEditPress = function(oEvent) {
       var oButton = oEvent.getSource();
-      var oTileContainer = this.getView().byId("idFoldersTileContainer");
-      var bEdit = !(oButton.data("edit") === "false" ? false : true);
       var oModel = this.getView().getModel("forecast");
-
-      // Update the button's custom data
-      oButton.data("edit", bEdit.toString());
 
       // If we are going into edit mode, then we need to make the tile container
       // editable...
-      oTileContainer.setEditable(bEdit);
-      if (bEdit) {
-        oButton.setText("Done");
-      } else {
-        oButton.setText("Edit");
-        // and handle the deletions?
-        oModel.addBatchChangeOperations(this._aBatchOps);
-        oModel.submitBatch(jQuery.proxy(function() {
-            sap.m.MessageToast.show("Items deleted");
-            this._aBatchOps = [];
-          }, this),
-          jQuery.proxy(function() {
-            sap.m.MessageToast.show("Error deleting items");
-          }, this),
-          true /* bImport */ );
-      }
+      var oTileContainer = this.getView().byId("idFoldersTileContainer");
+      oTileContainer.setEditable(true);
+
+      // set the back/up button, to be disabled
+      this.getView().byId("idFoldersPage").setShowNavButton(false);
+
+      // set the add new button to be disabled
+      this.getView().byId("idNewFolderButton").setEnabled(false);
+
+      // Update the button text, and press handler. It now responds to Done
+      oButton.setText("Done");
+      oButton.detachPress(this.onFoldersEditPress, this)
+        .attachPress(this.onFoldersDonePress, this);
+    };
+
+    /**
+     * On press of the done button, we will save the deletions and return to normal mode
+     * @param  {[type]} oEvent [description]
+     */
+    Folders.prototype.onFoldersDonePress = function(oEvent) {
+      var oButton = oEvent.getSource();
+      var oModel = this.getView().getModel("forecast");
+
+      // If we are going into edit mode, then we need to make the tile container
+      // editable...
+      var oTileContainer = this.getView().byId("idFoldersTileContainer");
+      oTileContainer.setEditable(false);
+
+      // set the back/up button, to be disabled
+      this.getView().byId("idFoldersPage").setShowNavButton(this.getView().getModel("device").getProperty("/isPhone"));
+
+      // set the add new button to be disabled
+      this.getView().byId("idNewFolderButton").setEnabled(true);
+
+      // Update the button text, and press handler. It now responds to Done
+      oButton.setText("Edit");
+      oButton.detachPress(this.onFoldersDonePress, this)
+        .attachPress(this.onFoldersEditPress, this);
+
+      // and handle the deletions?
+      oModel.addBatchChangeOperations(this._aBatchOps);
+      oModel.submitBatch(jQuery.proxy(function() {
+          sap.m.MessageToast.show("Items deleted");
+          this._aBatchOps = [];
+        }, this),
+        jQuery.proxy(function() {
+          sap.m.MessageToast.show("Error deleting items");
+        }, this),
+        true /* bImport */ );
     };
 
     /**
@@ -293,7 +323,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      * @param  {[type]} oEvent [description]
      * @return {[type]}        [description]
      */
-    Folders.prototype.onFoldersLinkPress = function (oEvent) {
+    Folders.prototype.onFoldersLinkPress = function(oEvent) {
       // Fire the button press event for the add button
       this.getView().byId("idNewFolderButton").firePress();
     };
@@ -302,7 +332,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      * Handles press of the New folder/forecast button
      * @param  {object} oEvent Button press event
      */
-    Folders.prototype.onFoldersAddButtonPress = function(oEvent) {
+    Folders.prototype.onFoldersAddPress = function(oEvent) {
       // We need to get our add new actionsheet if not already initialised
       if (!this._oNewActionSheet) {
         this._oNewActionSheet = sap.ui.xmlfragment("idNewFolderForecastFragment", "view.forecasts.NewFolderForecastActionSheet", this);
@@ -373,7 +403,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
         created: new Date(0),
         begda: new Date(0),
         endda: "9999-12-31",
-        user:  this.getUserId()
+        user: this.getUserId()
       };
 
       // The current folder becomes our parent
@@ -387,7 +417,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
           // Rebind the tile container.
           var oTileContainer = this.getView().byId("idFoldersTileContainer");
           var oBinding = oTileContainer.getBinding("tiles");
-          if(oBinding) {
+          if (oBinding) {
             oBinding.refresh();
           } else {
             this._showFoldersForecasts();
@@ -409,6 +439,80 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
 
       // and finally, close the dialog so everything can refresh.
       this.onNewFolderCancelPress(null);
+    };
+
+    /***
+     *    ███████╗ ██████╗ ██████╗ ███████╗ ██████╗ █████╗ ███████╗████████╗███████╗
+     *    ██╔════╝██╔═══██╗██╔══██╗██╔════╝██╔════╝██╔══██╗██╔════╝╚══██╔══╝██╔════╝
+     *    █████╗  ██║   ██║██████╔╝█████╗  ██║     ███████║███████╗   ██║   ███████╗
+     *    ██╔══╝  ██║   ██║██╔══██╗██╔══╝  ██║     ██╔══██║╚════██║   ██║   ╚════██║
+     *    ██║     ╚██████╔╝██║  ██║███████╗╚██████╗██║  ██║███████║   ██║   ███████║
+     *    ╚═╝      ╚═════╝ ╚═╝  ╚═╝╚══════╝ ╚═════╝╚═╝  ╚═╝╚══════╝   ╚═╝   ╚══════╝
+     *
+     */
+
+    /**
+     * When the edit button is pressed, the tiles go into edit/delete mode.
+     * Note, because there are two screens with forecasts/folders displayed, we
+     * need to pick the currently displayed page, and then pick the correct
+     * tile container.
+     * @param  {[type]} oEvent [description]
+     */
+    Folders.prototype.onForecastsEditPress = function(oEvent) {
+      var oButton = oEvent.getSource();
+      var oModel = this.getView().getModel("forecast");
+
+      // If we are going into edit mode, then we need to make the tile container
+      // editable...
+      var oTileContainer = this.getView().byId("idForecastsTileContainer");
+      oTileContainer.setEditable(true);
+
+      // set the back/up button, to be disabled
+      this.getView().byId("idForecastsPage").setShowNavButton(false);
+
+      // set the add new button to be disabled
+      this.getView().byId("idNewForecastButton").setEnabled(false);
+
+      // Update the button text, and press handler. It now responds to Done
+      oButton.setText("Done");
+      oButton.detachPress(this.onForecastsEditPress, this)
+        .attachPress(this.onForecastsDonePress, this);
+    };
+
+    /**
+     * On press of the done button, we will save the deletions and return to normal mode
+     * @param  {[type]} oEvent [description]
+     */
+    Folders.prototype.onForecastsDonePress = function(oEvent) {
+      var oButton = oEvent.getSource();
+      var oModel = this.getView().getModel("forecast");
+
+      // If we are going into edit mode, then we need to make the tile container
+      // editable...
+      var oTileContainer = this.getView().byId("idForecastsTileContainer");
+      oTileContainer.setEditable(false);
+
+      // set the back/up button, to be disabled
+      this.getView().byId("idForecastsPage").setShowNavButton(true);
+
+      // set the add new button to be disabled
+      this.getView().byId("idNewForecastButton").setEnabled(true);
+
+      // Update the button text, and press handler. It now responds to Done
+      oButton.setText("Edit");
+      oButton.detachPress(this.onForecastsDonePress, this)
+        .attachPress(this.onForecastsEditPress, this);
+
+      // and handle the deletions?
+      oModel.addBatchChangeOperations(this._aBatchOps);
+      oModel.submitBatch(jQuery.proxy(function() {
+          sap.m.MessageToast.show("Items deleted");
+          this._aBatchOps = [];
+        }, this),
+        jQuery.proxy(function() {
+          sap.m.MessageToast.show("Error deleting items");
+        }, this),
+        true /* bImport */ );
     };
 
     /**
