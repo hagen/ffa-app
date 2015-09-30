@@ -158,7 +158,7 @@ sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
           this.updateBusyDialog({
             text: "All done! Finishing up..."
           });
-          
+
           // Timed close.
           jQuery.sap.delayedCall(1500, this, function() {
 
