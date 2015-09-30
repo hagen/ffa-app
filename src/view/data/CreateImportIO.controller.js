@@ -149,12 +149,17 @@ sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
 
       // Save the date field
       this.saveDateField(
-        jQuery.proxy(function(oData, mResponse) {
+        jQuery.proxy(function() {
 
           // Refresh the dataset listing by raising an event (subscribers will do
           // the work)
           this.getEventBus().publish("Detail", "RefreshMaster", {});
 
+          // Update the screen, then close.
+          this.updateBusyDialog({
+            text: "All done! Finishing up..."
+          });
+          
           // Timed close.
           jQuery.sap.delayedCall(1500, this, function() {
 

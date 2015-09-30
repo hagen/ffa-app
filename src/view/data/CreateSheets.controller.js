@@ -154,6 +154,11 @@ sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
           // the work)
           this.getEventBus().publish("Detail", "RefreshMaster", {});
 
+          // Update the screen, then close.
+          this.updateBusyDialog({
+            text: "All done! Finishing up..."
+          });
+          
           // Timed close.
           jQuery.sap.delayedCall(1500, this, function() {
 
