@@ -920,7 +920,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
       if (!oBinding) {
         bBind = true;
       } else if (oBinding.getPath() !== sPath) {
-        bBind = true;
+        bBind = false;
       }
 
       // are we binding?

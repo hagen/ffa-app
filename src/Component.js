@@ -535,7 +535,7 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
      *    ╚══════╝╚═╝  ╚═══╝  ╚═══╝
      *
      */
-    
+
     var oUrlModel = new sap.ui.model.json.JSONModel("env/settings.json");
     oUrlModel.setDefaultBindingMode("OneWay");
     this.setModel(oUrlModel, "env");

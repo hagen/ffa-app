@@ -11,7 +11,7 @@
 		<beginButton>
 			<Button
 				id="idCloseButton"
-				text="Close"
+				text="Cancel"
 				press="onDisplaySettingsClosePress"/>
 		</beginButton>
 		<endButton>
