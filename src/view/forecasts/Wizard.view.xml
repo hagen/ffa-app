@@ -212,7 +212,7 @@
 	            class="sapUiSmallMargin">
 	            <l:content>
 	              <Title
-	                text="Step 3 - Select date field"
+	                text="Step 3 - Check date field"
 	                level="H1"
 	                titleStyle="H1" />
 								<Text text="And we're off! I've listed your data set fields
