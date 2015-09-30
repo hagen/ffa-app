@@ -1,5 +1,5 @@
 <mvc:View
-	controllerName="view.data.DataSets"
+	controllerName="com.ffa.hpc.view.data.DataSets"
 	xmlns="sap.m"
   xmlns:l="sap.ui.layout"
   xmlns:f="sap.ui.layout.form"

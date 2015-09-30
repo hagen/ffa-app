@@ -1,11 +1,11 @@
-jQuery.sap.declare("view.plans.Paid");
+jQuery.sap.declare("com.ffa.hpc.view.plans.Paid");
 
 // Provides controller view.Plans
-sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
+sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/plans/Controller'],
   function(jQuery, Controller) {
     "use strict";
 
-    var Paid = Controller.extend("view.plans.Paid", /** @lends view.plans.Lite.prototype */ {
+    var Paid = Controller.extend("com.ffa.hpc.view.plans.Paid", /** @lends com.ffa.hpc.view.plans.Lite.prototype */ {
       _sPlanId: "",
       _initd: false,
       _isChange: false,

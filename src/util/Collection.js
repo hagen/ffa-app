@@ -1,6 +1,6 @@
-jQuery.sap.declare("util.Collection");
+jQuery.sap.declare("com.ffa.hpc.util.Collection");
 
-util.Collection = {
+com.ffa.hpc.util.Collection = {
 
 	/**
 	 * Return collection count

@@ -1,5 +1,5 @@
 <mvc:View
-	controllerName="view.settings.Menu"
+	controllerName="com.ffa.hpc.view.settings.Menu"
 	xmlns="sap.m"
 	xmlns:core="sap.ui.core"
 	xmlns:mvc="sap.ui.core.mvc">

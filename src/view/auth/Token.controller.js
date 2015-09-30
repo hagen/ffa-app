@@ -1,11 +1,11 @@
-jQuery.sap.declare("view.auth.Token");
+jQuery.sap.declare("com.ffa.hpc.view.auth.Token");
 
 // Provides controller view. Token
-sap.ui.define(['jquery.sap.global', 'view/auth/Controller'],
+sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/auth/Controller"],
   function(jQuery, Controller) {
     "use strict";
 
-    var Token = Controller.extend("view.auth.Token", /** @lends view.auth.Token.prototype */ {
+    var Token = Controller.extend("com.ffa.hpc.view.auth.Token", /** @lends com.ffa.hpc.view.auth.Token.prototype */ {
 
     });
 
@@ -59,7 +59,7 @@ sap.ui.define(['jquery.sap.global', 'view/auth/Controller'],
 
         // Now check if they have an active plan. If not, they will need to sign
         // up.
-        if(this._hasPlan()) {
+        if (this._hasPlan()) {
           sRoute = "dash";
         } else {
           sRoute = "plans";
@@ -108,10 +108,10 @@ sap.ui.define(['jquery.sap.global', 'view/auth/Controller'],
 
       // Testuser will be replaced by proxy
       this.getView().getModel("profile").read("/SocialProfiles", {
-        filters : [new sap.ui.model.Filter({
-          path : 'profile_id',
-          operator : sap.ui.model.FilterOperator.EQ,
-          value1 : 'TESTUSER' // Replaced
+        filters: [new sap.ui.model.Filter({
+          path: 'profile_id',
+          operator: sap.ui.model.FilterOperator.EQ,
+          value1: 'TESTUSER' // Replaced
         })],
         success: jQuery.proxy(function(oData, mResponse) {
           oProfile = oData;
@@ -144,7 +144,9 @@ sap.ui.define(['jquery.sap.global', 'view/auth/Controller'],
         url: '/payments/customer',
         type: 'POST',
         headers: oHeaders,
-        data : { profileId : this.getUserId() },
+        data: {
+          profileId: this.getUserId()
+        },
         async: false,
         success: jQuery.proxy(function(oData, mResponse) {
           sCustomerId = oData.customerId;
@@ -168,7 +170,7 @@ sap.ui.define(['jquery.sap.global', 'view/auth/Controller'],
         first_name: "",
         last_name: "",
         email: "",
-        customer_id : sCustomerId,
+        customer_id: sCustomerId,
         begda: new Date(Date.now()),
         endda: new Date("9999-12-31T23:59:59")
       };
@@ -200,23 +202,23 @@ sap.ui.define(['jquery.sap.global', 'view/auth/Controller'],
      * Checks if this user has a valid usage plan
      * @return {Boolean} [description]
      */
-    Token.prototype._hasPlan = function () {
+    Token.prototype._hasPlan = function() {
 
       var bValid = false;
 
       this.getView().getModel("profile").read("/CurrentSubscriptions('TESTUSER')", {
-        success : jQuery.proxy(function(oData, mResponse) {
+        success: jQuery.proxy(function(oData, mResponse) {
           if (oData.profile_id) {
             bValid = true;
           } else {
             bValid = false;
           }
         }, this),
-        error : jQuery.proxy(function(mError) {
+        error: jQuery.proxy(function(mError) {
           this._maybeHandleAuthError(mError);
           bValid = false;
         }, this),
-        async : false
+        async: false
       });
 
       return bValid;

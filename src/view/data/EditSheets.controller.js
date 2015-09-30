@@ -1,11 +1,11 @@
-jQuery.sap.declare("view.data.EditSheets");
+jQuery.sap.declare("com.ffa.hpc.view.data.EditSheets");
 
 // Provides controller view.Wizard
-sap.ui.define(["jquery.sap.global", "view/data/EditController"],
+sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/data/EditController"],
   function(jQuery, Controller) {
     "use strict";
 
-    var Sheets = Controller.extend("view.data.EditSheets", /** @lends view.data.EditSheets.prototype */ {
+    var Sheets = Controller.extend("com.ffa.hpc.view.data.EditSheets", /** @lends com.ffa.hpc.view.data.EditSheets.prototype */ {
 
     });
 

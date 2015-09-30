@@ -1,12 +1,12 @@
-jQuery.sap.declare("view.forecasts.Folders");
+jQuery.sap.declare("com.ffa.hpc.view.forecasts.Folders");
 jQuery.sap.require("sap.m.MessageBox");
 
 // Provides controller forecasts.Folders
-sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
+sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
   function(jQuery, Controller) {
     "use strict";
 
-    var Folders = Controller.extend("view.forecasts.Folders", /** @lends view.forecasts.Folders.prototype */ {
+    var Folders = Controller.extend("com.ffa.hpc.view.forecasts.Folders", /** @lends com.ffa.hpc.view.forecasts.Folders.prototype */ {
 
     });
 
@@ -335,7 +335,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
     Folders.prototype.onFoldersAddPress = function(oEvent) {
       // We need to get our add new actionsheet if not already initialised
       if (!this._oNewActionSheet) {
-        this._oNewActionSheet = sap.ui.xmlfragment("idNewFolderForecastFragment", "view.forecasts.NewFolderForecastActionSheet", this);
+        this._oNewActionSheet = sap.ui.xmlfragment("idNewFolderForecastFragment", "com.ffa.hpc.view.forecasts.NewFolderForecastActionSheet", this);
         this.getView().addDependent(this._oNewActionSheet);
       }
 
@@ -350,7 +350,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
     Folders.prototype.onNewFolderPress = function(oEvent) {
       // Initialise the new folder dialog fragment, if not already available
       if (!this._oNewFolderDialog) {
-        this._oNewFolderDialog = sap.ui.xmlfragment("idNewFolderFragment", "view.forecasts.NewFolderDialog", this);
+        this._oNewFolderDialog = sap.ui.xmlfragment("idNewFolderFragment", "com.ffa.hpc.view.forecasts.NewFolderDialog", this);
         this.getView().addDependent(this._oNewFolderDialog);
       }
 
@@ -376,7 +376,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      * @param  {object} oEvent Button press event
      */
     Folders.prototype.onNewFolderCreatePress = function(oEvent) {
-      jQuery.sap.require("thirdparty.shortid.ShortId");
+      jQuery.sap.require("com.ffa.hpc.thirdparty.shortid.ShortId");
 
       // Make sure there is a value and it doesn't contain anything stupid
       var oInput = sap.ui.core.Fragment.byId("idNewFolderFragment", "idNewFolderNameInput");

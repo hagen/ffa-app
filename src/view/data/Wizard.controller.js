@@ -1,14 +1,14 @@
-jQuery.sap.declare("view.data.Wizard");
+jQuery.sap.declare("com.ffa.hpc.view.data.Wizard");
 // Require the short Id gen library
-jQuery.sap.require("thirdparty.shortid.ShortId");
-jQuery.sap.require("thirdparty.momentjs.Momentjs");
+jQuery.sap.require("com.ffa.hpc.thirdparty.shortid.ShortId");
+jQuery.sap.require("com.ffa.hpc.thirdparty.momentjs.Momentjs");
 
 // Provides controller view.Wizard
-sap.ui.define(['jquery.sap.global', 'view/data/Controller'],
+sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/data/Controller'],
   function(jQuery, Controller) {
     "use strict";
 
-    var Wizard = Controller.extend("view.data.Wizard", /** @lends view.data.Wizard.prototype */ {
+    var Wizard = Controller.extend("com.ffa.hpc.view.data.Wizard", /** @lends com.ffa.hpc.view.data.Wizard.prototype */ {
       _isAllowedCheckTime : moment(),
       _isAllowed : false
     });

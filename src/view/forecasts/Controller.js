@@ -1,11 +1,11 @@
-jQuery.sap.declare("view.forecasts.Controller");
+jQuery.sap.declare("com.ffa.hpc.view.forecasts.Controller");
 
-// Provides controller util.Controller
-sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
+// Provides controller com.ffa.hpc.util.Controller
+sap.ui.define(["jquery.sap.global", "com/ffa/hpc/util/Controller"],
   function(jQuery, UtilController) {
     "use strict";
 
-    var Controller = UtilController.extend("view.forecasts.Controller", /** @lends view.forecasts.Controller */ {
+    var Controller = UtilController.extend("com.ffa.hpc.view.forecasts.Controller", /** @lends com.ffa.hpc.view.forecasts.Controller */ {
       _aForecasts: [],
       _aBatchOps: []
     });
@@ -323,7 +323,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
      */
     Controller.prototype.onFrequencyHelpPress = function (oEvent) {
       if (!this._oFrequencyDialog) {
-        this._oFrequencyDialog = sap.ui.xmlfragment("idFrequencyHelpFragment", "view.forecasts.FrequencyHelpDialog", this);
+        this._oFrequencyDialog = sap.ui.xmlfragment("idFrequencyHelpFragment", "com.ffa.hpc.view.forecasts.FrequencyHelpDialog", this);
         this.getView().addDependent(this._oFrequencyDialog);
       }
 

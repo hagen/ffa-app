@@ -1,10 +1,10 @@
-jQuery.sap.declare("view.functions.Controller");
+jQuery.sap.declare("com.ffa.hpc.view.functions.Controller");
 
-sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
+sap.ui.define(["jquery.sap.global", "com/ffa/hpc/util/Controller"],
   function(jQuery, UtilController) {
     "use strict";
 
-    var Controller = UtilController.extend("view.functions.Controller", /** @lends view.functions.Controller */ {
+    var Controller = UtilController.extend("com.ffa.hpc.view.functions.Controller", /** @lends com.ffa.hpc.view.functions.Controller */ {
     });
 
   });

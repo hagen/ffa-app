@@ -1,5 +1,5 @@
 <mvc:View
-	controllerName="view.data.CreateHDB"
+	controllerName="com.ffa.hpc.view.data.CreateHDB"
 	xmlns="sap.m"
 	xmlns:mvc="sap.ui.core.mvc"
   xmlns:l="sap.ui.layout"
@@ -428,7 +428,7 @@
 						<!-- Column selection -->
 						<core:Fragment
 							id="idFieldsFragment"
-							fragmentName="view.data.SchemaFields"
+							fragmentName="com.ffa.hpc.view.data.SchemaFields"
 							type="XML" />
 					</content>
 				</Page>

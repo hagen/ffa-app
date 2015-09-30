@@ -1,5 +1,5 @@
 <mvc:View
-	controllerName="view.functions.Library"
+	controllerName="com.ffa.hpc.view.functions.Library"
 	xmlns="sap.m"
   xmlns:l="sap.ui.layout"
   xmlns:f="sap.ui.layout.form"

@@ -1,12 +1,12 @@
-jQuery.sap.declare("view.forecasts.Recents");
-jQuery.sap.require("thirdparty.momentjs.Momentjs");
+jQuery.sap.declare("com.ffa.hpc.view.forecasts.Recents");
+jQuery.sap.require("com.ffa.hpc.thirdparty.momentjs.Momentjs");
 
 // Provides controller forecasts.Recents
-sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
+sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
   function(jQuery, Controller) {
     "use strict";
 
-    var Recents = Controller.extend("view.forecasts.Recents", /** @lends view.forecasts.Recents.prototype */ {
+    var Recents = Controller.extend("com.ffa.hpc.view.forecasts.Recents", /** @lends com.ffa.hpc.view.forecasts.Recents.prototype */ {
 
     });
 

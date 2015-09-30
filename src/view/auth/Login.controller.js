@@ -1,11 +1,11 @@
-jQuery.sap.declare("view.auth.Login");
+jQuery.sap.declare("com.ffa.hpc.view.auth.Login");
 
 // Provides controller view.Login
-sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
+sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/auth/Controller"],
   function(jQuery, Controller) {
     "use strict";
 
-    var Login = Controller.extend("view.auth.Login", /** @lends view.auth.Login.prototype */ {
+    var Login = Controller.extend("com.ffa.hpc.view.auth.Login", /** @lends com.ffa.hpc.view.auth.Login.prototype */ {
 
     });
 
@@ -32,7 +32,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
      * at the beginning of the tile container
      */
     Login.prototype.onAfterRendering = function() {
-      jQuery.sap.require("thirdparty.spiders.Spiders");
+      jQuery.sap.require("com.ffa.hpc.thirdparty.spiders.Spiders");
     };
 
     /**
@@ -99,7 +99,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
       var bContinue = false;
 
       // Email validation...
-      if (!(this.validateEmail(oEmailInput, false /* bTestExists */) && this._validatePassword(oPasswordInput))) {
+      if (!(this.validateEmail(oEmailInput, false /* bTestExists */ ) && this._validatePassword(oPasswordInput))) {
         return;
       }
 
@@ -143,7 +143,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
       var oPasswordInput = this.getView().byId("idRegisterPassword");
 
       // Email validation...
-      if (!(this.validateEmail(oEmailInput, true /* bTestExists */) && this._validatePassword(oPasswordInput))) {
+      if (!(this.validateEmail(oEmailInput, true /* bTestExists */ ) && this._validatePassword(oPasswordInput))) {
         return;
       }
 
@@ -151,8 +151,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
       var oFirstnameInput = this.getView().byId("idFirstNameInput");
       var oLastnameInput = this.getView().byId("idLastNameInput");
 
-      if (!(this._isNotEmpty(oFirstnameInput, "I'm not a fan of my name either, but we'll need yours")
-            && this._isNotEmpty(oLastnameInput, "Derp. We'll need your last name. Formalities, you know..."))) {
+      if (!(this._isNotEmpty(oFirstnameInput, "I'm not a fan of my name either, but we'll need yours") && this._isNotEmpty(oLastnameInput, "Derp. We'll need your last name. Formalities, you know..."))) {
 
       }
 
@@ -276,7 +275,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
         return bValid;
       }
 
-      if(bTestExists) {
+      if (bTestExists) {
         // Check the email is not being used
         bValid = !this._emailExists(oInput);
       }
@@ -359,7 +358,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
     Login.prototype._isNotEmpty = function(oInput, sError) {
 
       // Do we have an error message?
-      if(sError === undefined) {
+      if (sError === undefined) {
         sError = "This field cannot be empty"
       }
 

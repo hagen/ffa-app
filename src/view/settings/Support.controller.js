@@ -1,11 +1,11 @@
-jQuery.sap.declare("view.settings.Support");
+jQuery.sap.declare("com.ffa.hpc.view.settings.Support");
 
 // Provides controller view.Wizard
-sap.ui.define(["jquery.sap.global", "view/settings/Controller"],
+sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/settings/Controller"],
   function(jQuery, Controller) {
     "use strict";
 
-    var Support = Controller.extend("view.settings.Support", /** @lends view.settings.Support.prototype */ {
+    var Support = Controller.extend("com.ffa.hpc.view.settings.Support", /** @lends com.ffa.hpc.view.settings.Support.prototype */ {
       _mArticles : new sap.ui.model.json.JSONModel({})
     });
 

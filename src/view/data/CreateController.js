@@ -1,12 +1,12 @@
-jQuery.sap.declare("view.data.CreateController");
-jQuery.sap.require("thirdparty.shortid.ShortId");
+jQuery.sap.declare("com.ffa.hpc.view.data.CreateController");
+jQuery.sap.require("com.ffa.hpc.thirdparty.shortid.ShortId");
 
 // Provides controller util.Controller
-sap.ui.define(["jquery.sap.global", "view/data/Controller"],
+sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/data/Controller"],
   function(jQuery, DataController) {
     "use strict";
 
-    var Controller = DataController.extend("view.data.CreateController", /** @lends view.data.CreateController */ {
+    var Controller = DataController.extend("com.ffa.hpc.view.data.CreateController", /** @lends com.ffa.hpc.view.data.CreateController */ {
       _sId: "",
       _oLink: null,
       _aLinks: []
@@ -31,7 +31,7 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
 
       // Otherwise, we can show the definition pop-up and go from there.
       if (!this._oDefinitionDialog) {
-        this._oDefinitionDialog = sap.ui.xmlfragment("idDataTypeFragment", "view.data.DimensionDataTypeDialog", this);
+        this._oDefinitionDialog = sap.ui.xmlfragment("idDataTypeFragment", "com.ffa.hpc.view.data.DimensionDataTypeDialog", this);
         this.getView().addDependent(this._oDefinitionDialog);
       }
 

@@ -2,9 +2,9 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/Control", "./library"],
   function(jQuery, Control, library) {
     "use strict";
 
-    var Dataset = Control.extend("thirdparty.chartjs.Dataset", {
+    var Dataset = Control.extend("com.ffa.hpc.thirdparty.chartjs.Dataset", {
       metadata: {
-        library: "thirdparty.chartjs",
+        library: "com.ffa.hpc.thirdparty.chartjs",
         properties: {
           label : { type : "string", group : "Misc", defaultValue : "Axis label" },
           value : { type : "string", group : "Misc", defaultValue : null },
@@ -25,7 +25,7 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/Control", "./library"],
      * Enable bindign to data aggregation without a template factory
      * @return {[type]} [description]
      */
-    thirdparty.chartjs.Dataset.getMetadata().getAllAggregations()["data"]._doesNotRequireFactory = true;
+    com.ffa.hpc.thirdparty.chartjs.Dataset.getMetadata().getAllAggregations()["data"]._doesNotRequireFactory = true;
 
     /**
      * Initialise the Chart control

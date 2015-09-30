@@ -1,13 +1,13 @@
-jQuery.sap.declare("view.App");
-jQuery.sap.require("thirdparty.font-awesome.FontAwesomeIconPool");
-jQuery.sap.require("thirdparty.font-mfizz.FontMfizzIconPool");
+jQuery.sap.declare("com.ffa.hpc.view.App");
+jQuery.sap.require("com.ffa.hpc.thirdparty.font-awesome.FontAwesomeIconPool");
+jQuery.sap.require("com.ffa.hpc.thirdparty.font-mfizz.FontMfizzIconPool");
 
 // Provides controller view.App
-sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
+sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/util/Controller'],
 	function(jQuery, Controller) {
 	"use strict";
 
-	var App = Controller.extend("view.App", /** @lends view.App.prototype */ {
+	var App = Controller.extend("com.ffa.hpc.view.App", /** @lends com.ffa.hpc.view.App.prototype */ {
 
 	});
 

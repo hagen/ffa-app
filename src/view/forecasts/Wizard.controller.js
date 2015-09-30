@@ -1,13 +1,13 @@
-jQuery.sap.declare("view.forecasts.Wizard");
-jQuery.sap.require("thirdparty.shortid.ShortId");
-jQuery.sap.require("util.DateFormatter");
-jQuery.sap.require("thirdparty.momentjs.Momentjs");
+jQuery.sap.declare("com.ffa.hpc.view.forecasts.Wizard");
+jQuery.sap.require("com.ffa.hpc.thirdparty.shortid.ShortId");
+jQuery.sap.require("com.ffa.hpc.util.DateFormatter");
+jQuery.sap.require("com.ffa.hpc.thirdparty.momentjs.Momentjs");
 
-sap.ui.define(['jquery.sap.global', 'view/forecasts/DatasetAuth'],
+sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
   function(jQuery, Controller) {
     "use strict";
 
-    var Wizard = Controller.extend("view.forecasts.Wizard", /** @lends view.forecasts.Wizard.prototype */ {
+    var Wizard = Controller.extend("com.ffa.hpc.view.forecasts.Wizard", /** @lends com.ffa.hpc.view.forecasts.Wizard.prototype */ {
       _isAllowedCheckTime: moment(),
       _isAllowed: false
     });
@@ -700,7 +700,7 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/DatasetAuth'],
       oTable.bindItems({
         path: "dataset>Dimensions",
         sorter: [new sap.ui.model.Sorter("index", false)],
-        template: sap.ui.xmlfragment("view.forecasts.DateField")
+        template: sap.ui.xmlfragment("com.ffa.hpc.view.forecasts.DateField")
       });
 
       // for this particular table, we'll also bind to the select event, so we can skip
@@ -809,7 +809,7 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/DatasetAuth'],
           })],
           and: true
         })],
-        template: sap.ui.xmlfragment("view.forecasts.ForecastField")
+        template: sap.ui.xmlfragment("com.ffa.hpc.view.forecasts.ForecastField")
       });
 
       // for this particular table, we'll also bind to the select event, so we can skip
@@ -926,7 +926,7 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/DatasetAuth'],
           })],
           and: true
         })],
-        template: sap.ui.xmlfragment("view.forecasts.VariableField")
+        template: sap.ui.xmlfragment("com.ffa.hpc.view.forecasts.VariableField")
       });
 
       // Return the promise

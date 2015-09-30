@@ -1,5 +1,5 @@
 <mvc:View
-	controllerName="view.data.EditHDB"
+	controllerName="com.ffa.hpc.view.data.EditHDB"
 	xmlns="sap.m"
   xmlns:l="sap.ui.layout"
   xmlns:f="sap.ui.layout.form"
@@ -191,7 +191,7 @@
 					</f:SimpleForm>
 				</l:content>
 			</l:Grid>
-			<core:Fragment id="idDefinitionFragment" fragmentName="view.data.EditDefinition" type="XML" />
+			<core:Fragment id="idDefinitionFragment" fragmentName="com.ffa.hpc.view.data.EditDefinition" type="XML" />
 		</content>
 	</Page>
 </mvc:View>

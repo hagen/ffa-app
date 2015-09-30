@@ -1,13 +1,13 @@
-jQuery.sap.declare("view.settings.Account");
+jQuery.sap.declare("com.ffa.hpc.view.settings.Account");
 jQuery.sap.require("util.DateFormatter");
 jQuery.sap.require("util.Collection");
 
 // Provides controller view.Wizard
-sap.ui.define(["jquery.sap.global", "view/settings/Controller"],
+sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/settings/Controller"],
   function(jQuery, Controller) {
     "use strict";
 
-    var Account = Controller.extend("view.settings.Account", /** @lends view.settings.Account.prototype */ {
+    var Account = Controller.extend("com.ffa.hpc.view.settings.Account", /** @lends com.ffa.hpc.view.settings.Account.prototype */ {
 
     });
 

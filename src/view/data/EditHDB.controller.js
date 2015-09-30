@@ -1,11 +1,11 @@
-jQuery.sap.declare("view.data.EditHDB");
+jQuery.sap.declare("com.ffa.hpc.view.data.EditHDB");
 
 // Provides controller view.Wizard
-sap.ui.define(["jquery.sap.global", "view/data/EditController"],
+sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/data/EditController"],
   function(jQuery, Controller) {
     "use strict";
 
-    var HDB = Controller.extend("view.data.EditHDB", /** @lends view.data.EditHDB.prototype */ {
+    var HDB = Controller.extend("com.ffa.hpc.view.data.EditHDB", /** @lends com.ffa.hpc.view.data.EditHDB.prototype */ {
 
     });
 

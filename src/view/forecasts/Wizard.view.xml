@@ -1,5 +1,5 @@
 <mvc:View
-	controllerName="view.forecasts.Wizard"
+	controllerName="com.ffa.hpc.view.forecasts.Wizard"
 	xmlns="sap.m"
   xmlns:l="sap.ui.layout"
   xmlns:f="sap.ui.layout.form"
@@ -224,7 +224,7 @@
 								<!-- Column selection -->
 								<core:Fragment
 									id="idDateFieldsFragment"
-									fragmentName="view.forecasts.DateFields"
+									fragmentName="com.ffa.hpc.view.forecasts.DateFields"
 									type="XML" />
 	            </l:content>
 	          </l:Grid>
@@ -264,7 +264,7 @@
 								<!-- Column selection -->
 								<core:Fragment
 									id="idForecastFieldsFragment"
-									fragmentName="view.forecasts.ForecastFields"
+									fragmentName="com.ffa.hpc.view.forecasts.ForecastFields"
 									type="XML" />
 	            </l:content>
 	          </l:Grid>
@@ -302,7 +302,7 @@
 								<!-- Column selection -->
 								<core:Fragment
 									id="idVariableFieldsFragment"
-									fragmentName="view.forecasts.VariableFields"
+									fragmentName="com.ffa.hpc.view.forecasts.VariableFields"
 									type="XML" />
 	            </l:content>
 	          </l:Grid>
@@ -334,13 +334,13 @@
 	                titleStyle="H1" />
 								<Text text="The data set you've supplied has training data from {
 										path : 'forecast>begda',
-										formatter : 'util.DateFormatter.ddMMyyyy'
+										formatter : 'com.ffa.hpc.util.DateFormatter.ddMMyyyy'
 									} to {
 										path : 'forecast>endda',
-										formatter : 'util.DateFormatter.ddMMyyyy'
+										formatter : 'com.ffa.hpc.util.DateFormatter.ddMMyyyy'
 									} so you can pick an effective date of {
 										path : 'forecast>endda',
-										formatter : 'util.DateFormatter.add1Day'
+										formatter : 'com.ffa.hpc.util.DateFormatter.add1Day'
 									} or earlier.
 									Additionally, the length of your horizon dictates how much training data your
 									forecast requires - if there isn't enough, I'll let you know." />

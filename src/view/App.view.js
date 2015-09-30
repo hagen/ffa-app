@@ -1,7 +1,7 @@
-sap.ui.jsview("view.App", {
+sap.ui.jsview("com.ffa.hpc.view.App", {
 
 	getControllerName: function () {
-		return "view.App";
+		return "com.ffa.hpc.view.App";
 	},
 
 	createContent : function (oController) {

@@ -1,6 +1,6 @@
 <mvc:View
-  controllerName="view.forecasts.Forecasts"
-  xmlns:chart="thirdparty.chartjs"
+  controllerName="com.ffa.hpc.view.forecasts.Forecasts"
+  xmlns:chart="com.ffa.hpc.thirdparty.chartjs"
   xmlns:core="sap.ui.core"
   xmlns:l="sap.ui.layout"
   xmlns:mvc="sap.ui.core.mvc"

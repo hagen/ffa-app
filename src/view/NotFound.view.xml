@@ -1,9 +1,9 @@
 <mvc:View
-	controllerName="view.NotFound" 
+	controllerName="com.ffa.hpc.view.NotFound" 
 	height="100%"
 	xmlns:mvc="sap.ui.core.mvc"
 	xmlns="sap.m">
-	<MessagePage 
+	<MessagePage
   		showHeader="true"
   		showNavButton="true"
 		navButtonPress="onBackPressed"

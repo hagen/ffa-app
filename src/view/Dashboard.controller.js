@@ -1,11 +1,11 @@
-jQuery.sap.declare("view.Dashboard");
+jQuery.sap.declare("com.ffa.hpc.view.Dashboard");
 
 // Provides controller view.Dashboard
-sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
+sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/util/Controller'],
   function(jQuery, Controller) {
     "use strict";
 
-    var Dashboard = Controller.extend("view.Dashboard", /** @lends view.Dashboard.prototype */ {
+    var Dashboard = Controller.extend("com.ffa.hpc.view.Dashboard", /** @lends com.ffa.hpc.view.Dashboard.prototype */ {
 
     });
 

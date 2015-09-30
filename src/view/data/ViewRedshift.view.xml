@@ -1,5 +1,5 @@
 <mvc:View
-	controllerName="view.data.ViewRedshift"
+	controllerName="com.ffa.hpc.view.data.ViewRedshift"
 	xmlns="sap.m"
   xmlns:l="sap.ui.layout"
   xmlns:f="sap.ui.layout.form"
@@ -172,7 +172,7 @@
 					</f:SimpleForm>
 				</l:content>
 			</l:Grid>
-			<core:Fragment id="idDefinitionFragment" fragmentName="view.data.ViewDefinition" type="XML" />
+			<core:Fragment id="idDefinitionFragment" fragmentName="com.ffa.hpc.view.data.ViewDefinition" type="XML" />
 		</content>
 	</Page>
 </mvc:View>

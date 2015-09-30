@@ -1,11 +1,11 @@
-jQuery.sap.declare("view.settings.Profile");
+jQuery.sap.declare("com.ffa.hpc.view.settings.Profile");
 
 // Provides controller view.Wizard
-sap.ui.define(["jquery.sap.global", "view/settings/Controller"],
+sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/settings/Controller"],
   function(jQuery, Controller) {
     "use strict";
 
-    var Profile = Controller.extend("view.settings.Profile", /** @lends view.settings.Profile.prototype */ {
+    var Profile = Controller.extend("com.ffa.hpc.view.settings.Profile", /** @lends com.ffa.hpc.view.settings.Profile.prototype */ {
 
     });
 

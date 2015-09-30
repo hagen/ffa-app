@@ -1,7 +1,7 @@
-jQuery.sap.declare("util.DateFormatter");
-jQuery.sap.require("thirdparty.momentjs.Momentjs");
+jQuery.sap.declare("com.ffa.hpc.util.DateFormatter");
+jQuery.sap.require("com.ffa.hpc.thirdparty.momentjs.Momentjs");
 
-util.DateFormatter = {
+com.ffa.hpc.util.DateFormatter = {
 	/**
 	 * A variable date type variable comes in, and we are to convert it to a
 	 * dd/MM/yyyy format string.

@@ -1,13 +1,13 @@
-jQuery.sap.declare("view.forecasts.Forecasts");
-jQuery.sap.require("util.DateFormatter");
-jQuery.sap.require("util.FloatFormatter");
+jQuery.sap.declare("com.ffa.hpc.view.forecasts.Forecasts");
+jQuery.sap.require("com.ffa.hpc.util.DateFormatter");
+jQuery.sap.require("com.ffa.hpc.util.FloatFormatter");
 
 // Provides controller forecasts.Forecasts
-sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
+sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
   function(jQuery, Controller) {
     "use strict";
 
-    var Forecasts = Controller.extend("view.forecasts.Forecasts", /** @lends view.forecasts.Forecasts.prototype */ {
+    var Forecasts = Controller.extend("com.ffa.hpc.view.forecasts.Forecasts", /** @lends com.ffa.hpc.view.forecasts.Forecasts.prototype */ {
       _sForecastId: "",
       _sFolderId: "",
       _sRunId: "",
@@ -338,14 +338,14 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
         self.getView().byId("idMedianApeObjectStatus").bindProperty("text", {
           path: sPath + "median_ape",
           type: new sap.ui.model.type.Float(),
-          formatter: util.FloatFormatter.formatMAPEPercent
+          formatter: com.ffa.hpc.util.FloatFormatter.formatMAPEPercent
         });
 
         // Bind the Mean
         self.getView().byId("idMeanApeObjectStatus").bindProperty("text", {
           path: sPath + "mean_ape",
           type: new sap.ui.model.type.Float(),
-          formatter: util.FloatFormatter.formatMAPEPercent
+          formatter: com.ffa.hpc.util.FloatFormatter.formatMAPEPercent
         });
       });
     };
@@ -361,7 +361,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
 
       // Create the dialog fragment, if not already init'd
       if (!this._oDiagnosticsDialog) {
-        this._oDiagnosticsDialog = sap.ui.xmlfragment("idDiagnosticsFragment", "view.forecasts.Diagnostics", this);
+        this._oDiagnosticsDialog = sap.ui.xmlfragment("idDiagnosticsFragment", "com.ffa.hpc.view.forecasts.Diagnostics", this);
         this.getView().addDependent(this._oDiagnosticsDialog);
       }
 
@@ -441,7 +441,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
      */
     Forecasts.prototype.setupVizPage = function(bRefresh) {
       // require Highcharts.
-      jQuery.sap.require("thirdparty.highcharts.Highcharts");
+      jQuery.sap.require("com.ffa.hpc.thirdparty.highcharts.Highcharts");
 
       // Before viz loads, collect all necessary data
       if (this._oChart && !bRefresh) {
@@ -867,7 +867,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
     Forecasts.prototype.onOverflowPress = function(oEvent) {
       // We're going to show the overflow fragment
       if (!this._oActionSheet) {
-        this._oActionSheet = sap.ui.xmlfragment("idActionSheetFragment", "view.forecasts.ActionSheet", this);
+        this._oActionSheet = sap.ui.xmlfragment("idActionSheetFragment", "com.ffa.hpc.view.forecasts.ActionSheet", this);
         this.getView().addDependent(this._oActionSheet);
       }
 
@@ -905,7 +905,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
     Forecasts.prototype.onDisplaySettingsPress = function(oEvent) {
       // We're going to show the settings dialog.
       if (!this._oSettingsDialog) {
-        this._oSettingsDialog = sap.ui.xmlfragment("idChartSettingsFragment", "view.forecasts.ChartSettings", this);
+        this._oSettingsDialog = sap.ui.xmlfragment("idChartSettingsFragment", "com.ffa.hpc.view.forecasts.ChartSettings", this);
         this.getView().addDependent(this._oSettingsDialog);
       }
 
@@ -1252,7 +1252,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
     Forecasts.prototype.onForecastNamePress = function(oEvent) {
       // create edit name popup only once
       if (!this._editNamePopup) {
-        this._editNamePopup = sap.ui.xmlfragment("idForecastNameEditFrag", "view.forecasts.EditForecastNameDialog", this);
+        this._editNamePopup = sap.ui.xmlfragment("idForecastNameEditFrag", "com.ffa.hpc.view.forecasts.EditForecastNameDialog", this);
         this.getView().addDependent(this._editNamePopup);
       }
 

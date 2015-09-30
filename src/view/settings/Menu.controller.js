@@ -1,11 +1,11 @@
-jQuery.sap.declare("view.settings.Menu");
+jQuery.sap.declare("com.ffa.hpc.view.settings.Menu");
 
 // Provides controller view.DataSets
-sap.ui.define(["jquery.sap.global", "view/settings/Controller"],
+sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/settings/Controller"],
   function(jQuery, Controller) {
     "use strict";
 
-    var Menu = Controller.extend("view.settings.Menu", /** @lends view.settings.Menu.prototype */ {
+    var Menu = Controller.extend("com.ffa.hpc.view.settings.Menu", /** @lends com.ffa.hpc.view.settings.Menu.prototype */ {
 
     });
 

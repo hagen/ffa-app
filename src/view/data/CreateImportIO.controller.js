@@ -1,11 +1,11 @@
-jQuery.sap.declare("view.data.CreateImportIO");
+jQuery.sap.declare("com.ffa.hpc.view.data.CreateImportIO");
 
 // Provides controller view.Wizard
-sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
+sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/data/CreateController"],
   function(jQuery, Controller) {
     "use strict";
 
-    var IO = Controller.extend("view.data.CreateImportIO", /** @lends view.data.CreateImportIO.prototype */ {
+    var IO = Controller.extend("com.ffa.hpc.view.data.CreateImportIO", /** @lends com.ffa.hpc.view.data.CreateImportIO.prototype */ {
 
     });
 
@@ -41,10 +41,10 @@ sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
       // Testing only
       this._mIO = new sap.ui.model.json.JSONModel({
         id: ShortId.generate(10),
-        // name: "",
-        name: "ImportIO test",
-        // url: ""
-        url: "https://api.import.io/store/data/c1a66d70-4a5f-4e0e-ba6b-56ffb82c381f/_query?input/webpage/url=http%3A%2F%2Fwww.timeanddate.com%2Fholidays%2Fgermany%2F&_user=9c877574-9734-4c33-b37e-f379490ee7ae&_apikey=9c87757497344c33b37ef379490ee7aeae42db154e63f66607c7b89654bcb48f58f35115d41d18ae8db493b4db743bbd868652c9c6f255827bc8cb3715f038d9e205e6f9a6d9421987b8861f89372250"
+        name: "",
+        // name: "ImportIO test",
+        url: ""
+        // url: "https://api.import.io/store/data/c1a66d70-4a5f-4e0e-ba6b-56ffb82c381f/_query?input/webpage/url=http%3A%2F%2Fwww.timeanddate.com%2Fholidays%2Fgermany%2F&_user=9c877574-9734-4c33-b37e-f379490ee7ae&_apikey=9c87757497344c33b37ef379490ee7aeae42db154e63f66607c7b89654bcb48f58f35115d41d18ae8db493b4db743bbd868652c9c6f255827bc8cb3715f038d9e205e6f9a6d9421987b8861f89372250"
       });
 
       this.getView().setModel(this._mIO, "importio");
@@ -113,7 +113,7 @@ sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
           oTable.bindItems({
             path: "dataset>Dimensions",
             sorter: [new sap.ui.model.Sorter("index", false)],
-            template: sap.ui.xmlfragment("view.data.SchemaField", this)
+            template: sap.ui.xmlfragment("com.ffa.hpc.view.data.SchemaField", this)
           });
 
           // Now we nav...

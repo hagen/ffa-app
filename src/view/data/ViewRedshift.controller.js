@@ -1,11 +1,11 @@
-jQuery.sap.declare("view.data.ViewRedshift");
+jQuery.sap.declare("com.ffa.hpc.view.data.ViewRedshift");
 
 // Provides controller view.Wizard
-sap.ui.define(["jquery.sap.global", "view/data/ViewController"],
+sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/data/ViewController"],
   function(jQuery, Controller) {
     "use strict";
 
-    var Redshift = Controller.extend("view.data.ViewRedshift", /** @lends view.data.ViewRedshift.prototype */ {
+    var Redshift = Controller.extend("com.ffa.hpc.view.data.ViewRedshift", /** @lends com.ffa.hpc.view.data.ViewRedshift.prototype */ {
       _editMode: false
     });
 

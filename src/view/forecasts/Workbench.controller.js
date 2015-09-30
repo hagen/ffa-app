@@ -1,11 +1,11 @@
-jQuery.sap.declare("view.forecasts.Workbench");
+jQuery.sap.declare("com.ffa.hpc.view.forecasts.Workbench");
 
 // Provides controller forecasts.Workbench
-sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
+sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/util/Controller'],
   function(jQuery, Controller) {
     "use strict";
 
-    var Workbench = Controller.extend("view.forecasts.Workbench", /** @lends view.forecasts.Workbench.prototype */ {
+    var Workbench = Controller.extend("com.ffa.hpc.view.forecasts.Workbench", /** @lends com.ffa.hpc.view.forecasts.Workbench.prototype */ {
 
     });
 

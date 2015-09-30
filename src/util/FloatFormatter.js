@@ -1,6 +1,6 @@
-jQuery.sap.declare("util.FloatFormatter");
+jQuery.sap.declare("com.ffa.hpc.util.FloatFormatter");
 
-util.FloatFormatter = {
+com.ffa.hpc.util.FloatFormatter = {
 	formatMAPEPercent : function(fMape) {
 		if(fMape) {
 			try {

@@ -1,11 +1,11 @@
-jQuery.sap.declare("view.data.ViewSheets");
+jQuery.sap.declare("com.ffa.hpc.view.data.ViewSheets");
 
 // Provides controller view.Wizard
-sap.ui.define(["jquery.sap.global", "view/data/ViewController"],
+sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/data/ViewController"],
   function(jQuery, Controller) {
     "use strict";
 
-    var Sheets = Controller.extend("view.data.ViewSheets", /** @lends view.data.ViewSheets.prototype */ {
+    var Sheets = Controller.extend("com.ffa.hpc.view.data.ViewSheets", /** @lends com.ffa.hpc.view.data.ViewSheets.prototype */ {
     });
 
     /**

@@ -1,12 +1,11 @@
-jQuery.sap.declare("view.auth.Connect");
+jQuery.sap.declare("com.ffa.hpc.view.auth.Connect");
 
 // Provides controller view. Connect
-sap.ui.define(['jquery.sap.global', 'view/auth/Controller'],
+sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/auth/Controller"],
   function(jQuery, Controller) {
     "use strict";
 
-    var Connect = Controller.extend("view.auth.Connect", /** @lends view.auth.Connect.prototype */ {
-    });
+    var Connect = Controller.extend("com.ffa.hpc.view.auth.Connect", /** @lends com.ffa.hpc.view.auth.Connect.prototype */ {});
 
     /**
      * On init handler

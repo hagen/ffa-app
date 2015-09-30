@@ -1,11 +1,11 @@
-jQuery.sap.declare("view.settings.Social");
+jQuery.sap.declare("com.ffa.hpc.view.settings.Social");
 
 // Provides controller view.Wizard
-sap.ui.define(["jquery.sap.global", "view/settings/Controller"],
+sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/settings/Controller"],
   function(jQuery, Controller) {
     "use strict";
 
-    var Social = Controller.extend("view.settings.Social", /** @lends view.settings.Social.prototype */ {
+    var Social = Controller.extend("com.ffa.hpc.view.settings.Social", /** @lends com.ffa.hpc.view.settings.Social.prototype */ {
 
     });
 

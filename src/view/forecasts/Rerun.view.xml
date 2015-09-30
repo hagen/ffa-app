@@ -1,5 +1,5 @@
 <mvc:View
-	controllerName="view.forecasts.Rerun"
+	controllerName="com.ffa.hpc.view.forecasts.Rerun"
 	xmlns="sap.m"
 	xmlns:l="sap.ui.layout"
 	xmlns:f="sap.ui.layout.form"
@@ -42,13 +42,13 @@
         <Text
 					text="The data set linked to this forecast has training data from {
             path : 'forecast>begda',
-            formatter : 'util.DateFormatter.ddMMyyyy'
+            formatter : 'com.ffa.hpc.util.DateFormatter.ddMMyyyy'
           } to {
             path : 'forecast>endda',
-            formatter : 'util.DateFormatter.ddMMyyyy'
+            formatter : 'com.ffa.hpc.util.DateFormatter.ddMMyyyy'
           } so you can pick an effective date of {
             path : 'forecast>endda',
-            formatter : 'util.DateFormatter.add1Day'
+            formatter : 'com.ffa.hpc.util.DateFormatter.add1Day'
           } or earlier. In the bottom left corner, you can see when the training data was last refreshed
 					and by pressing the refresh button, get a fresh copy. Lastly,
           the length of your horizon dictates how much training data your

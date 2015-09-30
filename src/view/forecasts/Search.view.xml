@@ -1,5 +1,5 @@
 <mvc:View
-	controllerName="view.forecasts.Search"
+	controllerName="com.ffa.hpc.view.forecasts.Search"
 	xmlns="sap.m"
   xmlns:l="sap.ui.layout"
   xmlns:f="sap.ui.layout.form"

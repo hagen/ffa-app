@@ -1,11 +1,11 @@
-jQuery.sap.declare("view.data.CreateSheets");
+jQuery.sap.declare("com.ffa.hpc.view.data.CreateSheets");
 
 // Provides controller view.Wizard
-sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
+sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/data/CreateController"],
   function(jQuery, Controller) {
     "use strict";
 
-    var Sheets = Controller.extend("view.data.CreateSheets", /** @lends view.data.CreateSheets.prototype */ {
+    var Sheets = Controller.extend("com.ffa.hpc.view.data.CreateSheets", /** @lends com.ffa.hpc.view.data.CreateSheets.prototype */ {
 
     });
 
@@ -112,7 +112,7 @@ sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
           oTable.bindItems({
             path: "dataset>Dimensions",
             sorter: [new sap.ui.model.Sorter("index", false)],
-            template: sap.ui.xmlfragment("view.data.SchemaField", this)
+            template: sap.ui.xmlfragment("com.ffa.hpc.view.data.SchemaField", this)
           });
 
           // Now we nav...

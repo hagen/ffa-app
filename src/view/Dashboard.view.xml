@@ -1,5 +1,5 @@
 <mvc:View
-	controllerName="view.Dashboard"
+	controllerName="com.ffa.hpc.view.Dashboard"
 	xmlns="sap.m"
 	xmlns:mvc="sap.ui.core.mvc">
 	<Page

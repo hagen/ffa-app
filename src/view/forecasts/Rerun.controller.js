@@ -1,12 +1,12 @@
-jQuery.sap.declare("view.forecasts.Rerun");
-jQuery.sap.require("thirdparty.shortid.ShortId");
-jQuery.sap.require("util.DateFormatter");
+jQuery.sap.declare("com.ffa.hpc.view.forecasts.Rerun");
+jQuery.sap.require("com.ffa.hpc.thirdparty.shortid.ShortId");
+jQuery.sap.require("com.ffa.hpc.util.DateFormatter");
 
-sap.ui.define(['jquery.sap.global', 'view/forecasts/DatasetAuth'],
+sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
   function(jQuery, Controller) {
     "use strict";
 
-    var Rerun = Controller.extend("view.forecasts.Rerun", /** @lends view.forecasts.Rerun.prototype */ {
+    var Rerun = Controller.extend("com.ffa.hpc.view.forecasts.Rerun", /** @lends com.ffa.hpc.view.forecasts.Rerun.prototype */ {
       _sCacheId: "",
       _sForecastId: "",
       _sReturnRoute: ""

@@ -1,11 +1,11 @@
-jQuery.sap.declare("view.plans.Free");
+jQuery.sap.declare("com.ffa.hpc.view.plans.Free");
 
 // Provides controller view.Plans
-sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
+sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/plans/Controller'],
   function(jQuery, Controller) {
     "use strict";
 
-    var Free = Controller.extend("view.plans.Free", /** @lends view.plans.Free.prototype */ {
+    var Free = Controller.extend("com.ffa.hpc.view.plans.Free", /** @lends com.ffa.hpc.view.plans.Free.prototype */ {
 
     });
 

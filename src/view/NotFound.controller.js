@@ -1,10 +1,10 @@
-jQuery.sap.declare("view.NotFound");
+jQuery.sap.declare("com.ffa.hpc.view.NotFound");
 
-sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
+sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/util/Controller'],
 	function(jQuery, Controller) {
 	"use strict";
 
-	var NotFound = Controller.extend("view.NotFound", /** @lends view.NotFound.prototype */ {
+	var NotFound = Controller.extend("com.ffa.hpc.view.NotFound", /** @lends com.ffa.hpc.view.NotFound.prototype */ {
 
 	});
 

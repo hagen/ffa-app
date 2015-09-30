@@ -2,9 +2,9 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/Control", "./library", "./Sourc
   function(jQuery, Control, library, Js) {
     "use strict";
 
-    var ChartJs = Control.extend("thirdparty.chartjs.ChartJs", {
+    var ChartJs = Control.extend("com.ffa.hpc.thirdparty.chartjs.ChartJs", {
       metadata: {
-        library: "thirdparty.chartjs",
+        library: "com.ffa.hpc.thirdparty.chartjs",
         properties: {
           width: {
             type: "sap.ui.core.CSSSize",
@@ -17,9 +17,9 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/Control", "./library", "./Sourc
             defaultValue: "100%"
           },
           type: {
-            type: "thirdparty.chartjs.ChartJsType",
+            type: "com.ffa.hpc.thirdparty.chartjs.ChartJsType",
             group: "Misc",
-            defaultValue: thirdparty.chartjs.ChartJsType.Line
+            defaultValue: com.ffa.hpc.thirdparty.chartjs.ChartJsType.Line
           },
           /** late load prevents loading of the chart until programmatically requested */
           lateLoad: {
@@ -31,13 +31,13 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/Control", "./library", "./Sourc
         defaultAggregation: "datasets",
         aggregations: {
           "labels": {
-            type: "thirdparty.chartjs.Label",
+            type: "com.ffa.hpc.thirdparty.chartjs.Label",
             mulitple: true,
             singluarName: "label",
             bindable: "bindable"
           },
           "datasets": {
-            type: "thirdparty.chartjs.Dataset",
+            type: "com.ffa.hpc.thirdparty.chartjs.Dataset",
             multiple: true,
             singularName: "dataset",
             bindable: "bindable"

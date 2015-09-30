@@ -1,11 +1,11 @@
-jQuery.sap.declare("view.forecasts.DatasetAuth");
+jQuery.sap.declare("com.ffa.hpc.view.forecasts.DatasetAuth");
 
-// Provides controller util.Controller
-sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
+// Provides controller com.ffa.hpc.util.Controller
+sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
   function(jQuery, Controller) {
     "use strict";
 
-    var DatasetAuth = Controller.extend("view.forecasts.DatasetAuth", /** @lends view.forecasts.DatasetAuth */ {
+    var DatasetAuth = Controller.extend("com.ffa.hpc.view.forecasts.DatasetAuth", /** @lends com.ffa.hpc.view.forecasts.DatasetAuth */ {
       _sDataSetId: ""
     });
 
@@ -139,7 +139,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
     DatasetAuth.prototype._promptForAuth = function(sPath, fnTest, fnUpdate, oPromise) {
       var d = this._oAuthDialog;
       if (!d) {
-        d = this._oAuthDialog = sap.ui.xmlfragment("idAuthFragment", "view.forecasts.AuthDialog", this);
+        d = this._oAuthDialog = sap.ui.xmlfragment("idAuthFragment", "com.ffa.hpc.view.forecasts.AuthDialog", this);
         this.getView().addDependent(d);
       }
 

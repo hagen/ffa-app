@@ -1,12 +1,12 @@
-jQuery.sap.declare("view.forecasts.Adjust");
-jQuery.sap.require("util.DateFormatter");
+jQuery.sap.declare("com.ffa.hpc.view.forecasts.Adjust");
+jQuery.sap.require("com.ffa.hpc.util.DateFormatter");
 
 // Provides controller forecasts.Adjust
-sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
+sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
   function(jQuery, Controller) {
     "use strict";
 
-    var Adjust = Controller.extend("view.forecasts.Adjust", /** @lends view.forecasts.Adjust.prototype */ {
+    var Adjust = Controller.extend("com.ffa.hpc.view.forecasts.Adjust", /** @lends com.ffa.hpc.view.forecasts.Adjust.prototype */ {
       _sForecastId: "",
       _sRunId: "",
       _sReturnRoute: "",
@@ -172,7 +172,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
       if (!this._oDateRangePopover) {
 
         // Supply this controller to that controller, and open the settings frag
-        this._oDateRangePopover = sap.ui.xmlfragment("idDateRangeFragment", "view.forecasts.DateRangePopover", this);
+        this._oDateRangePopover = sap.ui.xmlfragment("idDateRangeFragment", "com.ffa.hpc.view.forecasts.DateRangePopover", this);
 
         // Add dependent is very important - it ensures the model is retained in the fragment
         this.getView().addDependent(this._oDateRangePopover);
@@ -207,7 +207,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
 
       // show the gain control (it's a popover, situated under the gain button
       if (!this._oGainPopover) {
-        this._oGainPopover = sap.ui.xmlfragment("idSeriesGainFragment", "view.forecasts.GainPopover", this);
+        this._oGainPopover = sap.ui.xmlfragment("idSeriesGainFragment", "com.ffa.hpc.view.forecasts.GainPopover", this);
         // Add dependent is very important - it ensures the model is retain in the fragment
         this.getView().addDependent(this._oGainPopover);
       }
@@ -335,9 +335,9 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
 
       var oModel = this.getView().getModel("range");
       var dLower = oModel.getProperty("/lower");
-      var sLower = util.DateFormatter.formatDate(dLower);
+      var sLower = com.ffa.hpc.util.DateFormatter.formatDate(dLower);
       var dUpper = oModel.getProperty("/upper");
-      var sUpper = util.DateFormatter.formatDate(dUpper);
+      var sUpper = com.ffa.hpc.util.DateFormatter.formatDate(dUpper);
 
       // Check that this date is between our upper and lower limits.
       if (!(this._date(dFrom) >= this._date(dLower) && this._date(dTo) <= this._date(dUpper))) {
@@ -743,7 +743,7 @@ sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
     Adjust.prototype._maybeDrawViz = function(bRefresh) {
 
       // require Highcharts.
-      jQuery.sap.require("thirdparty.highcharts.Highcharts");
+      jQuery.sap.require("com.ffa.hpc.thirdparty.highcharts.Highcharts");
 
       // Before viz loads, collect all necessary data
       if (this._oChart && !bRefresh) {

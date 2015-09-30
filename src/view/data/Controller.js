@@ -1,13 +1,13 @@
-jQuery.sap.declare("view.data.Controller");
+jQuery.sap.declare("com.ffa.hpc.view.data.Controller");
 // Require the short Id gen library
-jQuery.sap.require("thirdparty.shortid.ShortId");
+jQuery.sap.require("com.ffa.hpc.thirdparty.shortid.ShortId");
 
 // Provides controller util.Controller
-sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
+sap.ui.define(["jquery.sap.global", "com/ffa/hpc/util/Controller"],
   function(jQuery, UtilController) {
     "use strict";
 
-    var Controller = UtilController.extend("view.data.Controller", /** @lends view.data.Controller */ {
+    var Controller = UtilController.extend("com.ffa.hpc.view.data.Controller", /** @lends com.ffa.hpc.view.data.Controller */ {
 
     });
 

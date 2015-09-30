@@ -1,11 +1,11 @@
-jQuery.sap.declare("view.forecasts.Favorites");
+jQuery.sap.declare("com.ffa.hpc.view.forecasts.Favorites");
 
 // Provides controller forecasts.Favorites
-sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
+sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
   function(jQuery, Controller) {
     "use strict";
 
-    var Favorites = Controller.extend("view.forecasts.Favorites", /** @lends view.forecasts.Favorites.prototype */ {
+    var Favorites = Controller.extend("com.ffa.hpc.view.forecasts.Favorites", /** @lends com.ffa.hpc.view.forecasts.Favorites.prototype */ {
 
     });
 

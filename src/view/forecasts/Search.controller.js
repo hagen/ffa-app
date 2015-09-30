@@ -1,11 +1,11 @@
-jQuery.sap.declare("view.forecasts.Search");
+jQuery.sap.declare("com.ffa.hpc.view.forecasts.Search");
 
 // Provides controller forecasts.Recents
-sap.ui.define(["jquery.sap.global", "view/forecasts/Controller"],
+sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
   function(jQuery, Controller) {
     "use strict";
 
-    var Search = Controller.extend("view.forecasts.Search", /** @lends view.forecasts.Search.prototype */ {
+    var Search = Controller.extend("com.ffa.hpc.view.forecasts.Search", /** @lends com.ffa.hpc.view.forecasts.Search.prototype */ {
 
     });
 

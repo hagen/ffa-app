@@ -1,11 +1,11 @@
-jQuery.sap.declare("view.data.DataSets");
+jQuery.sap.declare("com.ffa.hpc.view.data.DataSets");
 
 // Provides controller view.DataSets
-sap.ui.define(['jquery.sap.global', 'view/data/Controller'],
+sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/data/Controller'],
   function(jQuery, Controller) {
     "use strict";
 
-    var DataSets = Controller.extend("view.data.DataSets", /** @lends view.data.DataSets.prototype */ {
+    var DataSets = Controller.extend("com.ffa.hpc.view.data.DataSets", /** @lends com.ffa.hpc.view.data.DataSets.prototype */ {
 
       /**
        * Batch operations
@@ -345,7 +345,7 @@ sap.ui.define(['jquery.sap.global', 'view/data/Controller'],
       // Now open the list dialog.
       var d = this._oDeletionDialog;
       if (!d) {
-        this._oDeletionDialog = d = sap.ui.xmlfragment("idDeletionFragment", "view.data.DeletionListDialog", this);
+        this._oDeletionDialog = d = sap.ui.xmlfragment("idDeletionFragment", "com.ffa.hpc.view.data.DeletionListDialog", this);
         this.getView().addDependent(d);
       }
 

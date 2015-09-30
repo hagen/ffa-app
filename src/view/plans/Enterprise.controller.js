@@ -1,11 +1,11 @@
-jQuery.sap.declare("view.plans.Enterprise");
+jQuery.sap.declare("com.ffa.hpc.view.plans.Enterprise");
 
 // Provides controller view.Plans
-sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
+sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/plans/Controller'],
 	function(jQuery, Controller) {
 	"use strict";
 
-	var Enterprise = Controller.extend("view.plans.Enterprise", /** @lends view.plans.Enterprise.prototype */ {
+	var Enterprise = Controller.extend("com.ffa.hpc.view.plans.Enterprise", /** @lends com.ffa.hpc.view.plans.Enterprise.prototype */ {
 
 	});
 

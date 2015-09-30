@@ -1,5 +1,5 @@
 <mvc:View
-	controllerName="view.plans.Change"
+	controllerName="com.ffa.hpc.view.plans.Change"
 	xmlns="sap.m"
 	xmlns:mvc="sap.ui.core.mvc"
 	xmlns:core="sap.ui.core"

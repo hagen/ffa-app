@@ -1,11 +1,11 @@
-jQuery.sap.declare("com.ffa.dash.util.Controller");
+jQuery.sap.declare("com.ffa.hpc.util.Controller");
 
-// Provides controller util.Controller
+// Provides controller com.ffa.hpc.util.Controller
 sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
   function(jQuery, MvcController) {
     "use strict";
 
-    var Controller = MvcController.extend("com.ffa.dash.util.Controller", /** @lends com.ffa.dash.util.Controller */ {
+    var Controller = MvcController.extend("com.ffa.hpc.util.Controller", /** @lends com.ffa.hpc.util.Controller */ {
       _loaded: false
     });
 
@@ -220,7 +220,7 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
 
         // Create the fragment and open!
         if (!d) {
-          d = this._oBusyDialog = sap.ui.xmlfragment("view.BusyDialog", this);
+          d = this._oBusyDialog = sap.ui.xmlfragment("com.ffa.hpc.view.BusyDialog", this);
           this.getView().addDependent(d);
         }
 

@@ -1,14 +1,14 @@
-jQuery.sap.declare("com.ffa.dash.Component");
-jQuery.sap.require("com.ffa.dash.MyRouter");
+jQuery.sap.declare("com.ffa.hpc.Component");
+jQuery.sap.require("com.ffa.hpc.MyRouter");
 jQuery.sap.require("jquery.sap.storage");
 
-sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
+sap.ui.core.UIComponent.extend("com.ffa.hpc.Component", {
   metadata: {
     dependencies: {
       libs: ["sap.m", "sap.ui.layout"],
       components: []
     },
-    rootView: "com.ffa.dash.view.App",
+    rootView: "com.ffa.hpc.view.App",
     config: {
       resourceBundle: "i18n/i18n.properties",
       serviceConfig: {
@@ -23,9 +23,9 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
     },
     routing: {
       config: {
-        routerClass: com.ffa.dash.MyRouter,
+        routerClass: com.ffa.hpc.MyRouter,
         viewType: "XML",
-        viewPath: "view",
+        viewPath: "com.ffa.hpc.view",
         targetControl: "idContainer",
         targetAggregation: "pages",
         clearTarget: false,
@@ -34,7 +34,7 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
       routes: [{
         pattern: "functions/:function_id:",
         name: "functions",
-        view: "functions.Library",
+        view: "com.ffa.hpc.functions.Library",
         viewLevel: 3
       }, {
         pattern: "datasets",
@@ -378,7 +378,7 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
     // always use absolute paths relative to our own
     // component (relative paths will fail if running in the Fiori
     // Launchpad)
-    var oRootPath = jQuery.sap.getModulePath("com.ffa.dash");
+    var oRootPath = jQuery.sap.getModulePath("com.ffa.hpc");
 
     // set i18n model
     var i18nModel = new sap.ui.model.resource.ResourceModel({
@@ -565,7 +565,7 @@ sap.ui.core.UIComponent.extend("com.ffa.dash.Component", {
     var oView = sap.ui.view({
       id: "idRootView",
       height: "100%", // Man this is SOOO important (only spent 2 hours figuring out)
-      viewName: "view.App",
+      viewName: "com.ffa.hpc.view.App",
       type: "JS",
       viewData: {
         component: this

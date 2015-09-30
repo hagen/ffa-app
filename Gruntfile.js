@@ -14,7 +14,7 @@ module.exports = function(grunt) {
 				options: {
 					resources: {
 						cwd: '<%= dir.src %>',
-						prefix: ''
+						prefix: 'com/ffa/hpc'
 					},
 					dest: '<%= dir.dist %>'
 				},

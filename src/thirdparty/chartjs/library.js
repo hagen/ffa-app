@@ -5,26 +5,26 @@ sap.ui.define(["jquery.sap.global", "sap/ui/Device", "sap/ui/core/library", "jqu
 
   // delegate further initialization of this library to the Core
 	sap.ui.getCore().initLibrary({
-		name : "thirdparty.chartjs",
+		name : "com.ffa.hpc.thirdparty.chartjs",
 		version: "1.0",
 		dependencies : ["sap.m"],
 		types: [
-			"thirdparty.chartjs.ChartJsType"
+			"com.ffa.hpc.thirdparty.chartjs.ChartJsType"
     ],
     controls: [
-			"thirdparty.chartjs.ChartJs",
-			"thirdparty.chartjs.Dataset",
-			"thirdparty.chartjs.Label"
+			"com.ffa.hpc.thirdparty.chartjs.ChartJs",
+			"com.ffa.hpc.thirdparty.chartjs.Dataset",
+			"com.ffa.hpc.thirdparty.chartjs.Label"
     ]
   });
 
 	/**
 	 * Types of the Chart
 	 */
-	thirdparty.chartjs.ChartJsType = {
+	com.ffa.hpc.thirdparty.chartjs.ChartJsType = {
 		Line : "Line"
 	};
 
-	return thirdparty.chartjs;
+	return com.ffa.hpc.thirdparty.chartjs;
 
 });

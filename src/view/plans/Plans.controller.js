@@ -1,11 +1,11 @@
-jQuery.sap.declare("view.plans.Plans");
+jQuery.sap.declare("com.ffa.hpc.view.plans.Plans");
 
 // Provides controller view.Plans
-sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
+sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/plans/Controller'],
   function(jQuery, Controller) {
     "use strict";
 
-    var Plans = Controller.extend("view.plans.Plans", /** @lends view.plans.Plans.prototype */ {
+    var Plans = Controller.extend("com.ffa.hpc.view.plans.Plans", /** @lends com.ffa.hpc.view.plans.Plans.prototype */ {
 
     });
 
@@ -33,7 +33,7 @@ sap.ui.define(['jquery.sap.global', 'view/plans/Controller'],
      * at the beginning of the tile container
      */
     Plans.prototype.onAfterRendering = function() {
-      jQuery.sap.require("thirdparty.spiders.Spiders");
+      jQuery.sap.require("com.ffa.hpc.thirdparty.spiders.Spiders");
     };
 
     /**

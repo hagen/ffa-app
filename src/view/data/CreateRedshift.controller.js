@@ -1,11 +1,11 @@
-jQuery.sap.declare("view.data.CreateRedshift");
+jQuery.sap.declare("com.ffa.hpc.view.data.CreateRedshift");
 
 // Provides controller view.Wizard
-sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
+sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/data/CreateController"],
   function(jQuery, Controller) {
     "use strict";
 
-    var Redshift = Controller.extend("view.data.CreateRedshift", /** @lends view.data.CreateRedshift.prototype */ {
+    var Redshift = Controller.extend("com.ffa.hpc.view.data.CreateRedshift", /** @lends com.ffa.hpc.view.data.CreateRedshift.prototype */ {
 
     });
 
@@ -213,7 +213,7 @@ sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
           oTable.bindItems({
             path: "dataset>Dimensions",
             sorter: [new sap.ui.model.Sorter("index", false)],
-            template: sap.ui.xmlfragment("view.data.SchemaField", this)
+            template: sap.ui.xmlfragment("com.ffa.hpc.view.data.SchemaField", this)
           });
 
           // Now we nav...

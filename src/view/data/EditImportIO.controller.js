@@ -1,11 +1,11 @@
-jQuery.sap.declare("view.data.EditImportIO");
+jQuery.sap.declare("com.ffa.hpc.view.data.EditImportIO");
 
 // Provides controller view.Wizard
-sap.ui.define(["jquery.sap.global", "view/data/EditController"],
+sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/data/EditController"],
   function(jQuery, Controller) {
     "use strict";
 
-    var IO = Controller.extend("view.data.EditImportIO", /** @lends view.data.EditImportIO.prototype */ {
+    var IO = Controller.extend("com.ffa.hpc.view.data.EditImportIO", /** @lends com.ffa.hpc.view.data.EditImportIO.prototype */ {
 
     });
 

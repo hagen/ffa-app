@@ -1,11 +1,11 @@
-jQuery.sap.declare("view.functions.Library");
+jQuery.sap.declare("com.ffa.hpc.view.functions.Library");
 
 // Provides controller functions.Library
-sap.ui.define(['jquery.sap.global', 'com/ffa/dash/util/Controller'],
+sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/functions/Controller'],
   function(jQuery, Controller) {
     "use strict";
 
-    var Library = Controller.extend("view.functions.Library", /** @lends view.functions.Library.prototype */ {
+    var Library = Controller.extend("com.ffa.hpc.view.functions.Library", /** @lends com.ffa.hpc.view.functions.Library.prototype */ {
 
     });
 

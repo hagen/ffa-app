@@ -1,11 +1,11 @@
-jQuery.sap.declare("view.data.ViewController");
+jQuery.sap.declare("com.ffa.hpc.view.data.ViewController");
 
 // Provides controller util.Controller
-sap.ui.define(["jquery.sap.global", "view/data/Controller"],
+sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/data/Controller"],
   function(jQuery, DataController) {
     "use strict";
 
-    var Controller = DataController.extend("view.data.ViewController", /** @lends view.data.ViewController */ {
+    var Controller = DataController.extend("com.ffa.hpc.view.data.ViewController", /** @lends com.ffa.hpc.view.data.ViewController */ {
 
     });
 
