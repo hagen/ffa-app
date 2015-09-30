@@ -71,6 +71,8 @@ sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
         return;
       }
 
+      var oButton = oEvent.getSource();
+
       // set screen to busy
       this.openBusyDialog({
         title: "Loading",
