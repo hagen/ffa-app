@@ -42,18 +42,18 @@ sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
       // Testing only
       this._mHana = new sap.ui.model.json.JSONModel({
         id: ShortId.generate(10),
-        // name: "",
-        name: "HANA dataset",
-        // host: "",
-        host: "hana.forefrontanalytics.com.au",
-        // port: null,
-        port: 30015,
-        // schema : "",
-        schema: "HDITTMER",
-        // username: "",
-        username: "HDITTMER",
-        // password: "",
-        password: "H4n4isdumb",
+        name: "",
+        // name: "HANA dataset",
+        host: "",
+        // host: "hana.forefrontanalytics.com.au",
+        port: null,
+        // port: 30015,
+        schema: "",
+        // schema: "HDITTMER",
+        username: "",
+        // username: "HDITTMER",
+        password: "",
+        // password: "H4n4isdumb",
         remember: false,
         query: "",
         created_by: this.getUserId()
@@ -73,21 +73,6 @@ sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
      */
 
     /**
-     * [function description]
-     * @param  {[type]} oEvent [description]
-     * @return {[type]}        [description]
-     */
-    Hdb.prototype.onCancelPress = function(oEvent) {
-      // nav back to main Page
-      try {
-        this.getView().byId("idNavContainer").back();
-      } catch (e) {}
-
-      // Nav back to new data set
-      this.getRouter().navTo("new-dataset", {}, !sap.ui.Device.system.phone);
-    };
-
-    /**
      * This handler is used either to advance the configuration page
      * to the next page. When advancing to the next page,
      * we will firstly test the connection. If all goes well, advance.
@@ -98,7 +83,7 @@ sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
       var oButton = oEvent.getSource();
 
       // Validate
-      if (!this._validateConnection()) {
+      if (!this.validateConnection()) {
         return;
       }
 
@@ -110,13 +95,16 @@ sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
 
       // Delayed call, for effect.
       jQuery.sap.delayedCall(1000, this, function() {
+
+        // Promise, so we know when to continue on
         var oPromise = jQuery.Deferred();
 
         // This is our test done handler. When the test is resolved,
         // it will be run.
         jQuery.when(oPromise).done(jQuery.proxy(function() {
+
           // Collect the type the user has selected
-          var sInflectedType = this._getQueryType(true /* bInflect */ );
+          var sInflectedType = this.getQueryType(true /* bInflect */ );
 
           // perform page set up.
           var oPage = this.getView().byId("idPage" + sInflectedType);
@@ -125,16 +113,14 @@ sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
             this[fn].apply(this, []);
           }
 
-          // advance to the next page
-          var oNav = this.getView().byId("idNavContainer");
-          oNav.to(oPage, "slide");
-
           // Button is now bound to the save action
           oButton.detachPress(this.onNextPress, this)
             .attachPress(this.onNextNextPress, this);
-
-          // Back button now goes back only one page, to the previous.
           this.getView().byId("idBackButton").setEnabled(true);
+
+          // advance to the next page
+          var oNav = this.getView().byId("idNavContainer");
+          oNav.to(oPage, "slide");
 
           // Not busy now
           this.hideBusyDialog();
@@ -143,12 +129,31 @@ sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
         // This is our test failed handler. When the test is rejected
         // it will run
         jQuery.when(oPromise).fail(jQuery.proxy(function() {
+
           // Not busy now
           this.hideBusyDialog();
         }, this));
 
-        // We always need to test the connection. So do this now.
-        this._test(oPromise);
+        // Test HANA; success call back if connection could be made
+        this.getView().getModel("dataset").create("/HdbTest", this.getData(), {
+          async: true,
+          success: jQuery.proxy(function(oData, mResponse) {
+
+            // Handle error with empty, clears Error in the console pane
+            this._handleTestError();
+
+            // Cool to continue
+            oPromise.resolve();
+          }, this),
+          error: jQuery.proxy(function(mError) {
+
+            // Handle connection test errors
+            this._handleTestError(mError);
+
+            // Reject the promise
+            oPromise.reject();
+          }, this)
+        });
       });
     };
 
@@ -162,6 +167,11 @@ sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
       // Collect button from event source
       var oButton = oEvent.getSource();
 
+      // If this is not a valid select, error.
+      if (!this.validateNextNext()) {
+        return;
+      }
+
       // set screen to busy
       this.openBusyDialog({
         title: "Reading",
@@ -169,7 +179,7 @@ sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
       });
 
       // Save the redshift data...
-      this.getView().getModel("dataset").create("/Hdb", this._getData(), {
+      this.getView().getModel("dataset").create("/Hdb", this.getData(), {
         success: jQuery.proxy(function(oData, mResponse) {
 
           // Now, we'll retain the sId for this data set, as we'll need it For
@@ -226,13 +236,73 @@ sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
     };
 
     /**
+     * Saving the data set means checking there is one date field selected. Once
+     * this check is validated, we will then check if there are any modifications
+     * to the data types. An update of the date dimension is fired, along With
+     * updates to any other dimension data types.
+     * @param  {object} oEvent Button press event
+     */
+    Hdb.prototype.onSavePress = function(oEvent) {
+
+      var oButton = oEvent.getSource();
+
+      // set screen to busy
+      this.openBusyDialog({
+        title: "Saving",
+        text: "Saving your HANA configuration - one moment please..."
+      });
+
+      // Save the date field
+      this.saveDateField(
+        jQuery.proxy(function(oData, mResponse) {
+
+          // Refresh the dataset listing by raising an event (subscribers will do
+          // the work)
+          this.getEventBus().publish("Detail", "RefreshMaster", {});
+
+          // Update the screen, then close.
+          this.updateBusyDialog({
+            text: "All done! Finishing up..."
+          });
+
+          // Timed close.
+          jQuery.sap.delayedCall(1500, this, function() {
+
+            // Send the nav container back to start
+            try {
+              this.getView().byId("idNavContainer").backToTop();
+            } catch (e) {}
+
+            // Reset the Next buttons
+            oButton.detachPress(this.onSavePress, this)
+              .attachPress(this.onNextPress, this)
+              .setText("Next");
+
+            // Reset the back buttons
+            this.getView().byId("idBackButton").detachPress(this.onBackBackPress, this)
+              .attachPress(this.onBackPress, this)
+              .setEnabled(false);
+
+            // NOt busy any more
+            this.closeBusyDialog();
+
+            // Navigate to the new data set...
+            this.getRouter().navTo("view-hdb", {
+              dataset_id: this._sId
+            }, !sap.ui.Device.system.phone);
+          });
+        }, this)
+      );
+    };
+
+    /**
      * The back button takes us back a page, but we need to determine if it's
      * at the every beginning or not. We also need to update what happens
      * to the Next button.
      * @param  {object} oEvent Button press event
      */
     Hdb.prototype.onBackPress = function(oEvent) {
-      // Button is now bound to the save action
+      // Next button is now a next button
       var oButton = this.getView().byId("idNextButton");
       oButton.detachPress(this.onNextNextPress, this)
         .attachPress(this.onNextPress, this)
@@ -244,9 +314,6 @@ sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
       // clear the combobox...
       this.getView().byId("idViewsComboBox").setValue("");
       this.getView().byId("idTablesComboBox").setValue("");
-
-      // Head back, boi!
-      this.getView().byId("idNavContainer").back();
     };
 
     /**
@@ -268,128 +335,53 @@ sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
         .setText("Next");
 
       // Collect the type the user has selected
-      var sInflectedType = this._getQueryType(true /* bInflect */ );
+      var sInflectedType = this.getQueryType(true /* bInflect */ );
 
-      // Head back, boi!
-      var sPageId = this.getView().createId("idPage" + sInflectedType);
-      this.getView().byId("idNavContainer").backToPage(sPageId);
+      // Use promises to holdup cancellation until deletion occurs
+      var oPromise = jQuery.Deferred();
+      jQuery.when(oPromise).then(jQuery.proxy(function() {
+        // Clear out sId
+        this._sId = undefined;
 
-      // Delete the data set we've just created...
-      this.getView().getModel("dataset").remove("/DataSets('" + this._sId + "')");
+        // Head back, boi!
+        var sPageId = this.getView().createId("idPage" + sInflectedType);
+        this.getView().byId("idNavContainer").backToPage(sPageId);
+      }, this))
+
+      // We may need to delete the just created data set...
+      if (this._sId) {
+        this.delete(this._sId, oPromise);
+      } else {
+        oPromise.resolve();
+      }
     };
 
     /**
-     * Saving the data set means checking there is one date field selected. Once
-     * this check is validated, we will then check if there are any modifications
-     * to the data types. An update of the date dimension is fired, along With
-     * updates to any other dimension data types.
-     * @param  {object} oEvent Button press event
+     * User is cancelling the creation process. We need to delete any created
+     * resources, reset all button handlers and text, nav back to the top page
+     * @param  {Event} oEvent Button press event
      */
-    Hdb.prototype.onSavePress = function(oEvent) {
+    Hdb.prototype.onCancelPress = function(oEvent) {
+      // nav back to main Page
+      try {
+        this.getView().byId("idNavContainer").back();
+      } catch (e) {}
 
-      // set screen to busy
-      this.openBusyDialog({
-        title: "Saving",
-        text: "Saving your HANA configuration - one moment please..."
-      });
+      // Use promises to holdup cancellation until deletion occurs
+      var oPromise = jQuery.Deferred();
+      jQuery.when(oPromise).then(jQuery.proxy(function() {
+        // Clear out sId
+        this._sId = undefined;
+        // Nav back to new data set
+        this.getRouter().navTo("new-dataset", {}, !sap.ui.Device.system.phone);
+      }, this))
 
-      // Spin through the table items, and check that there is one of type
-      // date.
-      if (!this.isDateSelected()) {
-        return;
+      // We may need to delete the just created data set...
+      if (this._sId) {
+        this.delete(this._sId, oPromise);
+      } else {
+        oPromise.resolve();
       }
-
-      // Otherwise, we are good to save.
-      this.saveDimensions(jQuery.proxy(function() {
-          // Refresh the dataset listing by raising an event (subscribers will do
-          // the work)
-          this.getEventBus().publish("Detail", "RefreshMaster", {});
-
-          // Update the screen, then close.
-          this.updateBusyDialog({
-            text: "All done! Finishing up..."
-          });
-
-          // Timed close.
-          jQuery.sap.delayedCall(1500, this, function() {
-            // NOt busy any more
-            this.closeBusyDialog();
-
-            // Send the nav container back to start
-            try {
-              this.getView().byId("idNavContainer").backToTop();
-            } catch (e) {}
-
-            // Navigate to the new data set...
-            this.getRouter().navTo("view-hdb", {
-              dataset_id: oData.id
-            }, !sap.ui.Device.system.phone);
-
-            // Reset the Next buttons
-            this.getView().byId("idNextButton").setText("Next")
-              .detach(this.onSavePress, this)
-              .attach(this.onNextPress, this);
-
-            // Reset the back buttons
-            this.getView().byId("idBackButton").setEnabled(false)
-              .detach(this.onBackBackPress, this)
-              .attach(this.onBackPress, this);
-          });
-        }, this),
-
-        jQuery.proxy(function() { // error
-
-          // Handle connection test errors
-          this._handleSaveError(mError);
-
-          // not busy any more
-          this.closeBusyDialog();
-        }, this)
-      );
-
-      // Save the redshift data...
-      this.getView().getModel("dataset").create("/Hdb", this._getData(), {
-        success: jQuery.proxy(function(oData, mResponse) {
-          // Refresh the dataset listing by raising an event (subscribers will do
-          // the work)
-          this.getEventBus().publish("Detail", "RefreshMaster", {});
-
-          // Update the screen, then close.
-          this.updateBusyDialog({
-            text: "All done! Finishing up..."
-          });
-
-          // Timed close.
-          jQuery.sap.delayedCall(1500, this, function() {
-
-            // NOt busy any more
-            this.closeBusyDialog();
-
-            // Send the nav container back to start
-            try {
-              this.getView().byId("idNavContainer").backToTop();
-            } catch (e) {}
-
-            // Navigate to the new data set...
-            this.getRouter().navTo("view-hdb", {
-              dataset_id: oData.id
-            }, !sap.ui.Device.system.phone);
-
-            // Reset the Back/Next buttons
-            this.getView().byId("idNextButton").setText("Next");
-            this.getView().byId("idBackButton").setEnabled(false);
-          });
-        }, this),
-        error: jQuery.proxy(function(mError) {
-
-          // Handle connection test errors
-          this._handleSaveError(mError);
-
-          // not busy any more
-          this.closeBusyDialog();
-        }, this),
-        async: true,
-      });
     };
 
     /***
@@ -408,13 +400,13 @@ sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
      * to the next screen.
      * @return {boolean} Is the screen valid?
      */
-    Hdb.prototype._validateConnection = function() {
+    Hdb.prototype.validateConnection = function() {
 
       // Valid
       var bValid = true;
 
       // get all mandatory fields and check their state
-      this._getMandtControls().forEach(function(c, i) {
+      this.getMandtControls().forEach(function(c, i) {
         if (c.getValue() === "") {
           bValid = false;
           c.setValueState(sap.ui.core.ValueState.Error);
@@ -428,116 +420,30 @@ sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
     };
 
     /**
-     * Validates the user's selection on the Views screen. Again, presumption is
-     * that they've got views to select from. If none are selected, not going
-     * anywhere
-     * @param  {Control} oControl The ComboBox control
-     * @return {boolean}          Is valid?
-     */
-    Hdb.prototype._validateViews = function(oControl) {
-
-      // Valid
-      var bValid = true;
-
-      // Now we can do the checking
-      var oComboBox = oControl || this.control("idViewsComboBox");
-      if (oComboBox.getSelectedKey() === "" || !oComboBox.getSelectedKey()) {
-        oComboBox.setValueState(sap.ui.core.ValueState.Error);
-        oComboBox.setValueStateText("Please pick only from the available views");
-        return false;
-      } else {
-        oComboBox.setValueState(sap.ui.core.ValueState.None);
-        return true;
-      }
-
-      return bValid;
-    };
-
-    /**
-     * Validates the table selection screen. This is working on the presumption
-     * that the user is picking a table from the list returned. If no tables
-     * are returned, then they're not able to progress past this screen.
-     * @param  {Control} oControl The ComboBox table listing control
-     * @return {boolean}          Is valid?
-     */
-    Hdb.prototype._validateTables = function(oControl) {
-
-      // Valid
-      var bValid = true;
-
-      // Now we can do the checking
-      var oComboBox = oControl || this.control("idTablesComboBox");
-      if (oComboBox.getSelectedKey() === "" || !oComboBox.getSelectedKey()) {
-        oComboBox.setValueState(sap.ui.core.ValueState.Error);
-        oComboBox.setValueStateText("Please pick only from the available tables");
-        return false;
-      } else {
-        oComboBox.setValueState(sap.ui.core.ValueState.None);
-        return true;
-      }
-
-      return bValid;
-    };
-
-    /**
-     * Validates the query text in the supplied control. Basically, we're
-     * checking to make sure that there are no modification SQL operations in
-     * the text. This same check is performed in the back-end, so there's no
-     * getting around it.
-     * @param  {[type]} oControl [description]
-     * @return {[type]}          [description]
-     */
-    Hdb.prototype._validateQuery = function(oControl) {
-
-      // Valid
-      var bValid = true;
-
-      var oTextArea = oControl || this._control("idQueryTextArea");
-      var sQuery = oTextArea.getValue().toLowerCase();
-      var pattern = /^(update|delete|insert|alter|create)(.*)(;)$/i;
-
-      // Now checking
-      if (sQuery === "" || !sQuery) {
-        oTextArea.setValueState(sap.ui.core.ValueState.Error);
-        oTextArea.setValueStateText("Your query is empty. Please supply an SQL query to run.");
-        bValid = false;
-      } else if (pattern.test(sQuery)) {
-        oTextArea.setValueState(sap.ui.core.ValueState.Error);
-        oTextArea.setValueStateText("Cheeky! We're reading data... so only SELECT statements are permitted.");
-        bValid = false;
-      } else {
-        oTextArea.setValueState(sap.ui.core.ValueState.None);
-        bValid = true;
-      }
-
-      return bValid;
-    };
-
-    /**
      * Checks the save screen for validity. This is of course dependent on the
      * screen displayed, so we must check the Query type before applying the
      * correct validation technique. Tables/Views/Query are the three possibilities
      * @return {boolean} Is valid?
      */
-    Hdb.prototype._validateSave = function() {
+    Hdb.prototype.validateNextNext = function() {
 
       // Valid
       var bValid = true;
 
       // Control stub
-      var control = jQuery.proxy(this._control, this);
+      var control = jQuery.proxy(this.control, this);
 
       // For tables, validate using tables. etc.
-      switch (this._getQueryType(false)) {
+      switch (this.getQueryType(false)) {
         case 'tables':
           // Check if the tables combo box is populated with a valid entry
-          bValid = this._validateTables(control("idTablesComboBox"));
+          bValid = this.validateTables(control("idTablesComboBox"));
           break;
         case 'views':
-          bValid = this._validateViews(control("idViewsComboBox"));
+          bValid = this.validateViews(control("idViewsComboBox"));
           break;
         case 'query':
-          bValid = this._validateQuery(control("idQueryTextArea"));
+          bValid = this.validateQuery(control("idQueryTextArea"));
           break;
       }
       return bValid;
@@ -549,9 +455,9 @@ sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
      * which are name, endpoint, port and database.
      * @return {Array} All mandatory controls in array
      */
-    Hdb.prototype._getMandtControls = function() {
+    Hdb.prototype.getMandtControls = function() {
       // Shortcut
-      var control = jQuery.proxy(this._control, this);
+      var control = jQuery.proxy(this.control, this);
       return [
         control("idNameInput"),
         control("idHostInput"),
@@ -581,41 +487,6 @@ sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
     };
 
     /***
-     *    ████████╗███████╗███████╗████████╗
-     *    ╚══██╔══╝██╔════╝██╔════╝╚══██╔══╝
-     *       ██║   █████╗  ███████╗   ██║
-     *       ██║   ██╔══╝  ╚════██║   ██║
-     *       ██║   ███████╗███████║   ██║
-     *       ╚═╝   ╚══════╝╚══════╝   ╚═╝
-     *
-     */
-
-    /**
-     * With the supplied details, we're going to test the connection.
-     * @return {[type]} [description]
-     */
-    Hdb.prototype._test = function(oPromise) {
-
-      // Test HANA; success call back if connection could be made
-      this.getView().getModel("dataset").create("/HdbTest", this._getData(), {
-        async: true,
-        success: jQuery.proxy(function(oData, mResponse) {
-
-          // Handle error with empty, clears Error in the console pane
-          this._handleTestError();
-          oPromise.resolve();
-        }, this),
-        error: jQuery.proxy(function(mError) {
-          // Handle connection test errors
-          this._handleTestError(mError);
-          // not busy any more
-          this.closeBusyDialog();
-          oPromise.reject();
-        }, this)
-      });
-    };
-
-    /***
      *     ██████╗ ██╗   ██╗███████╗██████╗ ██╗   ██╗
      *    ██╔═══██╗██║   ██║██╔════╝██╔══██╗╚██╗ ██╔╝
      *    ██║   ██║██║   ██║█████╗  ██████╔╝ ╚████╔╝
@@ -638,7 +509,7 @@ sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
       });
 
       // Test redshift; success call back if connection could be made
-      this.getView().getModel("dataset").create("/HdbTest", this._getData(), {
+      this.getView().getModel("dataset").create("/HdbTest", this.getData(), {
         async: false,
         success: jQuery.proxy(function(oData, mResponse) {
 
@@ -675,7 +546,7 @@ sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
       });
 
       // Submit the query, and display whatever we get back...
-      this.getView().getModel("dataset").create("/HdbTest", this._getData(), {
+      this.getView().getModel("dataset").create("/HdbTest", this.getData(), {
         async: true,
         success: jQuery.proxy(function(oData, mResponse) {
 
@@ -695,6 +566,73 @@ sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
       });
     };
 
+    /**
+     * Validates the query text in the supplied control. Basically, we're
+     * checking to make sure that there are no modification SQL operations in
+     * the text. This same check is performed in the back-end, so there's no
+     * getting around it.
+     * @param  {[type]} oControl [description]
+     * @return {[type]}          [description]
+     */
+    Hdb.prototype.validateQuery = function(oControl) {
+
+      // Valid
+      var bValid = true;
+
+      var oTextArea = oControl || this.control("idQueryTextArea");
+      var sQuery = oTextArea.getValue().toLowerCase();
+      var pattern = /^(update|delete|insert|alter|create)(.*)(;)$/i;
+
+      // Now checking
+      if (sQuery === "" || !sQuery) {
+        oTextArea.setValueState(sap.ui.core.ValueState.Error);
+        oTextArea.setValueStateText("Your query is empty. Please supply an SQL query to run.");
+        bValid = false;
+      } else if (pattern.test(sQuery)) {
+        oTextArea.setValueState(sap.ui.core.ValueState.Error);
+        oTextArea.setValueStateText("Cheeky! We're reading data... so only SELECT statements are permitted.");
+        bValid = false;
+      } else {
+        oTextArea.setValueState(sap.ui.core.ValueState.None);
+        bValid = true;
+      }
+
+      return bValid;
+    };
+
+    /**
+     * Validates the query text in the supplied control. Basically, we're
+     * checking to make sure that there are no modification SQL operations in
+     * the text. This same check is performed in the back-end, so there's no
+     * getting around it.
+     * @param  {[type]} oControl [description]
+     * @return {[type]}          [description]
+     */
+    Hdb.prototype.validateQuery = function(oControl) {
+
+      // Valid
+      var bValid = true;
+
+      var oTextArea = oControl || this.control("idQueryTextArea");
+      var sQuery = oTextArea.getValue().toLowerCase();
+      var pattern = /^(update|delete|insert|alter|create)(.*)(;)$/i;
+
+      // Now checking
+      if (sQuery === "" || !sQuery) {
+        oTextArea.setValueState(sap.ui.core.ValueState.Error);
+        oTextArea.setValueStateText("Your query is empty. Please supply an SQL query to run.");
+        bValid = false;
+      } else if (pattern.test(sQuery)) {
+        oTextArea.setValueState(sap.ui.core.ValueState.Error);
+        oTextArea.setValueStateText("Cheeky! We're reading data... so only SELECT statements are permitted.");
+        bValid = false;
+      } else {
+        oTextArea.setValueState(sap.ui.core.ValueState.None);
+        bValid = true;
+      }
+
+      return bValid;
+    };
     /***
      *    ██╗   ██╗██╗███████╗██╗    ██╗███████╗
      *    ██║   ██║██║██╔════╝██║    ██║██╔════╝
@@ -710,7 +648,33 @@ sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
      * @return {[type]} [description]
      */
     Hdb.prototype.setupPageViews = function() {
-      this._bindEntityComboBox(this.getView().byId("idViewsComboBox"));
+      this.bindEntityComboBox(this.getView().byId("idViewsComboBox"));
+    };
+
+    /**
+     * Validates the user's selection on the Views screen. Again, presumption is
+     * that they've got views to select from. If none are selected, not going
+     * anywhere
+     * @param  {Control} oControl The ComboBox control
+     * @return {boolean}          Is valid?
+     */
+    Hdb.prototype.validateViews = function(oControl) {
+
+      // Valid
+      var bValid = true;
+
+      // Now we can do the checking
+      var oComboBox = oControl || this.control("idViewsComboBox");
+      if (oComboBox.getSelectedKey() === "" || !oComboBox.getSelectedKey()) {
+        oComboBox.setValueState(sap.ui.core.ValueState.Error);
+        oComboBox.setValueStateText("Please pick only from the available views");
+        return false;
+      } else {
+        oComboBox.setValueState(sap.ui.core.ValueState.None);
+        return true;
+      }
+
+      return bValid;
     };
 
     /***
@@ -729,7 +693,7 @@ sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
      */
     Hdb.prototype.setupPageTables = function() {
       // Bind the page to the Redshift Id
-      this._bindEntityComboBox(this.getView().byId("idTablesComboBox"));
+      this.bindEntityComboBox(this.getView().byId("idTablesComboBox"));
     };
 
     /**
@@ -737,7 +701,7 @@ sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
      * @param  {[type]} oComboBox [description]
      * @return {[type]}           [description]
      */
-    Hdb.prototype._bindEntityComboBox = function(oComboBox) {
+    Hdb.prototype.bindEntityComboBox = function(oComboBox) {
       oComboBox.bindItems({
         path: 'dataset>/HdbEntities',
         filters: [new sap.ui.model.Filter({
@@ -754,6 +718,32 @@ sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
           text: "{dataset>entity}"
         })
       });
+    };
+
+    /**
+     * Validates the table selection screen. This is working on the presumption
+     * that the user is picking a table from the list returned. If no tables
+     * are returned, then they're not able to progress past this screen.
+     * @param  {Control} oControl The ComboBox table listing control
+     * @return {boolean}          Is valid?
+     */
+    Hdb.prototype.validateTables = function(oControl) {
+
+      // Valid
+      var bValid = true;
+
+      // Now we can do the checking
+      var oComboBox = oControl || this.control("idTablesComboBox");
+      if (oComboBox.getSelectedKey() === "" || !oComboBox.getSelectedKey()) {
+        oComboBox.setValueState(sap.ui.core.ValueState.Error);
+        oComboBox.setValueStateText("Please pick only from the available tables");
+        return false;
+      } else {
+        oComboBox.setValueState(sap.ui.core.ValueState.None);
+        return true;
+      }
+
+      return bValid;
     };
 
     /***
@@ -846,7 +836,7 @@ sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
      * Retrieves data from the model, does some formatting, and returns.
      * @return {object} OData object
      */
-    Hdb.prototype._getData = function() {
+    Hdb.prototype.getData = function() {
 
       var value = jQuery.proxy(this._value, this);
 
@@ -871,7 +861,7 @@ sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
       // know to build a HANA select using the table/view. Wrap in a try/catch
       // incase the secondary page hasn't rendered yet.
       try {
-        switch (this._getQueryType(false)) {
+        switch (this.getQueryType(false)) {
           case 'tables':
             oData.query = value("idTablesComboBox");
             break;
@@ -895,7 +885,7 @@ sap.ui.define(["jquery.sap.global", "view/data/CreateController"],
      * as we use this value often. Also, optionally returns inflected
      * @return {[type]} [description]
      */
-    Hdb.prototype._getQueryType = function(bInflect) {
+    Hdb.prototype.getQueryType = function(bInflect) {
       var sType = this.getView().byId("idQueryMethodSelect").getSelectedKey();
       return (bInflect ? sType.charAt(0).toUpperCase() + sType.slice(1) : sType.toLowerCase());
     };

@@ -215,10 +215,12 @@
 	                text="Step 3 - Select date field"
 	                level="H1"
 	                titleStyle="H1" />
-								<Text text="And we're off! Alright! I've listed your data set fields
-									below - to get things rolling, could you please select the field
-									that represents Date. If you have multiple Date fields, you'll need to
-									pick the one holding daily date values." />
+								<Text text="And we're off! I've listed your data set fields
+									below - when you created your data set, you identified the field
+									representing date. It should be listed below, in bold. Please double-check.
+									If this doesn't look correct, head back to the data set and adjust
+									the fields accordingly. Otherwise, hit Next." />
+
 								<!-- Column selection -->
 								<core:Fragment
 									id="idDateFieldsFragment"
@@ -257,7 +259,7 @@
 	                titleStyle="H1" />
 								<Text text="Great, thanks for that. Could you now identify the field
 									you'd like to forecast (this is the field for which you'll be creating
-									future values for). Note, all Text based fields have been removed from
+									future values for). Note, all Text and Date-based fields have been removed from
 									this listing as we can only forecast Number and Decimal types." />
 								<!-- Column selection -->
 								<core:Fragment

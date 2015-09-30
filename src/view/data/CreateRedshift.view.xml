@@ -175,7 +175,7 @@
 									<TextArea
 										id="idTestConsoleTextArea"
 										rows="5"
-										columns="20"
+										cols="20"
 										visible="true"
 										value="Console..."
 										enabled="false">
@@ -231,7 +231,7 @@
 		              <TextArea
 		                id="idQueryTextArea"
 										rows="5"
-										columns="20"
+										cols="20"
 										value="{redshift>/query}"
 										placeholder="e.g. select * from data_table">
 										<layoutData>
@@ -268,7 +268,7 @@
 									<TextArea
 										id="idSaveConsoleTextArea"
 										rows="10"
-										columns="20"
+										cols="20"
 										visible="true"
 										value="Console..."
 										enabled="false">
@@ -403,6 +403,40 @@
 		          </f:SimpleForm>
 		        </l:content>
 		      </l:Grid>
+				</Page>
+
+
+				<!--
+				██████╗ ███████╗███████╗██╗███╗   ██╗██╗████████╗██╗ ██████╗ ███╗   ██╗
+				██╔══██╗██╔════╝██╔════╝██║████╗  ██║██║╚══██╔══╝██║██╔═══██╗████╗  ██║
+				██║  ██║█████╗  █████╗  ██║██╔██╗ ██║██║   ██║   ██║██║   ██║██╔██╗ ██║
+				██║  ██║██╔══╝  ██╔══╝  ██║██║╚██╗██║██║   ██║   ██║██║   ██║██║╚██╗██║
+				██████╔╝███████╗██║     ██║██║ ╚████║██║   ██║   ██║╚██████╔╝██║ ╚████║
+				╚═════╝ ╚══════╝╚═╝     ╚═╝╚═╝  ╚═══╝╚═╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝
+				-->
+
+				<Page
+					id="idPageDefinition"
+					enableScrolling="true"
+					title="Data set definition"
+					showHeader="false">
+					<content>
+						<Panel
+							class="sapUiSmallMarginTop"
+							expandable="false"
+							headerText="">
+							<Text
+								text="Lastly, please pick the field that represents Date. Additionally, if you notice that
+								any of the fields listed below are not of the correct type, you may change them
+								by hitting the data type link." />
+						</Panel>
+
+						<!-- Column selection -->
+						<core:Fragment
+							id="idFieldsFragment"
+							fragmentName="view.data.SchemaFields"
+							type="XML" />
+					</content>
 				</Page>
 			</pages>
 		</NavContainer>

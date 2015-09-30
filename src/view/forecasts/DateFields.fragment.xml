@@ -4,7 +4,8 @@
     id="idDateFieldTable"
     inset="false"
     noDataText="No Definition defined..."
-    mode="SingleSelectLeft"
+    mode="None"
+    editable="false"
     class="sapUiContentPadding ffaDataSetDefinitionTable">
     <columns>
       <Column hAlign="Left">

@@ -20,7 +20,6 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/DatasetAuth'],
       this._sFolderId = "";
       this._aBatchOps = [];
       this._oFields = {
-        date: "",
         forecast: "",
         variables: []
       };
@@ -701,11 +700,6 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/DatasetAuth'],
       oTable.bindItems({
         path: "dataset>Dimensions",
         sorter: [new sap.ui.model.Sorter("index", false)],
-        filters: [new sap.ui.model.Filter({
-          path: "type",
-          operator: sap.ui.model.FilterOperator.NE,
-          value1: "text"
-        })],
         template: sap.ui.xmlfragment("view.forecasts.DateField")
       });
 
@@ -731,37 +725,37 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/DatasetAuth'],
      * @param  {Function} error Error callback
      */
     Wizard.prototype.validateDatePage = function(done, error) {
-      // Make sure a field has been selected.
-      var oTable = this.getView().byId(sap.ui.core.Fragment.createId("idDateFieldsFragment", "idDateFieldTable"));
-      var oItem = null;
-
-      // Spin through items, and make sure only one is selected, and that it is of type Date
-      var aItems = oTable.getSelectedItems();
-      if (aItems.length === 0) {
-        this.showInfoAlert(
-          "Eeep! No Date field was selected. We really, really need this...",
-          "Date field selection",
-          false /* bCompact */
-        );
-        return error();
-      } else {
-        // This is a single select list, so there's only one item to pick
-        oItem = aItems[0];
-      }
-
-      // if this is not type date, we have a problem...
-      var oContext = oItem.getBindingContext("dataset");
-      if (oContext.getProperty("type").toLowerCase() !== "date") {
-        this.showInfoAlert(
-          "Erm, that's not a Date field. Please only select Date fields...",
-          "Date field selection",
-          false /* bCompact */
-        );
-        return error();
-      }
-
-      // Remember this dimension as the date dimension.
-      this._oFields.date = oContext.getProperty("id");
+      // // Make sure a field has been selected.
+      // var oTable = this.getView().byId(sap.ui.core.Fragment.createId("idDateFieldsFragment", "idDateFieldTable"));
+      // var oItem = null;
+      //
+      // // Spin through items, and make sure only one is selected, and that it is of type Date
+      // var aItems = oTable.getSelectedItems();
+      // if (aItems.length === 0) {
+      //   this.showInfoAlert(
+      //     "Eeep! No Date field was selected. We really, really need this...",
+      //     "Date field selection",
+      //     false /* bCompact */
+      //   );
+      //   return error();
+      // } else {
+      //   // This is a single select list, so there's only one item to pick
+      //   oItem = aItems[0];
+      // }
+      //
+      // // if this is not type date, we have a problem...
+      // var oContext = oItem.getBindingContext("dataset");
+      // if (oContext.getProperty("type").toLowerCase() !== "date") {
+      //   this.showInfoAlert(
+      //     "Erm, that's not a Date field. Please only select Date fields...",
+      //     "Date field selection",
+      //     false /* bCompact */
+      //   );
+      //   return error();
+      // }
+      //
+      // // Remember this dimension as the date dimension.
+      // this._oFields.date = oContext.getProperty("id");
       done();
     };
 
@@ -1130,15 +1124,6 @@ sap.ui.define(['jquery.sap.global', 'view/forecasts/DatasetAuth'],
         "POST",
         oForecast
       ));
-
-      // Add the date field, selected by the user
-      this._aBatchOps.push(oModel.createBatchOperation(
-        "/Fields",
-        "POST", {
-          forecast_id: this._sForecastId,
-          dimension_id: this._oFields.date,
-          type: "date"
-        }));
 
       // Add the forecast field, which we will predict
       this._aBatchOps.push(oModel.createBatchOperation(

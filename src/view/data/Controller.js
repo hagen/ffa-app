@@ -69,8 +69,9 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
      * @param  {[type]} sId [description]
      * @return {[type]}     [description]
      */
-    Controller.prototype._control = function(sId) {
-      return this.getView().byId(sId);
+    Controller.prototype._control =
+      Controller.prototype.control = function(sId) {
+      return this.getControl(sId);
     };
 
     /**
@@ -78,8 +79,9 @@ sap.ui.define(["jquery.sap.global", "com/ffa/dash/util/Controller"],
      * @param  {[type]} sId [description]
      * @return {[type]}     [description]
      */
-    Controller.prototype._value = function (sId) {
-      var oControl = this._control(sId);
+    Controller.prototype._value =
+      Controller.prototype.value = function (sId) {
+      var oControl = this.control(sId);
       if (oControl instanceof sap.m.CheckBox) {
         return (oControl.getSelected() ? 'X' : ' ');
       } else if (oControl instanceof sap.m.Select){

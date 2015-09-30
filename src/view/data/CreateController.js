@@ -60,10 +60,13 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
       // update the link text to read the new type; ensure the original type is
       // retained
       var l = this._oLink;
-      if (!l.data("original")) {
-        l.data("original", l.getText());
-      }
       l.setText(oItem.getText());
+      var oContext = l.getBindingContext("dataset");
+      var oModel = oContext.getModel();
+      oModel.setProperty("type", oItem.getText().toLowerCase(), oContext, true);
+      if (oModel.hasPendingChanges()) {
+        oModel.submitChanges();
+      }
 
       // Close the dialog
       this.onTypeDialogClose(null);
@@ -81,12 +84,12 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
     };
 
     /***
-     *    ██████╗  █████╗ ████████╗ ██████╗██╗  ██╗
-     *    ██╔══██╗██╔══██╗╚══██╔══╝██╔════╝██║  ██║
-     *    ██████╔╝███████║   ██║   ██║     ███████║
-     *    ██╔══██╗██╔══██║   ██║   ██║     ██╔══██║
-     *    ██████╔╝██║  ██║   ██║   ╚██████╗██║  ██║
-     *    ╚═════╝ ╚═╝  ╚═╝   ╚═╝    ╚═════╝╚═╝  ╚═╝
+     *    ███████╗ █████╗ ██╗   ██╗███████╗
+     *    ██╔════╝██╔══██╗██║   ██║██╔════╝
+     *    ███████╗███████║██║   ██║█████╗
+     *    ╚════██║██╔══██║╚██╗ ██╔╝██╔══╝
+     *    ███████║██║  ██║ ╚████╔╝ ███████╗
+     *    ╚══════╝╚═╝  ╚═╝  ╚═══╝  ╚══════╝
      *
      */
 
@@ -95,9 +98,9 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
      * type Date. If not, then prompt the user to select. Note, we are comparing
      * the text of the Link control within the table's row items, as this is
      * a true reflection of the intended field type
-     * @return {Boolean} Is a date field selected?
+     * @param {Function} fnCallback The callback for success
      */
-    Controller.prototype.isDateSelected = function() {
+    Controller.prototype.saveDateField = function(fnCallback) {
       var oTable = this.getView().byId(
         sap.ui.core.Fragment.createId("idFieldsFragment", "idFieldsTable")
       );
@@ -110,18 +113,17 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
           "Select date field",
           sap.ui.Device.system.phone
         );
-        return false;
       }
 
       // else, we deal with the first item only
-      var oItem = aItems[0];
+      var oRow = aItems[0];
 
       // use the item's text to check, as the item may have changed type before
       // saving, and we haven't yet persisted to the model. The link Control
       // is the second in the list of items
-      var aItems = oItem.getItems()[1].getText().toLowerCase();
+      var aCells = oRow.getCells();
       var sType = "";
-      aItems.forEach(function(control, index) {
+      aCells.forEach(function(control, index) {
         if (control instanceof sap.m.Link) {
           sType = control.getText().toLowerCase();
           return;
@@ -131,50 +133,61 @@ sap.ui.define(["jquery.sap.global", "view/data/Controller"],
       // Now we have the type. Let's make sure it's Date
       if (sType !== 'date') {
         this.showErrorAlert(
-          "The selected field is not of type Date. Please only select fields marked as Date type",
+          "The selected field is not of type Date. Please only select fields marked as type Date",
           "Invalid Date field",
           sap.ui.Device.system.phone
         );
-        return false;
       }
 
-      // All good, return happy
-      return true;
+      // Now we save the date field...
+      var sPath = "/Dimensions('" + oRow.getBindingContext("dataset").getProperty("id") + "')";
+      var oModel = this.getView().getModel("dataset").update(sPath, { is_date : "X" }, {
+        merge : true,
+        async : true,
+        success : fnCallback,
+        error : jQuery.proxy(function(mError) {
+          // hide busy
+          this.hideBusyDialog();
+
+          // show error Alert
+          this.showErrorAlert(
+            "Yijes. There was a problem saving your data set. I have no more information for you.",
+            "Error saving data set",
+            sap.ui.Device.system.phone
+          );
+
+          // maybe handle auth error
+          this._maybeHandleAuthError(mError);
+        }, this)
+      });
     };
 
-    /**
-     * Firstly, we take any changes to the types of the fields in the table, by
-     * checking their CustomData for an 'original' key. If found, this field
-     * needs it's type updated to the value in the Link text
-     * @param  {Function} fnSuccess Success callback
-     * @param  {Function} fnError   Error callback
+    /***
+     *    ██████╗ ███████╗██╗     ███████╗████████╗███████╗
+     *    ██╔══██╗██╔════╝██║     ██╔════╝╚══██╔══╝██╔════╝
+     *    ██║  ██║█████╗  ██║     █████╗     ██║   █████╗
+     *    ██║  ██║██╔══╝  ██║     ██╔══╝     ██║   ██╔══╝
+     *    ██████╔╝███████╗███████╗███████╗   ██║   ███████╗
+     *    ╚═════╝ ╚══════╝╚══════╝╚══════╝   ╚═╝   ╚══════╝
+     *
      */
-    Controller.prototype.saveDimensions = function(fnSuccess, fnError) {
-
-
-    };
 
     /**
-     * Builds a batch request using the supplied
-     * @param  {Model} oModel OData Model
-     * @return {Array}        Batch operations
+     * Deletes a recently created data set
+     * @param  {String} sId [description]
+     * @param  {Deferred} oPromise [description]
      */
-    Controller.prototype.createDimensionsBatch = function(oModel) {
-
-      // Collect batch requests
-      var aBatch = [];
-
-      // And the links...
-      this._aLinks.forEach(function(link, index) {
-        var sType = link.data("original");
-        if (sType) {
-          var sId = link.getBindingContext("dataset").getProperty("id"); // Dimension Id
-          aBatch.push(oModel.createBatchOperation("/Dimensions('" + sId + "')", "MERGE", {
-            type: link.getText().toLowerCase()
-          }));
-        }
-      }, this);
-
-      return aBatch;
+    Controller.prototype.delete = function(sId, oPromise) {
+      if(!sId) {
+        return;
+      }
+      this.getView().getModel("dataset").remove("/DataSets('" + sId + "')", {
+        success: jQuery.proxy(function(oData, mResponse) {
+          oPromise.resolve();
+        }, this),
+        error: jQuery.proxy(function(mError) {
+          oPromise.resolve();
+        }, this)
+      });
     };
   });

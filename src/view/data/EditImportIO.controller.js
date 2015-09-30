@@ -1,11 +1,11 @@
-jQuery.sap.declare("view.data.EditSheets");
+jQuery.sap.declare("view.data.EditImportIO");
 
 // Provides controller view.Wizard
 sap.ui.define(["jquery.sap.global", "view/data/EditController"],
   function(jQuery, Controller) {
     "use strict";
 
-    var Sheets = Controller.extend("view.data.EditSheets", /** @lends view.data.EditSheets.prototype */ {
+    var IO = Controller.extend("view.data.EditImportIO", /** @lends view.data.EditImportIO.prototype */ {
 
     });
 
@@ -13,31 +13,31 @@ sap.ui.define(["jquery.sap.global", "view/data/EditController"],
      * On init handler. We are setting up the route matched handler, because
      * it is possible to navigate directly to this page.
      */
-    Sheets.prototype.onInit = function() {
+    IO.prototype.onInit = function() {
 
       // handle route matched
-      this.getRouter().getRoute("edit-google").attachPatternMatched(this._onRouteMatched, this);
+      this.getRouter().getRoute("edit-importio").attachPatternMatched(this._onRouteMatched, this);
     };
 
     /**
      *
      */
-    Sheets.prototype.onExit = function() {};
+    IO.prototype.onExit = function() {};
 
     /**
      *
      */
-    Sheets.prototype.onBeforeRendering = function() {};
+    IO.prototype.onBeforeRendering = function() {};
 
     /**
      *
      */
-    Sheets.prototype.onAfterRendering = function() {};
+    IO.prototype.onAfterRendering = function() {};
 
     /**
      * Route matched handler fires up the Wizard straight away
      */
-    Sheets.prototype._onRouteMatched = function(oEvent) {
+    IO.prototype._onRouteMatched = function(oEvent) {
       this._checkMetaDataLoaded("dataset");
       var oParameters = oEvent.getParameters();
 
@@ -47,11 +47,11 @@ sap.ui.define(["jquery.sap.global", "view/data/EditController"],
         this._sId = oParameters.arguments.dataset_id;
 
         // Bind the view to the data set Id
-        var oPage = this.getView().byId("idSheetsPage");
+        var oPage = this.getView().byId("idImportIOPage");
 
         // Bind the destination page with the path and expand params
         oPage.bindElement("dataset>/DataSets('" + this._sId + "')", {
-          expand: "Dimensions,Sheets"
+          expand: "Dimensions,ImportIO"
         });
       }
     };
@@ -71,7 +71,7 @@ sap.ui.define(["jquery.sap.global", "view/data/EditController"],
      * their data set, and save any other changes
      * @param  {Event} oEvent Button press event
      */
-    Sheets.prototype.onDonePress = function(oEvent) {
+    IO.prototype.onDonePress = function(oEvent) {
 
       // Easier
       var get = jQuery.proxy(this.getControl, this);
@@ -79,7 +79,7 @@ sap.ui.define(["jquery.sap.global", "view/data/EditController"],
 
       // Validaty checks
       var oControl = get("idNameInput");
-      if (!this._isValid(oControl, oControl.getValue().trim())) {
+      if (!this.isValid(oControl, oControl.getValue().trim())) {
         return;
       }
 
@@ -94,9 +94,8 @@ sap.ui.define(["jquery.sap.global", "view/data/EditController"],
       aBatch.push(oModel.createBatchOperation("/DataSets('" + this._sId + "')", "MERGE", {
         name: get("idNameInput").getValue(),
       }));
-      aBatch.push(oModel.createBatchOperation("/GoogleSheets('" + this._sId + "')", "MERGE", {
-        title: get("idNameInput").getValue(),
-        headers: (get("idHeadersCheckbox").getSelected() ? "X" : " ")
+      aBatch.push(oModel.createBatchOperation("/ImportIO('" + this._sId + "')", "MERGE", {
+        title: get("idNameInput").getValue()
       }));
 
       // Build the dimensions batch requests, and add to our existing payload
@@ -115,7 +114,7 @@ sap.ui.define(["jquery.sap.global", "view/data/EditController"],
           this._oLink = null;
 
           // Nav Back
-          this.getRouter().navTo("view-google", {
+          this.getRouter().navTo("view-importio", {
             dataset_id: this._sId
           }, !sap.ui.Device.system.phone);
 
@@ -136,7 +135,7 @@ sap.ui.define(["jquery.sap.global", "view/data/EditController"],
      * values, and then nav back
      * @param  {Event} oEvent Button event
      */
-    Sheets.prototype.onCancelPress = function(oEvent) {
+    IO.prototype.onCancelPress = function(oEvent) {
 
       // Easier
       var get = jQuery.proxy(this.getControl, this);
@@ -147,12 +146,8 @@ sap.ui.define(["jquery.sap.global", "view/data/EditController"],
         .setValueState(sap.ui.core.ValueState.None)
         .setValueStateText("");
 
-      // and the check box
-      oControl = get("idHeadersCheckbox");
-      oControl.setSelected(oControl.data("original") === "X");
-
-      // The key input has it's value state text removed
-      get("idKeyInput").setValueStateText("");
+      // The URL input has it's value state text removed
+      get("idUrlInput").setValueStateText("");
 
       // And the links
       this._aLinks.forEach(function(link, index) {
@@ -167,7 +162,7 @@ sap.ui.define(["jquery.sap.global", "view/data/EditController"],
       this._oLink = null;
 
       // Navigate backwards
-      this.getRouter().navTo("view-google", {
+      this.getRouter().navTo("view-importio", {
         dataset_id: this._sId
       }, !sap.ui.Device.system.phone);
     };
@@ -187,16 +182,16 @@ sap.ui.define(["jquery.sap.global", "view/data/EditController"],
      * data set name
      * @param  {Event} oEvent Change event
      */
-    Sheets.prototype.onNameInputChange = function(oEvent) {
+    IO.prototype.onNameInputChange = function(oEvent) {
       // Check that the value is not empty
-      this._isValid(oEvent.getSource(), oEvent.getParameter("value").trim());
+      this.isValid(oEvent.getSource(), oEvent.getParameter("value").trim());
     };
 
     /**
      * Checks if the entered details are valid.
      * @return {Boolean} Valid?
      */
-    Sheets.prototype._isValid = function(oInput, sValue) {
+    IO.prototype.isValid = function(oInput, sValue) {
 
       var bValid = true;
 
@@ -214,6 +209,6 @@ sap.ui.define(["jquery.sap.global", "view/data/EditController"],
       return bValid;
     };
 
-    return Sheets;
+    return IO;
 
   }, /* bExport= */ true);

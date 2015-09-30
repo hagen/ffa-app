@@ -174,7 +174,7 @@
 									<TextArea
 										id="idTestConsoleTextArea"
 										rows="5"
-										columns="20"
+										cols="20"
 										visible="true"
 										value="Console..."
 										enabled="false">
@@ -230,7 +230,7 @@
 		              <TextArea
 		                id="idQueryTextArea"
 										rows="5"
-										columns="20"
+										cols="20"
 										value="{hana>/query}"
 										placeholder='e.g. select * from "SCHEMA"."package.path.to.data_table";'>
 										<layoutData>
@@ -267,7 +267,7 @@
 									<TextArea
 										id="idSaveConsoleTextArea"
 										rows="10"
-										columns="20"
+										cols="20"
 										visible="true"
 										value="Console..."
 										enabled="false">
@@ -400,6 +400,15 @@
 					</l:Grid>
 				</Page>
 
+				<!--
+				██████╗ ███████╗███████╗██╗███╗   ██╗██╗████████╗██╗ ██████╗ ███╗   ██╗
+				██╔══██╗██╔════╝██╔════╝██║████╗  ██║██║╚══██╔══╝██║██╔═══██╗████╗  ██║
+				██║  ██║█████╗  █████╗  ██║██╔██╗ ██║██║   ██║   ██║██║   ██║██╔██╗ ██║
+				██║  ██║██╔══╝  ██╔══╝  ██║██║╚██╗██║██║   ██║   ██║██║   ██║██║╚██╗██║
+				██████╔╝███████╗██║     ██║██║ ╚████║██║   ██║   ██║╚██████╔╝██║ ╚████║
+				╚═════╝ ╚══════╝╚═╝     ╚═╝╚═╝  ╚═══╝╚═╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝
+				-->
+
 				<Page
 					id="idPageDefinition"
 					enableScrolling="true"
@@ -407,6 +416,7 @@
 					showHeader="false">
 					<content>
 						<Panel
+							class="sapUiSmallMarginTop"
 							expandable="false"
 							headerText="">
 							<Text
@@ -414,18 +424,12 @@
 								any of the fields listed below are not of the correct type, you may change them
 								by hitting the data type link." />
 						</Panel>
-						<l:Grid
-							defaultSpan="L12 M12 S12"
-							width="auto"
-							class="sapUiSmallMargin">
-							<l:content>
-								<!-- Column selection -->
-								<core:Fragment
-									id="idFieldsFragment"
-									fragmentName="view.data.SchemaFields"
-									type="XML" />
-							</l:content>
-						</l:Grid>
+
+						<!-- Column selection -->
+						<core:Fragment
+							id="idFieldsFragment"
+							fragmentName="view.data.SchemaFields"
+							type="XML" />
 					</content>
 				</Page>
 

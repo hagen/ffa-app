@@ -173,7 +173,7 @@ sap.ui.define(['jquery.sap.global', 'view/data/Controller'],
 
         // And we may also need to select the master list item, if we
         // navigated here without using the list.
-        this._maybeSelectMasterListItem(sPath);
+        this.maybeSelectMasterListItem(sPath);
       }, this));
     };
 
@@ -183,7 +183,7 @@ sap.ui.define(['jquery.sap.global', 'view/data/Controller'],
      * for navigation - rather, the user navigated with a URL
      * @param  {string} sPath Path to check selected item against
      */
-    DataSets.prototype._maybeSelectMasterListItem = function(sPath) {
+    DataSets.prototype.maybeSelectMasterListItem = function(sPath) {
 
       jQuery.when(this._oMasterLoadedPromise).then(jQuery.proxy(function() {
         var oList = this.getView().byId("idDataSetMasterList");
@@ -198,6 +198,7 @@ sap.ui.define(['jquery.sap.global', 'view/data/Controller'],
               // all others.
               if (!aItems[i].getSelected()) {
                 aItems[i].setSelected(true);
+                this._sId = aItems[i].getBindingContext("dataset").getProperty("id");
                 break;
               }
             }
@@ -215,7 +216,7 @@ sap.ui.define(['jquery.sap.global', 'view/data/Controller'],
      */
     DataSets.prototype.handleSelectMasterListItem = function(sChannel, sEvent, oData) {
       // Hand-off - maybeSelect will do this for us
-      this._maybeSelectMasterListItem("/DataSets('" + oData.dataset_id + "')");
+      this.maybeSelectMasterListItem("/DataSets('" + oData.dataset_id + "')");
     };
 
     /**
@@ -298,7 +299,7 @@ sap.ui.define(['jquery.sap.global', 'view/data/Controller'],
 
       // and because the toggle function switches all list items into Inactive
       // mode, we may need to reselect the currently routed dataset, if any.
-      this._maybeSelectMasterListItem("/DataSets('" + this._sId + "')");
+      this.maybeSelectMasterListItem("/DataSets('" + this._sId + "')");
     };
 
     /**

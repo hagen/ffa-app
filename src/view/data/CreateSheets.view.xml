@@ -41,6 +41,16 @@
 		<NavContainer
 			id="idNavContainer">
 			<pages>
+
+				<!--
+				 ██████╗ ██████╗ ███╗   ██╗███████╗██╗ ██████╗
+				██╔════╝██╔═══██╗████╗  ██║██╔════╝██║██╔════╝
+				██║     ██║   ██║██╔██╗ ██║█████╗  ██║██║  ███╗
+				██║     ██║   ██║██║╚██╗██║██╔══╝  ██║██║   ██║
+				╚██████╗╚██████╔╝██║ ╚████║██║     ██║╚██████╔╝
+				╚═════╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝     ╚═╝ ╚═════╝
+				-->
+
 				<Page
 					id="idPage1"
 					enableScrolling="false"
@@ -124,7 +134,7 @@
 									<TextArea
 										id="idTestConsoleTextArea"
 										rows="10"
-										columns="20"
+										cols="20"
 										visible="true"
 										value="Console..."
 										enabled="false">
@@ -138,6 +148,15 @@
 						</l:content>
 					</l:Grid>
 				</Page>
+
+				<!--
+				██████╗ ███████╗███████╗██╗███╗   ██╗██╗████████╗██╗ ██████╗ ███╗   ██╗
+				██╔══██╗██╔════╝██╔════╝██║████╗  ██║██║╚══██╔══╝██║██╔═══██╗████╗  ██║
+				██║  ██║█████╗  █████╗  ██║██╔██╗ ██║██║   ██║   ██║██║   ██║██╔██╗ ██║
+				██║  ██║██╔══╝  ██╔══╝  ██║██║╚██╗██║██║   ██║   ██║██║   ██║██║╚██╗██║
+				██████╔╝███████╗██║     ██║██║ ╚████║██║   ██║   ██║╚██████╔╝██║ ╚████║
+				╚═════╝ ╚══════╝╚═╝     ╚═╝╚═╝  ╚═══╝╚═╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝
+				-->
 
 				<Page
 					id="idPage2"
@@ -153,43 +172,11 @@
 							column is here, but isn't listed as type Date, you can change the column data type
 							by hitting the data type link." />
 					</Panel>
-					<Table
-						id="idDimensionsTable"
-				    growing="false"
-				    inset="false"
-				    items="{
-				      path: 'dataset>Dimensions',
-				      sorter: {
-				        path: 'index'
-				      }
-				    }"
-				    noDataText="No Definition defined..."
-				    mode="SingleSelectLeft"
-				    class="sapUiContentPadding ffaDataSetDefinitionTable">
-				    <columns>
-				      <Column hAlign="Left">
-				        <Text  text="Field name"/>
-				      </Column>
-				      <Column hAlign="Left">
-				        <Text  text="Type"/>
-				      </Column>
-				      <Column hAlign="Right">
-				        <Text  text="Position (index)"/>
-				      </Column>
-				    </columns>
-				    <items>
-				      <ColumnListItem
-				        selected="{${dataset>type}.toLowerCase() === 'date'}">
-				        <cells>
-				          <Text  text="{dataset>name}"/>
-				          <Link
-				            text="{= ${dataset>type}.charAt(0).toUpperCase() + ${dataset>type}.slice(1) }"
-				            press="onTypeLinkPress"/>
-				          <ObjectNumber  number="{= ${dataset>index} + 1 }"/>
-				        </cells>
-				      </ColumnListItem>
-				    </items>
-				  </Table>
+					<!-- Column selection -->
+					<core:Fragment
+						id="idFieldsFragment"
+						fragmentName="view.data.SchemaFields"
+						type="XML" />
 				</Page>
 			</pages>
 		</NavContainer>
