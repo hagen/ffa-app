@@ -61,7 +61,7 @@
 					<StandardListItem
 						icon="{= ${profile>endda}.getFullYear() !== 9999 ? 'sap-icon://status-inactive' : 'sap-icon://accept' }"
 						title="{profile>Plan/info}"
-						info="{= ${profile>endda}.getFullYear() !== 9999 ? ${ path: 'profile>begda',	formatter : 'util.DateFormatter.ddMMyyyy'} + ' to ' + ${ path: 'profile>endda', formatter : 'util.DateFormatter.ddMMyyyy'} : 'Commenced ' + ${ path : 'profile>begda', formatter : 'util.DateFormatter.ddMMyyyy'} }" />
+						info="{= ${profile>endda}.getFullYear() !== 9999 ? ${ path: 'profile>begda',	formatter : 'com.ffa.hpc.util.DateFormatter.ddMMyyyy'} + ' to ' + ${ path: 'profile>endda', formatter : 'com.ffa.hpc.util.DateFormatter.ddMMyyyy'} : 'Commenced ' + ${ path : 'profile>begda', formatter : 'com.ffa.hpc.util.DateFormatter.ddMMyyyy'} }" />
 				</List>
 			</content>
 		</Panel>

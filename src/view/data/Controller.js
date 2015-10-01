@@ -2,7 +2,7 @@ jQuery.sap.declare("com.ffa.hpc.view.data.Controller");
 // Require the short Id gen library
 jQuery.sap.require("com.ffa.hpc.thirdparty.shortid.ShortId");
 
-// Provides controller util.Controller
+// Provides controller com.ffa.hpc.util.Controller
 sap.ui.define(["jquery.sap.global", "com/ffa/hpc/util/Controller"],
   function(jQuery, UtilController) {
     "use strict";

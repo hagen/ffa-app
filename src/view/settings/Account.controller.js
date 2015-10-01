@@ -1,6 +1,6 @@
 jQuery.sap.declare("com.ffa.hpc.view.settings.Account");
-jQuery.sap.require("util.DateFormatter");
-jQuery.sap.require("util.Collection");
+jQuery.sap.require("com.ffa.hpc.util..DateFormatter");
+jQuery.sap.require("com.ffa.hpc.util..Collection");
 
 // Provides controller view.Wizard
 sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/settings/Controller"],

@@ -1,6 +1,6 @@
 jQuery.sap.declare("com.ffa.hpc.view.data.ViewController");
 
-// Provides controller util.Controller
+// Provides controller com.ffa.hpc.util.Controller
 sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/data/Controller"],
   function(jQuery, DataController) {
     "use strict";
