@@ -106,6 +106,9 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/data/Controller"],
 
     /**
      * Builds a batch request using the supplied
+     * As of #14, this function is no longer used. We do not allow changes
+     * to data set schema after creation, due to the detremental effects on forecast
+     * execution.
      * @param  {Model} oModel OData Model
      * @return {Array}        Batch operations
      */

@@ -29,10 +29,7 @@
       <ColumnListItem>
         <cells>
           <Text text="{dataset>name}"/>
-          <Link
-            subtle="true"
-            emphasized="false"
-            press="onDefinitionLinkPress"
+          <Text
             text="{= ${dataset>type}.charAt(0).toUpperCase() + ${dataset>type}.slice(1) }" />
           <ObjectNumber number="{= ${dataset>index} + 1 }"/>
         </cells>

@@ -85,7 +85,7 @@
 					</f:SimpleForm>
 				</l:content>
 			</l:Grid>
-			<core:Fragment id="idDefinitionFragment" fragmentName="com.ffa.hpc.view.data.EditDefinition" type="XML" />
+			<core:Fragment id="idDefinitionFragment" fragmentName="com.ffa.hpc.view.data.ViewDefinition" type="XML" />
 		</content>
 	</Page>
 </mvc:View>

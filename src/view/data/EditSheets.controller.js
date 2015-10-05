@@ -100,7 +100,10 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/data/EditController"],
       }));
 
       // Build the dimensions batch requests, and add to our existing payload
-      aBatch = aBatch.concat(this._createDimensionsBatch(oModel));
+
+      // Removed as per #14
+      // we are no longer allowing change to data set schema
+      //aBatch = aBatch.concat(this._createDimensionsBatch(oModel));
 
       // Add and Submit!
       oModel.addBatchChangeOperations(aBatch);
