@@ -60,7 +60,7 @@ com.ffa.hpc.util.DateFormatter = {
 	 * @param ?sPattern Optional pattern - defaul is dd/MM/yyyy
 	 */
 	formatDate : function(oDate) {
-		return util.DateFormatter.formatDatePattern(oDate, "dd/MM/yyyy");
+		return com.ffa.hpc.util.DateFormatter.formatDatePattern(oDate, "dd/MM/yyyy");
 	},
 
 	/**
