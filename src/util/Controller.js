@@ -36,12 +36,11 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
     /**
      * Generic auth handler for all Odata requests. If a 401 is returned,
      * user must log in again.
-     * @param  {[type]} mError [description]
-     * @return {[type]}        [description]
+     * @param  {Error} mError Error object from AJAX call
      */
     Controller.prototype._maybeHandleAuthError = function(mError) {
       if ([401, 400].indexOf(mError.response.statusCode) > -1) {
-        // SOmetimes, the busy dialog is up when this happens.
+        // Sometimes, the busy dialog is up when this happens.
         this.hideBusyDialog();
 
         // and now back to log-in
@@ -113,6 +112,35 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
         window.localStorage.removeItem('_link');
       }
     };
+
+    /**
+     * Checks if the user is logged in, by querying _token global, and then localStorage
+     * in case nothing was found.
+     * @return {Boolean} Logged in flag
+     */
+    Controller.prototype.isLoggedIn = function() {
+
+      // Check the global bearer token.
+      if (_token) {
+        return true;
+      }
+
+      // Okay, nothing there... check local storage.
+      if (window.localStorage) {
+        try {
+          var sToken = window.localStorage.getItem("_token");
+          if (sToken) {
+            return true;
+          }
+        } catch (e) {
+          // dunno. Can't access localStorage
+        }
+      }
+
+      // We are NOT logged in...
+      return false;
+    };
+
     /***
      *    ███╗   ███╗███████╗████████╗ █████╗ ██████╗  █████╗ ████████╗ █████╗
      *    ████╗ ████║██╔════╝╚══██╔══╝██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝██╔══██╗

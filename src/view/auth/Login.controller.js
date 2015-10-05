@@ -43,7 +43,10 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/auth/Controller"],
     Login.prototype._onRouteMatched = function(oEvent) {
       // When the route is matched, we either want the login tab or
       // the register tab
-      var oParameters = oEvent.getParameters();
+      var oParameters = oEvent.getParameters(),
+        oView = this.getView(),
+        eDiv = oView.byId("idDivLoginPanelWrapper"),
+        oPanel = oView.byId("idLogOutPanel");
 
       // and tab... if tab is not set locally, set it; if parameter
       // is not supplied, and no local version, default.
@@ -64,10 +67,39 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/auth/Controller"],
       if (oIconTabBar.getSelectedKey() !== this._sTabKey) {
         oIconTabBar.setSelectedKey(this._sTabKey);
       }
+
+      // Are we logged in? This determines which container is displayed to the user:
+      // the log in, or log out container.
+      this.checkLoggedIn(jQuery.proxy(function() {
+        // hide the logged out panel
+        oPanel.setVisible(true);
+        eDiv.setVisible(false);
+
+      }, this), jQuery.proxy(function() {
+        // hide the logged out panel
+        oPanel.setVisible(false);
+        eDiv.setVisible(true);
+
+      }, this));
     };
 
     /**
-     * Tab bar handling
+     * This function will check if the user is logged in, and call the appropriate
+     * callback once the decision is made.
+     * @param  {Function} fnLoggedIn  Logged in callback Function
+     * @param  {Function} fnLoggedOut Logged out callback Function
+     */
+    Login.prototype.checkLoggedIn = function(fnLoggedIn, fnLoggedOut) {
+      if (this.isLoggedIn()) {
+        fnLoggedIn();
+      } else {
+        fnLoggedOut();
+      }
+    };
+
+    /**
+     * Handles selection of the tab
+     * @param  {Event} oEvent Tab press event
      */
     Login.prototype.onTabSelect = function(oEvent) {
       // Now we can nav to the detail page.
@@ -423,6 +455,37 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/auth/Controller"],
     Login.prototype.onSCNPress = function(oEvent) {
       var oModel = this.getView().getModel("env");
       window.location.href = oModel.getProperty("/host") + "/auth/scn";
+    };
+
+    /***
+     *    ██╗      ██████╗  ██████╗  ██████╗ ██╗   ██╗████████╗
+     *    ██║     ██╔═══██╗██╔════╝ ██╔═══██╗██║   ██║╚══██╔══╝
+     *    ██║     ██║   ██║██║  ███╗██║   ██║██║   ██║   ██║
+     *    ██║     ██║   ██║██║   ██║██║   ██║██║   ██║   ██║
+     *    ███████╗╚██████╔╝╚██████╔╝╚██████╔╝╚██████╔╝   ██║
+     *    ╚══════╝ ╚═════╝  ╚═════╝  ╚═════╝  ╚═════╝    ╚═╝
+     *
+     */
+
+    /**
+     * On press, the user will be logged out and their bearer token will
+     * be destroyed.
+     * @param  {Event} oEvent Button press event
+     */
+    Login.prototype.onLogoutPress = function(oEvent) {
+      
+      // destroy bearer token
+      _token = "";
+      if (window.localStorage) {
+        try {
+          window.localStorage.removeItem("_token");
+        } catch (e) {
+          // dunno. Can't access localStorage
+        }
+      }
+
+      // redirect to logout
+      window.location.href = "/auth/logout";
     };
 
     return Login;

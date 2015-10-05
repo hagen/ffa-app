@@ -216,6 +216,52 @@
 					</l:content>
 				</l:Grid>
 			</html:div>
+
+			<!-- Already logged in -->
+			<Panel
+				id="idLogOutPanel"
+				class="ffaLoginPanelCenter"
+				width="60%"
+				visible="false">
+				<l:Grid
+					defaultSpan="L6 M6 S12"
+					width="auto">
+					<l:content>
+						<Title
+							id="idLoggedInTitle"
+							text="Logged in!"
+							level="H2"
+							textAlign="Center"
+							titleStyle="H2"
+							width="100%">
+							<layoutData>
+								<l:GridData
+									span="L12 M12 S12" />
+							</layoutData>
+						</Title>
+						<Text
+							text="You're already logged in - isn't that fantastic?! To log out, you may navigate
+							to your Profile page via. the Dash, or press the log out button below.">
+							<layoutData>
+								<l:GridData
+									span="L12 M12 S12" />
+							</layoutData>
+						</Text>
+						<Button
+							id="idLogoutButton"
+							icon="sap-icon://FontAwesome/sign-out"
+							text="Log out"
+							type="Emphasized"
+							width="100%"
+							press="onLogoutPress">
+							<layoutData>
+								<l:GridData
+									span="XL6 L12 M12 S12" />
+							</layoutData>
+						</Button>
+					</l:content>
+				</l:Grid>
+			</Panel>
 		</content>
 	</Page>
 </mvc:View>

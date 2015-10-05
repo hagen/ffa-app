@@ -161,10 +161,20 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/settings/Controller"],
       this.getRouter().navTo(sRoute, {}, !sap.ui.Device.system.phone);
     };
 
+    /***
+     *    ██╗      ██████╗  ██████╗  ██████╗ ██╗   ██╗████████╗
+     *    ██║     ██╔═══██╗██╔════╝ ██╔═══██╗██║   ██║╚══██╔══╝
+     *    ██║     ██║   ██║██║  ███╗██║   ██║██║   ██║   ██║
+     *    ██║     ██║   ██║██║   ██║██║   ██║██║   ██║   ██║
+     *    ███████╗╚██████╔╝╚██████╔╝╚██████╔╝╚██████╔╝   ██║
+     *    ╚══════╝ ╚═════╝  ╚═════╝  ╚═════╝  ╚═════╝    ╚═╝
+     *
+     */
+
     /**
      * On press, the user will be logged out and their bearer token will
      * be destroyed.
-     * @param  {[type]} oEvent [description]
+     * @param  {Event} oEvent Button press event
      */
     Menu.prototype.onLogoutPress = function(oEvent) {
       // destroy bearer token
@@ -176,6 +186,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/settings/Controller"],
           // dunno. Can't access localStorage
         }
       }
+      
       // redirect to logout
       window.location.href = "/auth/logout";
     };
