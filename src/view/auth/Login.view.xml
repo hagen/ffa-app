@@ -256,7 +256,7 @@
 							press="onLogoutPress">
 							<layoutData>
 								<l:GridData
-									span="XL6 L12 M12 S12" />
+									span="XL12 L12 M12 S12" />
 							</layoutData>
 						</Button>
 					</l:content>
