@@ -174,6 +174,11 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/data/CreateController"],
             // return to the first page and close
             this.onBackPress(null /* oEvent*/, false /* bDelete */ );
           });
+        }, this),
+
+        jQuery.proxy(function(mError) {
+          // NOt busy any more
+          this.closeBusyDialog();
         }, this)
       );
     };

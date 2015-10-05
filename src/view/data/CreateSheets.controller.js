@@ -173,6 +173,11 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/data/CreateController"],
             // return to the first page and close
             this.onBackPress(null /* oEvent*/, false /* bDelete */ );
           });
+        }, this),
+
+        jQuery.proxy(function(mError) {
+          // NOt busy any more
+          this.closeBusyDialog();
         }, this)
       );
     };
@@ -265,13 +270,24 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/data/CreateController"],
 
     /**
      * [function description]
-     * @return {[type]} [description]
+     * @return {Object} Payload object to post to back-end
      */
     Sheets.prototype.getData = function() {
+
       // Collect the key we're to use
+      var oInput = this.getView().byId("idKeyInput");
+      var sKey = oInput.getValue();
+      if (oInput.data("url")) {
+        var sPattern = /\/[0-9a-zA-z_]{30,}\//;
+        var aMatch = sKey.match(sPattern);
+        sKey = aMatch[0].replace("/", "");
+        sKey = sKey.replace("/", "");
+      }
+
+      // Now return the object
       return {
         id: ShortId.generate(10),
-        key: this.getView().byId("idKeyInput").getValue(),
+        key: sKey,
         title: this.getView().byId("idNameInput").getValue(),
         headers: (this.getView().byId("idHeadersCheckbox").getSelected() ? "X" : " "),
         created_by: this.getUserId()
@@ -310,11 +326,17 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/data/CreateController"],
         bName = true;
       }
 
-      if (oKeyInput.getValue() === "") {
+      var sKey = oKeyInput.getValue();
+      if (!sKey) {
         oKeyInput.setValueState(sap.ui.core.ValueState.Error);
         oKeyInput.setValueStateText("You must provide a Sheet key");
         bKey = false;
       } else {
+        // is this a key, or is it a url?
+        var sHttpsPattern = /https:\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/;
+        if (sHttpsPattern.test(sKey)) {
+          oKeyInput.data("url", true);
+        }
         oKeyInput.setValueState(sap.ui.core.ValueState.None);
         oKeyInput.setValueStateText("");
         bKey = true;

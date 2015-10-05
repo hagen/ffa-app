@@ -291,6 +291,11 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/data/CreateController"],
               dataset_id: this._sId
             }, !sap.ui.Device.system.phone);
           });
+        }, this),
+
+        jQuery.proxy(function(mError) {
+          // NOt busy any more
+          this.closeBusyDialog();
         }, this)
       );
     };
