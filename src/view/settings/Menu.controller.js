@@ -54,7 +54,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/settings/Controller"],
      * @param  {object} oEvent Button press event
      */
     Menu.prototype.onNavHomePress = function(oEvent) {
-      this.getRouter().myNavBack("dash");
+      this.getRouter().navTo("dash", {}, !sap.ui.Device.system.phone);
     };
 
 		/***
@@ -186,7 +186,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/settings/Controller"],
           // dunno. Can't access localStorage
         }
       }
-      
+
       // redirect to logout
       window.location.href = "/auth/logout";
     };
