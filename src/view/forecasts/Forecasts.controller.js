@@ -950,11 +950,11 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
      * Validates and saves the chart display settings
      * @param  {event} oEvent The button press event
      */
-    Forecasts.prototype.onDisplaySettingsSavePress = function(oEvent) {
+    Forecasts.prototype.onDisplaySettingsDonePress = function(oEvent) {
 
       // Getter
       var get = jQuery.proxy(function(sId) {
-        return this._getFragmentControl("idChartSettingsFragment", sId);
+        return this.getFragmentControl("idChartSettingsFragment", sId);
       }, this);
 
       var bValid = true;
@@ -995,48 +995,8 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
       }
 
       // If we're not valid, then you can't close the dialog.
-      if (bValid) {
-        // we are now busy, while saving details and updating chart...
-        this.showBusyDialog({});
-
-        // do the update
-        this._updateChartSettings(
-
-          // chart Settings binding id
-          this._oSettingsDialog.getBindingContext("viz").getProperty("ChartSettings/id"),
-          // Success
-          jQuery.proxy(function(oData) {
-
-            // Update the highcharts object too!
-            this._updateHighcharts(this._oChart, oData);
-
-            // Not busy any more
-            this.hideBusyDialog();
-            // We're going to show the settings dialog.
-            if (this._oSettingsDialog) {
-
-              // maybe reset the values first?
-              this._oSettingsDialog.close();
-            }
-          }, this),
-          // Error
-          jQuery.proxy(function(mError) {
-            // Not busy any more
-            this.hideBusyDialog();
-          }, this)
-        );
-      }
-    };
-
-    /**
-     * Closes the display settings
-     * @param  {event} oEvent The button press event
-     */
-    Forecasts.prototype.onDisplaySettingsClosePress = function(oEvent) {
-      // We're going to show the settings dialog.
-      if (this._oSettingsDialog) {
-
-        // maybe reset the values first?
+      if (bValid && this._oSettingsDialog) {
+        // We're going to show the settings dialog.
         this._oSettingsDialog.close();
       }
     };
@@ -1050,26 +1010,44 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
 
       // Getter
       var get = jQuery.proxy(function(sId) {
-        return this._getFragmentControl("idChartSettingsFragment", sId);
+        return this.getFragmentControl("idChartSettingsFragment", sId);
       }, this);
+
+      // Declare oData payload
+      var oData = {
+        show_title : ""
+      };
 
       // When the switch is switch off, clear the title input and disable.
       var bState = oEvent.getParameter("state");
+      oData.show_title = (bState ? "X" : "");
 
       // If off, then disable and clear.
       var oInput = get("idTitleInput");
       if (!bState) {
-        // retain current value, if any
-        oInput.data("new", oInput.getValue());
         // clear and disable
         oInput.setValue("")
                 .setEnabled(false)
                 .setValueState(sap.ui.core.ValueState.None)
                 .setValueStateText("");
+
+        // Add to update payload, only if being removed
+        oData.title = "";
       } else {
-        oInput.setValue(oInput.data("new"))
-                .setEnabled(true);
+        oInput.setEnabled(true);
       }
+
+      // and do the update...
+      var oContext = oEvent.getSource().getBindingContext("viz"),
+        oModel = oContext.getModel(),
+        sId = oModel.getProperty("ChartSettings/id", oContext);
+      oModel.update("/ChartSettings('" + sId +"')", oData, {
+        merge : true,
+        async : true
+      });
+
+      // Update the chart
+      this.updateHighcharts(this._oChart, oData);
     };
 
     /**
@@ -1081,83 +1059,95 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
 
       // Getter
       var get = jQuery.proxy(function(sId) {
-        return this._getFragmentControl("idChartSettingsFragment", sId);
+        return this.getFragmentControl("idChartSettingsFragment", sId);
       }, this);
+
+      // Declare oData payload
+      var oData = {
+        show_axis_labels : ""
+      };
 
       // When the switch is switch off, clear the title input and disable.
       var bState = oEvent.getParameter("state");
+      oData.show_axis_labels = (bState ? "X" : "");
 
       // If off, then disable and clear. X axis first.
       var oInput = get("idXAxisInput");
+      var sValue = oInput.getValue();
       if (!bState) {
-        // retain current value, if any
-        oInput.data("new", oInput.getValue());
         // clear and disable
         oInput.setValue("")
                 .setEnabled(false)
                 .setValueState(sap.ui.core.ValueState.None)
                 .setValueStateText("");
 
+        // Add to update payload, only if being removed
+        oData.xlabel = "";
       } else {
-        oInput.setValue(oInput.data("new"))
-                .setEnabled(true);
+        oInput.setEnabled(true);
       }
 
       // Y axis now!
       oInput = get("idYAxisInput");
+      sValue = oInput.getValue();
+
+      // Add to update payload
+      oData.ylabel = (bState ? sValue : "");
       if (!bState) {
-        // retain current value, if any
-        oInput.data("new", oInput.getValue());
         // clear and disable
         oInput.setValue("")
                 .setEnabled(false)
                 .setValueState(sap.ui.core.ValueState.None)
                 .setValueStateText("");
+
+        // Add to update payload, only if being removed
+        oData.ylabel = "";
       } else {
-        oInput.setValue(oInput.data("new"))
-                .setEnabled(true);
+        oInput.setEnabled(true);
       }
+
+      // and do the update...
+      var oContext = oEvent.getSource().getBindingContext("viz"),
+        oModel = oContext.getModel(),
+        sId = oModel.getProperty("ChartSettings/id", oContext);
+      oModel.update("/ChartSettings('" + sId +"')", oData, {
+        merge : true,
+        async : true
+      });
+
+      // Update the chart
+      this.updateHighcharts(this._oChart, oData);
     };
 
     /**
-     * Updates the chart settings according to changed values from the dialog.
-     * Calls success callback when done.
-     * @param  {Function} fnSuccess Success callback
-     * @param  {Function} fnError   Error callback
+     * Simply handles changes to the input field and checks that there is a
+     * value supplied. Sets state accordingly.
+     * @param  {Event} oEvent Value change event
      */
-    Forecasts.prototype._updateChartSettings = function (sId, fnSuccess, fnError) {
-      // we need to build the oData to supply to our model
-      var aControls = this._getSettingsControls();
-      var oPayload = {};
+    Forecasts.prototype.onChartSettingsInputChange = function (oEvent) {
+      // All we need do is check if there is a value, and if so, remove
+      // error value and state.
+      var sValue = oEvent.getParameter("value"),
+        oControl = oEvent.getSource(),
+        sName = oControl.getName();
 
-      // Now we build our update data payload
-      aControls.forEach(function(control, index) {
-        if (control instanceof sap.m.Input) {
-          oPayload[control.getName()] = control.getValue();
-        } else if (control instanceof sap.m.Switch) {
-          var sValue = (control.getState() ? "X" : "");
-          oPayload[control.getName()] = sValue;
-        }
-      }, this);
+      if (sValue) {
+        oControl.setValueState(sap.ui.core.ValueState.None).setValueStateText("");
+      }
 
-      // And do the update
-      var oModel = this.getView().getModel("viz");
-      oModel.update("/ChartSettings('" + sId + "')", oPayload, {
-        async : true,
+      // Update the chart
+      var oData = {};
+      oData[sName] = sValue;
+
+      var oContext = oControl.getBindingContext("viz"),
+        oModel = oContext.getModel(),
+        sId = oModel.getProperty("ChartSettings/id", oContext);
+      oModel.update("/ChartSettings('" + sId +"')", oData, {
         merge : true,
-        success : function(oData, mResponse) {
-          if (typeof fnSuccess === "function") {
-            // Now call the call back with our original data
-            fnSuccess(oPayload);
-          }
-        },
-        error : jQuery.proxy(function(mError) {
-          this._maybeHandleAuthError(mError);
-          if (typeof fnError === "function") {
-            fnError(mError);
-          }
-        }, this)
+        async : true
       });
+
+      this.updateHighcharts(this._oChart, oData);
     };
 
     /**
@@ -1166,7 +1156,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
      * @param  {Highcharts} oChart  Highcharts chart
      * @param  {Object}     oParams Named array
      */
-    Forecasts.prototype._updateHighcharts = function (oChart, oParams) {
+    Forecasts.prototype.updateHighcharts = function (oChart, oParams) {
 
       // spin through all parameters, and apply the approriate function for each
       for (var key in oParams) {
@@ -1176,17 +1166,16 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
               oChart.setTitle({ text : "" }, "", false);
             }
           } else if ("title" === key) {
-            if (oParams.show_title === "X") {
-              oChart.setTitle({ text : oParams.title }, "", false);
-            }
+            oChart.setTitle({ text : oParams.title }, "", false);
           } else if ("show_axis_labels" === key) {
-            if (oParams.show_axis_labels === "X") {
-              oChart.xAxis[0].setTitle({ text : oParams.xlabel }, false);
-              oChart.yAxis[0].setTitle({ text : oParams.ylabel }, false);
-            } else {
+            if (oParams.show_axis_labels !== "X") {
               oChart.xAxis[0].setTitle({ text : "" }, false);
               oChart.yAxis[0].setTitle({ text : "" }, false);
             }
+          } else if ("xlabel" === key){
+            oChart.xAxis[0].setTitle({ text : oParams.xlabel }, false);
+          } else if ("ylabel" === key){
+            oChart.yAxis[0].setTitle({ text : oParams.ylabel }, false);
           } else if ("actual_title" === key) {
             oChart.get("idActualSeries").update({ name : oParams.actual_title }, false);
           } else if ("forecast_title" === key) {
@@ -1205,10 +1194,10 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
      * Collects and returns all controls in the Chart Settings dialog form.
      * @return {Array} Array of controls
      */
-    Forecasts.prototype._getSettingsControls = function () {
+    Forecasts.prototype.getSettingsControls = function () {
       // Getter
       var get = jQuery.proxy(function(sId) {
-        return this._getFragmentControl("idChartSettingsFragment", sId);
+        return this.getFragmentControl("idChartSettingsFragment", sId);
       }, this);
 
       return [
@@ -1223,20 +1212,6 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
       ];
     };
 
-    /**
-     * Simply handles changes to the input field and checks that there is a
-     * value supplied. Sets state accordingly.
-     * @param  {Event} oEvent Value change event
-     */
-    Forecasts.prototype.onChartSettingsInputChange = function (oEvent) {
-      // All we need do is check if there is a value, and if so, remove
-      // error value and state.
-      var sValue = oEvent.getParameter("value");
-      var oControl = oEvent.getSource();
-      if (sValue) {
-        oControl.setValueState(sap.ui.core.ValueState.None).setValueStateText("");
-      }
-    };
     /***
      *    ███████╗██████╗ ██╗████████╗    ███╗   ██╗ █████╗ ███╗   ███╗███████╗
      *    ██╔════╝██╔══██╗██║╚══██╔══╝    ████╗  ██║██╔══██╗████╗ ████║██╔════╝
@@ -1397,7 +1372,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
      * @param  {String} sId The control id
      * @return {Control}     The control
      */
-    Forecasts.prototype._getFragmentControl = function (sFragmentId, sId) {
+    Forecasts.prototype.getFragmentControl = function (sFragmentId, sId) {
       return sap.ui.core.Fragment.byId(sFragmentId, sId);
     };
 

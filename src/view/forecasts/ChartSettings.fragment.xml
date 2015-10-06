@@ -9,16 +9,12 @@
 		title="Display settings"
 		horizontalScrolling="false">
 		<beginButton>
-			<Button
-				id="idCloseButton"
-				text="Cancel"
-				press="onDisplaySettingsClosePress"/>
 		</beginButton>
 		<endButton>
 			<Button
-				id="idSaveButton"
-				text="Save"
-				press="onDisplaySettingsSavePress"/>
+				id="idDoneButton"
+				text="Done"
+				press="onDisplaySettingsDonePress"/>
 		</endButton>
 		<content>
 			<List
