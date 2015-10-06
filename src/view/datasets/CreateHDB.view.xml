@@ -1,0 +1,439 @@
+<mvc:View
+	controllerName="com.ffa.hpc.view.datasets.CreateHDB"
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc"
+  xmlns:l="sap.ui.layout"
+  xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core">
+	<Page
+		enableScrolling="false"
+		showHeader="true">
+		<customHeader>
+			<Toolbar>
+				<Button
+					id="idCancelButton"
+					text="Cancel"
+					press="onCancelPress" />
+				<ToolbarSpacer />
+				<Title
+					textAlign="Center"
+					text="Configure connection" />
+				<ToolbarSpacer />
+				<Text
+					text="" />
+			</Toolbar>
+		</customHeader>
+		<footer>
+			<Toolbar>
+				<Button
+					id="idBackButton"
+					text="Back"
+					enabled="false"
+					press="onBackPress" />
+				<ToolbarSpacer />
+				<Button
+					id="idNextButton"
+					text="Next"
+					enabled="true"
+					press="onNextPress" />
+			</Toolbar>
+		</footer>
+		<NavContainer
+			id="idNavContainer">
+			<pages>
+				<Page
+					id="idPageStart"
+					showHeader="false"
+					enableScrolling="true">
+					<l:Grid
+		        defaultSpan="L12 M12 S12"
+		        width="auto">
+		        <l:content>
+		          <f:SimpleForm
+		            id="idHanaConfigForm"
+		            maxContainerCols="2"
+		            editable="true"
+		            layout="ResponsiveGridLayout"
+		            labelSpanL="3"
+		            labelSpanM="3"
+		            emptySpanL="3"
+		            emptySpanM="3"
+		            columnsL="1"
+		            columnsM="1"
+		            class="editableForm sapUiMediumMarginTop">
+		            <f:content>
+		              <Label
+		                text="Dataset name"
+										required="true" />
+		              <Input
+		                id="idNameInput"
+										value="{hana>/name}"
+										change="onInputChange">
+										<customData>
+											<core:CustomData key="error" value="Every good data set needs a name!" />
+										</customData>
+		              </Input>
+
+		              <Label
+		                text="HANA host"
+										required="true" />
+		              <Input
+		                id="idHostInput"
+										value="{hana>/host}"
+										placeholder="e.g. hana.company.com"
+										change="onInputChange">
+										<customData>
+											<core:CustomData key="error" value="You didn't give me the host. I'll need the host." />
+										</customData>
+		              </Input>
+
+									<Label
+		                text="Port"
+										required="true" />
+		              <Input
+		                id="idPortInput"
+										value="{hana>/port}"
+										type="Number"
+										placeholder="e.g. 30015"
+										change="onInputChange">
+										<customData>
+											<core:CustomData key="error" value="Please specify your HANA port (default is 30015 - yours is probably the same)" />
+										</customData>
+		              </Input>
+
+									<Label
+										text="Schema"
+										required="true"/>
+									<Input
+										id="idSchemaInput"
+										value="{hana>/schema}"
+										change="onInputChange">
+										<customData>
+											<core:CustomData key="error" value="Erm, without a schema I have no idea where I'm looking!" />
+										</customData>
+									</Input>
+
+									<Label
+		                text="User name" />
+		              <Input
+		                id="idUsernameInput"
+										value="{hana>/username}">
+		              </Input>
+
+									<Label
+		                text="Password" />
+		              <Input
+		                id="idPasswordInput"
+										value="{hana>/password}"
+										type="Password">
+		              </Input>
+
+									<Label
+										text="" />
+									<CheckBox
+										id="idRememberCheckBox"
+										selected="{hana>/remember}"
+										text="Save username &amp; password?"/>
+
+									<Label
+										text="Query method" />
+									<Select
+										id="idQueryMethodSelect">
+										<items>
+											<core:Item key="views" text="HANA View" />
+											<core:Item key="tables" text="HANA Table" />
+											<core:Item key="query" text="Write custom SQL query" />
+										</items>
+									</Select>
+									<Button
+										id="idHelpButton"
+										type="Transparent"
+										icon="sap-icon://FontAwesome/question-circle"
+										press="onHelpPress">
+										<layoutData>
+											<l:GridData
+												span="L1 M1 S1" />
+										</layoutData>
+									</Button>
+		            </f:content>
+		          </f:SimpleForm>
+
+							<f:SimpleForm
+		            id="idHanaTestConsoleForm"
+		            maxContainerCols="1"
+		            editable="true"
+		            layout="ResponsiveGridLayout"
+		            labelSpanL="3"
+		            labelSpanM="3"
+		            emptySpanL="4"
+		            emptySpanM="4"
+		            columnsL="1"
+		            columnsM="1"
+		            class="editableForm sapUiMediumMarginTop">
+		            <f:content>
+									<TextArea
+										id="idTestConsoleTextArea"
+										rows="5"
+										cols="20"
+										visible="true"
+										value="Console..."
+										enabled="false">
+										<layoutData>
+											<l:GridData
+												span="L12 M12 S12" />
+										</layoutData>
+									</TextArea>
+		            </f:content>
+		          </f:SimpleForm>
+		        </l:content>
+		      </l:Grid>
+				</Page>
+
+				<!--
+				██████╗ ██╗   ██╗███████╗██████╗ ██╗   ██╗
+			 ██╔═══██╗██║   ██║██╔════╝██╔══██╗╚██╗ ██╔╝
+			 ██║   ██║██║   ██║█████╗  ██████╔╝ ╚████╔╝
+			 ██║▄▄ ██║██║   ██║██╔══╝  ██╔══██╗  ╚██╔╝
+			 ╚██████╔╝╚██████╔╝███████╗██║  ██║   ██║
+			  ╚══▀▀═╝  ╚═════╝ ╚══════╝╚═╝  ╚═╝   ╚═╝
+			  -->
+
+				<Page
+					id="idPageQuery"
+					enableScrolling="false"
+					showHeader="false">
+					<l:Grid
+		        defaultSpan="L12 M12 S12"
+		        width="auto">
+		        <l:content>
+		          <f:SimpleForm
+		            id="idHanaQueryForm"
+		            maxContainerCols="1"
+		            editable="true"
+		            layout="ResponsiveGridLayout"
+		            labelSpanL="3"
+		            labelSpanM="3"
+		            emptySpanL="4"
+		            emptySpanM="4"
+		            columnsL="1"
+		            columnsM="1"
+		            class="editableForm">
+		            <f:content>
+		              <Label
+		                text="Please also supply an SQL query to run against the database. This
+										query will form the basis of your data set">
+										<layoutData>
+											<l:GridData
+												span="L12 M12 S12" />
+										</layoutData>
+									</Label>
+		              <TextArea
+		                id="idQueryTextArea"
+										rows="5"
+										cols="20"
+										value="{hana>/query}"
+										placeholder='e.g. select * from "SCHEMA"."package.path.to.data_table";'>
+										<layoutData>
+											<l:GridData
+												span="L12 M12 S12" />
+										</layoutData>
+									</TextArea>
+									<Button
+										id="idHanaTestButton"
+										press="onQueryPress"
+										type="Emphasized"
+										text="Test">
+										<layoutData>
+											<l:GridData
+												span="L12 M12 S12" />
+										</layoutData>
+									</Button>
+		            </f:content>
+		          </f:SimpleForm>
+
+							<f:SimpleForm
+		            id="idHanaConsoleForm"
+		            maxContainerCols="1"
+		            editable="true"
+		            layout="ResponsiveGridLayout"
+		            labelSpanL="3"
+		            labelSpanM="3"
+		            emptySpanL="4"
+		            emptySpanM="4"
+		            columnsL="1"
+		            columnsM="1"
+		            class="editableForm">
+		            <f:content>
+									<TextArea
+										id="idSaveConsoleTextArea"
+										rows="10"
+										cols="20"
+										visible="true"
+										value="Console..."
+										enabled="false">
+										<layoutData>
+											<l:GridData
+												span="L12 M12 S12" />
+										</layoutData>
+									</TextArea>
+		            </f:content>
+		          </f:SimpleForm>
+		        </l:content>
+		      </l:Grid>
+				</Page>
+
+				<!--
+				██╗   ██╗██╗███████╗██╗    ██╗███████╗
+				██║   ██║██║██╔════╝██║    ██║██╔════╝
+				██║   ██║██║█████╗  ██║ █╗ ██║███████╗
+				╚██╗ ██╔╝██║██╔══╝  ██║███╗██║╚════██║
+				 ╚████╔╝ ██║███████╗╚███╔███╔╝███████║
+					╚═══╝  ╚═╝╚══════╝ ╚══╝╚══╝ ╚══════╝
+				-->
+
+				<Page
+					id="idPageViews"
+					enableScrolling="false"
+					showHeader="false">
+					<l:Grid
+						defaultSpan="L12 M12 S12"
+						width="auto">
+						<l:content>
+							<Panel
+								expandable="false"
+								headerText="">
+								<Text
+									text="Select a database view from those listed below. Either begin typing the name of the view
+									or select from the drop-down. It's important to ensure your	database user has privileges to read
+									from the view you select here." />
+							</Panel>
+							<f:SimpleForm
+								id="idViewForm"
+								maxContainerCols="1"
+								editable="true"
+								layout="ResponsiveGridLayout"
+								labelSpanL="3"
+								labelSpanM="3"
+								emptySpanL="4"
+								emptySpanM="4"
+								columnsL="1"
+								columnsM="1"
+								class="editableForm">
+								<f:content>
+
+									<Label text="View">
+									</Label>
+									<ComboBox
+										id="idViewsComboBox"
+										change="onViewChange">
+										<layoutData>
+											<l:GridData span="L6 M6 S10" />
+										</layoutData>
+									</ComboBox>
+									<Label text="">
+										<layoutData>
+											<l:GridData span="L3 M3 S1" />
+										</layoutData>
+									</Label>
+								</f:content>
+							</f:SimpleForm>
+						</l:content>
+					</l:Grid>
+				</Page>
+
+				<!--
+				████████╗ █████╗ ██████╗ ██╗     ███████╗███████╗
+				╚══██╔══╝██╔══██╗██╔══██╗██║     ██╔════╝██╔════╝
+					 ██║   ███████║██████╔╝██║     █████╗  ███████╗
+					 ██║   ██╔══██║██╔══██╗██║     ██╔══╝  ╚════██║
+					 ██║   ██║  ██║██████╔╝███████╗███████╗███████║
+					 ╚═╝   ╚═╝  ╚═╝╚═════╝ ╚══════╝╚══════╝╚══════╝
+				-->
+
+				<Page
+					id="idPageTables"
+					enableScrolling="false"
+					showHeader="false">
+					<l:Grid
+						defaultSpan="L12 M12 S12"
+						width="auto">
+						<l:content>
+							<Panel
+								expandable="false"
+								headerText="">
+								<Text
+									text="Select a database table from those listed below. Either begin typing the name of the table
+									or select from the drop-down. It's important to ensure your	database user has privileges to read
+									from the table you select here." />
+							</Panel>
+							<f:SimpleForm
+								id="idTableForm"
+								maxContainerCols="1"
+								editable="true"
+								layout="ResponsiveGridLayout"
+								labelSpanL="3"
+								labelSpanM="3"
+								emptySpanL="4"
+								emptySpanM="4"
+								columnsL="1"
+								columnsM="1"
+								class="editableForm">
+								<f:content>
+
+									<Label text="Table">
+									</Label>
+									<ComboBox
+										id="idTablesComboBox"
+										change="onTableChange">
+										<layoutData>
+											<l:GridData span="L6 M6 S10" />
+										</layoutData>
+									</ComboBox>
+									<Label text="">
+										<layoutData>
+											<l:GridData span="L3 M3 S1" />
+										</layoutData>
+									</Label>
+								</f:content>
+							</f:SimpleForm>
+						</l:content>
+					</l:Grid>
+				</Page>
+
+				<!--
+				██████╗ ███████╗███████╗██╗███╗   ██╗██╗████████╗██╗ ██████╗ ███╗   ██╗
+				██╔══██╗██╔════╝██╔════╝██║████╗  ██║██║╚══██╔══╝██║██╔═══██╗████╗  ██║
+				██║  ██║█████╗  █████╗  ██║██╔██╗ ██║██║   ██║   ██║██║   ██║██╔██╗ ██║
+				██║  ██║██╔══╝  ██╔══╝  ██║██║╚██╗██║██║   ██║   ██║██║   ██║██║╚██╗██║
+				██████╔╝███████╗██║     ██║██║ ╚████║██║   ██║   ██║╚██████╔╝██║ ╚████║
+				╚═════╝ ╚══════╝╚═╝     ╚═╝╚═╝  ╚═══╝╚═╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝
+				-->
+
+				<Page
+					id="idPageDefinition"
+					enableScrolling="true"
+					title="Data set definition"
+					showHeader="false">
+					<content>
+						<Panel
+							class="sapUiSmallMarginTop"
+							expandable="false"
+							headerText="">
+							<Text
+								text="Lastly, please pick the field that represents Date. Additionally, if you notice that
+								any of the fields listed below are not of the correct type, you may change them
+								by hitting the data type link." />
+						</Panel>
+
+						<!-- Column selection -->
+						<core:Fragment
+							id="idFieldsFragment"
+							fragmentName="com.ffa.hpc.view.datasets.SchemaFields"
+							type="XML" />
+					</content>
+				</Page>
+
+			</pages>
+		</NavContainer>
+	</Page>
+</mvc:View>

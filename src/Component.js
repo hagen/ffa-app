@@ -39,12 +39,12 @@ sap.ui.core.UIComponent.extend("com.ffa.hpc.Component", {
       }, {
         pattern: "datasets",
         name: "datasets",
-        view: "dataset.DataSets",
+        view: "datasets.DataSets",
         viewLevel: 3,
         subroutes: [{
           pattern: "datasets/hdb/:dataset_id:",
           name: "view-hdb",
-          view: "dataset.ViewHDB",
+          view: "datasets.ViewHDB",
           targetControl: "idDataSetsSplitContainer",
           targetAggregation: "detailPages",
           transition: "slide",
@@ -52,14 +52,14 @@ sap.ui.core.UIComponent.extend("com.ffa.hpc.Component", {
           subroutes: [{
             pattern: "datasets/hdb/:dataset_id:/edit",
             name: "edit-hdb",
-            view: "dataset.EditHDB",
+            view: "datasets.EditHDB",
             transition: "flip",
             viewLevel: 5
           }]
         }, {
           pattern: "datasets/redshift/:dataset_id:",
           name: "view-redshift",
-          view: "dataset.ViewRedshift",
+          view: "datasets.ViewRedshift",
           targetControl: "idDataSetsSplitContainer",
           targetAggregation: "detailPages",
           transition: "slide",
@@ -67,14 +67,14 @@ sap.ui.core.UIComponent.extend("com.ffa.hpc.Component", {
           subroutes: [{
             pattern: "datasets/redshift/:dataset_id:/edit",
             name: "edit-redshift",
-            view: "dataset.EditRedshift",
+            view: "datasets.EditRedshift",
             transition: "flip",
             viewLevel: 5
           }]
         }, {
           pattern: "datasets/sheets/:dataset_id:",
           name: "view-google", // Do not change - backend needs 'Google'
-          view: "dataset.ViewSheets",
+          view: "datasets.ViewSheets",
           targetControl: "idDataSetsSplitContainer",
           targetAggregation: "detailPages",
           transition: "slide",
@@ -82,14 +82,14 @@ sap.ui.core.UIComponent.extend("com.ffa.hpc.Component", {
           subroutes: [{
             pattern: "datasets/sheets/:dataset_id:/edit",
             name: "edit-google", // Do not change - backend needs 'Google'
-            view: "dataset.EditSheets",
+            view: "datasets.EditSheets",
             transition: "flip",
             viewLevel: 5
           }]
         }, {
           pattern: "datasets/importio/:dataset_id:",
           name: "view-importio",
-          view: "dataset.ViewImportIO",
+          view: "datasets.ViewImportIO",
           targetControl: "idDataSetsSplitContainer",
           targetAggregation: "detailPages",
           transition: "slide",
@@ -97,21 +97,21 @@ sap.ui.core.UIComponent.extend("com.ffa.hpc.Component", {
           subroutes: [{
             pattern: "datasets/importio/:dataset_id:/edit",
             name: "edit-importio",
-            view: "dataset.EditImportIO",
+            view: "datasets.EditImportIO",
             transition: "flip",
             viewLevel: 5
           }]
         }, {
           pattern: "datasets/new",
           name: "new-dataset",
-          view: "dataset.Wizard",
+          view: "datasets.Wizard",
           targetControl: "idDataSetsSplitContainer",
           targetAggregation: "detailPages",
           viewLevel: 4,
           subroutes: [{
             pattern: "datasets/new/redshift",
             name: "redshift",
-            view: "dataset.CreateRedshift",
+            view: "datasets.CreateRedshift",
             targetControl: "idContainer",
             targetAggregation: "pages",
             transition: "flip",
@@ -119,7 +119,7 @@ sap.ui.core.UIComponent.extend("com.ffa.hpc.Component", {
           }, {
             pattern: "datasets/new/sheets",
             name: "sheets",
-            view: "dataset.CreateSheets",
+            view: "datasets.CreateSheets",
             targetControl: "idContainer",
             targetAggregation: "pages",
             transition: "flip",
@@ -127,7 +127,7 @@ sap.ui.core.UIComponent.extend("com.ffa.hpc.Component", {
           }, {
             pattern: "datasets/new/hana",
             name: "hdb",
-            view: "dataset.CreateHDB",
+            view: "datasets.CreateHDB",
             targetControl: "idContainer",
             targetAggregation: "pages",
             transition: "flip",
@@ -135,7 +135,7 @@ sap.ui.core.UIComponent.extend("com.ffa.hpc.Component", {
           }, {
             pattern: "datasets/new/importio",
             name: "importio",
-            view: "dataset.CreateImportIO",
+            view: "datasets.CreateImportIO",
             targetControl: "idContainer",
             targetAggregation: "pages",
             transition: "flip",
