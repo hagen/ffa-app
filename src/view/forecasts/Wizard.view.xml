@@ -18,7 +18,7 @@
 					press="onCancelPress" />
 				<Button
 					id="idNavBackButton"
-					icon="sap-icon://nav-back"
+					text="Done"
 					visible="false"
 					enabled="false"
 					press="onNavBackPress" />

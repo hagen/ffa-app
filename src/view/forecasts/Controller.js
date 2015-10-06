@@ -215,12 +215,15 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/util/Controller"],
       }
 
       // otherwise, read.
+      this.showBusyDialog({});
       oModel.read("/Cache('" + sCacheId + "')", {
         success: jQuery.proxy(function(oData, mResponse) {
           this._oCacheHeader = oData;
+          this.hideBusyDialog();
         }, this),
         error: jQuery.proxy(function(oData, mResponse) {
           this._oCacheHeader = {};
+          this.hideBusyDialog();
         }, this),
         async: false
       });

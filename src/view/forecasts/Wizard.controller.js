@@ -263,19 +263,27 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
      */
     Wizard.prototype.onDoneLinkPress = function(oEvent) {
 
+      // Retain forecast and folder ids.
+      var sFolderId = this._sFolderId,
+        sForecastId = this._sForecastId,
+        sDatasetId  = this._sDataSetId;
+
       // Reset everything
       this.resetWizard(jQuery.proxy(function() {
 
-        // The user now navigates to the forecast (and optional folder)
+        // The user now navigates to the forecast (and optional folder); Remember
+        // that we will always go back to folders, because that is the only
+        // place from which you can create a new forecast. If the folder id
+        // is initial, that simply means the forecast is at the root-level
         this.getRouter().navTo("forecast-from-folder", {
-          folder_id: this._sFolderId,
-          forecast_id: this._sForecastId
+          folder_id: sFolderId,
+          forecast_id: sForecastId
         }, !sap.ui.Device.system.phone);
 
         // If we've recorded username and password during this process, now
         // is a good time to get rid of them...
         this.getEventBus().publish("Wizard", "ClearAuth", {
-          dataset_id: this._sDataSetId
+          dataset_id: sDatasetId
         });
       }, this));
     };
@@ -420,7 +428,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
       fnGet("idBackButton").setEnabled(false).setVisible(true);
       fnGet("idNextButton").setEnabled(true).setVisible(true);
       fnGet("idCancelButton").setEnabled(true).setVisible(true);
-      fnGet("idNavBackButton").setEnabled(true).setVisible(false);
+      fnGet("idNavBackButton").setEnabled(false).setVisible(false);
 
       // We also need to send the wizard back to page 1
       var oNav = this.getNavContainer();
@@ -1177,6 +1185,10 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
       jQuery.when(oPromise).then(jQuery.proxy(function() {
         oModel.create("/Runs", oRun, {
           success: jQuery.proxy(function(oData, mResponse) {
+
+            // Now we show the Done button, not the Cancel Button
+            this.getView().byId("idNavBackButton").setEnabled(true).setVisible(true);
+            this.getView().byId("idCancelButton").setEnabled(false).setVisible(false);
 
             // Not busy
             this.closeBusyDialog();
