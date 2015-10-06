@@ -2,8 +2,8 @@
 	controllerName="com.ffa.hpc.view.datasets.CreateRedshift"
 	xmlns="sap.m"
 	xmlns:mvc="sap.ui.core.mvc"
-  xmlns:l="sap.ui.layout"
-  xmlns:f="sap.ui.layout.form"
+	xmlns:l="sap.ui.layout"
+	xmlns:f="sap.ui.layout.form"
 	xmlns:core="sap.ui.core">
 	<Page
 		enableScrolling="false"

@@ -46,27 +46,27 @@
 					showHeader="false"
 					enableScrolling="true">
 					<l:Grid
-		        defaultSpan="L12 M12 S12"
-		        width="auto">
+						defaultSpan="L12 M12 S12"
+						width="auto">
 		        <l:content>
 		          <f:SimpleForm
-		            id="idHanaConfigForm"
-		            maxContainerCols="2"
-		            editable="true"
-		            layout="ResponsiveGridLayout"
-		            labelSpanL="3"
-		            labelSpanM="3"
-		            emptySpanL="3"
-		            emptySpanM="3"
-		            columnsL="1"
-		            columnsM="1"
-		            class="editableForm sapUiMediumMarginTop">
+								id="idHanaConfigForm"
+								maxContainerCols="2"
+								editable="true"
+								layout="ResponsiveGridLayout"
+								labelSpanL="3"
+								labelSpanM="3"
+								emptySpanL="3"
+								emptySpanM="3"
+								columnsL="1"
+								columnsM="1"
+								class="editableForm sapUiMediumMarginTop">
 		            <f:content>
 		              <Label
-		                text="Dataset name"
+										text="Dataset name"
 										required="true" />
 		              <Input
-		                id="idNameInput"
+										id="idNameInput"
 										value="{hana>/name}"
 										change="onInputChange">
 										<customData>

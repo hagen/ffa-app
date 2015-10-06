@@ -162,6 +162,9 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/datasets/CreateController"
           // Timed close.
           jQuery.sap.delayedCall(1500, this, function() {
 
+            // Reset all form values
+            this.clearForms(["idConfigForm", "idTestConsoleForm"]);
+
             // NOt busy any more
             this.closeBusyDialog();
 

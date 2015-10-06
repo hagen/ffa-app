@@ -282,6 +282,9 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/datasets/CreateController"
               .attachPress(this.onBackPress, this)
               .setEnabled(false);
 
+            // Reset all form values
+            this.clearForms(["idRedshiftConfigForm", "idRedshiftTestConsoleForm", "idRedshiftQueryForm", "idRedshiftConsoleForm", "idRedshiftViewForm", "idRedshiftTableForm"]);
+
             // NOt busy any more
             this.closeBusyDialog();
 
@@ -374,8 +377,13 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/datasets/CreateController"
       // Use promises to holdup cancellation until deletion occurs
       var oPromise = jQuery.Deferred();
       jQuery.when(oPromise).then(jQuery.proxy(function() {
+
         // Clear out sId
         this._sId = undefined;
+
+        // Reset all form values
+        this.clearForms(["idRedshiftConfigForm", "idRedshiftTestConsoleForm", "idRedshiftQueryForm", "idRedshiftConsoleForm", "idRedshiftViewForm", "idRedshiftTableForm"]);
+
         // Nav back to new data set
         this.getRouter().navTo("new-dataset", {}, !sap.ui.Device.system.phone);
       }, this))

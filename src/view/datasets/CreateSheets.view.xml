@@ -119,17 +119,17 @@
 							</f:SimpleForm>
 
 							<f:SimpleForm
-		            id="idTestConsoleForm"
-		            maxContainerCols="1"
-		            editable="true"
-		            layout="ResponsiveGridLayout"
-		            labelSpanL="3"
-		            labelSpanM="3"
-		            emptySpanL="4"
-		            emptySpanM="4"
-		            columnsL="1"
-		            columnsM="1"
-		            class="editableForm sapUiMediumMarginTop">
+								id="idTestConsoleForm"
+								maxContainerCols="1"
+								editable="true"
+								layout="ResponsiveGridLayout"
+								labelSpanL="3"
+								labelSpanM="3"
+								emptySpanL="4"
+								emptySpanM="4"
+								columnsL="1"
+								columnsM="1"
+								class="editableForm sapUiMediumMarginTop">
 		            <f:content>
 									<TextArea
 										id="idTestConsoleTextArea"

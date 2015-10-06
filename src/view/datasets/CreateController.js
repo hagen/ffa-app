@@ -383,4 +383,37 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/datasets/Controller"],
         oCallbacks.invalid("One or more of your dates did not match the pattern '" + sPattern + "'");
       }
     };
+
+    /***
+     *     ██████╗██╗     ███████╗ █████╗ ██████╗     ███████╗ ██████╗ ██████╗ ███╗   ███╗███████╗
+     *    ██╔════╝██║     ██╔════╝██╔══██╗██╔══██╗    ██╔════╝██╔═══██╗██╔══██╗████╗ ████║██╔════╝
+     *    ██║     ██║     █████╗  ███████║██████╔╝    █████╗  ██║   ██║██████╔╝██╔████╔██║███████╗
+     *    ██║     ██║     ██╔══╝  ██╔══██║██╔══██╗    ██╔══╝  ██║   ██║██╔══██╗██║╚██╔╝██║╚════██║
+     *    ╚██████╗███████╗███████╗██║  ██║██║  ██║    ██║     ╚██████╔╝██║  ██║██║ ╚═╝ ██║███████║
+     *     ╚═════╝╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝    ╚═╝      ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝
+     *
+     */
+
+     /**
+      * Given the list of form ids, clear the contents of all input fields within
+      * them.
+      * @param  {Array} aFormIds Form Ids
+      */
+    Controller.prototype.clearForms = function (aFormIds) {
+      // Clear all inputs from the forms.
+      aFormIds.forEach(function(id, index) {
+        this.getView().byId(id).getContent().forEach(function(control, index) {
+          // Check if it is input base
+          if (control instanceof sap.m.InputBase) {
+            control.setValue("");
+          } else if (control instanceof sap.m.CheckBox) {
+            // Check if checkbox
+            control.setSelected(false);
+          } else if (control instanceof sap.m.Select) {
+            // Check if Select
+            control.setSelectedKey("");
+          }
+        }, this)
+      }, this);
+    };
   });

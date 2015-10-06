@@ -163,6 +163,9 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/datasets/CreateController"
           // Timed close.
           jQuery.sap.delayedCall(1500, this, function() {
 
+            // Reset all form values
+            this.clearForms(["idConfigForm", "idTestConsoleForm"]);
+
             // NOt busy any more
             this.closeBusyDialog();
 
@@ -251,6 +254,9 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/datasets/CreateController"
      jQuery.when(oPromise).then(jQuery.proxy(function() {
        // Clear out sId
        this._sId = undefined;
+       
+       // Reset all form values
+       this.clearForms(["idConfigForm", "idTestConsoleForm"]);
 
        // Nav back to new data set
        this.getRouter().navTo("new-dataset", {}, !sap.ui.Device.system.phone);

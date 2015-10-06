@@ -283,6 +283,9 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/datasets/CreateController"
               .attachPress(this.onBackPress, this)
               .setEnabled(false);
 
+            // Reset all form values
+            this.clearForms(["idHanaConfigForm", "idHanaTestConsoleForm", "idHanaQueryForm", "idHanaConsoleForm", "idViewForm", "idTableForm"]);
+
             // NOt busy any more
             this.closeBusyDialog();
 
@@ -377,6 +380,10 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/datasets/CreateController"
       jQuery.when(oPromise).then(jQuery.proxy(function() {
         // Clear out sId
         this._sId = undefined;
+
+        // Clear all input fields of all forms.
+        this.clearForms(["idHanaConfigForm", "idHanaTestConsoleForm", "idHanaQueryForm", "idHanaConsoleForm", "idViewForm", "idTableForm"]);
+
         // Nav back to new data set
         this.getRouter().navTo("new-dataset", {}, !sap.ui.Device.system.phone);
       }, this))
@@ -856,7 +863,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/datasets/CreateController"
         schema: value("idSchemaInput").toUpperCase(),
         remember: value("idRememberCheckBox"),
         created_by: this.getProfileId(),
-        query: value("idQueryTextArea"),
+        query: "",
         query_type: value("idQueryMethodSelect")
       };
 
@@ -874,7 +881,12 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/datasets/CreateController"
             oData.query = value("idViewsComboBox");
             break;
           case 'query':
-            oData.query = value("idQueryTextArea");
+            var sQuery = value("idQueryTextArea").trim();
+            // if the Query ends with a semi-colon, remove it...
+            if (sQuery.charAt(sQuery.length-1) === ";") {
+              sQuery = sQuery.substring(0, sQuery.length-1);
+            }
+            oData.query = sQuery;
             break;
         }
       } catch (e) {
