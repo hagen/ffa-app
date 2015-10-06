@@ -24,9 +24,6 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
         variables: []
       };
 
-      // subscribe to the Forecast finished event
-      this.getEventBus().subscribe("Forecast", "Finished", this._onForecastingFinished, this);
-
       // handle route matched
       this.getRouter().getRoute("new-forecast-from-folder").attachPatternMatched(this._onRouteMatched, this);
     };
@@ -101,8 +98,8 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
           oNav.to(self.getView().byId("idOverLimitMessagePage"));
         })
         .done(function() { // resolved - go to new data set page
-          // and run setup for step one.
-          self.setupNamePage();
+          // and run setup for step one. Needs a dummy function to run
+          self.setupNamePage(function() {});
 
           // Let the master list know I'm on this Folders view.
           self.getEventBus().publish("Folders", "RouteMatched", {} /* payload */ );
@@ -112,35 +109,48 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
       this._isAllowedNew(oPromise);
     };
 
+    /***
+     *    ██████╗ ██╗   ██╗████████╗████████╗ ██████╗ ███╗   ██╗███████╗
+     *    ██╔══██╗██║   ██║╚══██╔══╝╚══██╔══╝██╔═══██╗████╗  ██║██╔════╝
+     *    ██████╔╝██║   ██║   ██║      ██║   ██║   ██║██╔██╗ ██║███████╗
+     *    ██╔══██╗██║   ██║   ██║      ██║   ██║   ██║██║╚██╗██║╚════██║
+     *    ██████╔╝╚██████╔╝   ██║      ██║   ╚██████╔╝██║ ╚████║███████║
+     *    ╚═════╝  ╚═════╝    ╚═╝      ╚═╝    ╚═════╝ ╚═╝  ╚═══╝╚══════╝
+     *
+     */
+
     /**
      * Navigate within the NavContainer backwards (no routing occurs here)
      * @param  {object} oEvent Button press event
      */
     Wizard.prototype.onBackPress = function(oEvent) {
 
-      var oNav = this._getNavContainer(),
+      var oNav = this.getNavContainer(),
         oCurrentPage = oNav.getCurrentPage();
 
       // Collect this page's destiantions in custom data.
       var sPrevId = oCurrentPage.data("prev"),
-        sNextId = oCurrentPage.data("next");
-
       // The previous page has no prev page, then disable the back button
-      var oPrevPage = this.getView().byId(sPrevId);
+        oPrevPage = this.getView().byId(sPrevId),
+        oButton = this.getView().byId("idBackButton");
+
+      // Now set enablement
       if (oPrevPage.data("prev")) {
-        this.getView().byId("idBackButton").setEnabled(false);
+        oButton.setEnabled(true);
+      } else {
+        oButton.setEnabled(false);
       }
 
       // And next button
-      var oNextButton = this.getView().byId("idNextButton");
-      if (sNextId) {
-        oNextButton.setEnabled(true);
+      oButton = this.getView().byId("idNextButton");
+      if (oPrevPage.data("next")) {
+        oButton.setEnabled(true);
       } else {
-        oNextButton.setEnabled(false);
+        oButton.setEnabled(false);
       }
 
       // set page Title
-      this._setPageTitle(oPrevPage.getTitle());
+      this.setPageTitle(oPrevPage.getTitle());
 
       // Nav back
       oNav.back();
@@ -152,22 +162,26 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
      * @param  {object} oEvent Button press event
      */
     Wizard.prototype.onCancelPress = function(oEvent) {
-      var sRoute = "";
-      var oArgs = {};
 
-      // if we came here from the folders route, go back...
-      if (this._sOrigin === "folders") {
-        sRoute = "folders";
-        oArgs.folder_id = (this._sFolderId ? this._sFolderId : "");
-      } else {
-        sRoute = "forecasts";
-      }
-
-      // Navigate!
-      this.getRouter().navTo(sRoute, oArgs, !sap.ui.Device.system.phone);
+      // Retain the folder Id, as it will be removed in resetWizard()
+      var sFolderId = this._sFolderId;
 
       // Reset all pages...
-      this._reset();
+      this.resetWizard(jQuery.proxy(function() {
+        var sRoute = "";
+        var oArgs = {};
+
+        // if we came here from the folders route, go back...
+        if (this._sOrigin === "folders") {
+          sRoute = "folders";
+          oArgs.folder_id = (sFolderId ? sFolderId : "");
+        } else {
+          sRoute = "forecasts";
+        }
+
+        // Navigate!
+        this.getRouter().navTo(sRoute, oArgs, !sap.ui.Device.system.phone);
+      }, this));
     };
 
     /**
@@ -177,7 +191,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
      */
     Wizard.prototype.onNextPress = function(oEvent) {
 
-      var oNav = this._getNavContainer(),
+      var oNav = this.getNavContainer(),
         oCurrentPage = oNav.getCurrentPage();
 
       // Collect this page's destiantions in custom data.
@@ -200,40 +214,44 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
       this[fnValidate].apply(this, [
         jQuery.proxy(function() {
 
-          // set page Title
-          this._setPageTitle(oNextPage.getTitle());
-
-          // set back button activation
-          var oBackButton = this.getView().byId("idBackButton");
-          if (sPrevId) {
-            oBackButton.setEnabled(true);
-          } else {
-            oBackButton.setEnabled(false);
+          // if there's no setup, then just nav
+          if (typeof this[fnSetup] !== "function") {
+            oNav.to(this.getView().byId(sNextId));
+            return;
           }
 
-          // And next button
-          var oNextButton = this.getView().byId("idNextButton");
-          if (sNextId) {
-            oNextButton.setEnabled(true);
-          } else {
-            oNextButton.setEnabled(false);
-          }
+          // Perform page set up.
+          this[fnSetup].apply(this, [
+            jQuery.proxy(function() {
 
-          // Perform optional page set up.
-          try {
-            var oPromise = this[fnSetup].apply(this, []);
-            // when the promise is resolved, we can navigate.
-            jQuery.when(oPromise).then(jQuery.proxy(function() {
+              // set page Title
+              this.setPageTitle(oNextPage.getTitle());
+
+              // set back button activation
+              var oBackButton = this.getView().byId("idBackButton");
+              if (oNextPage.data("prev")) {
+                oBackButton.setEnabled(true);
+              } else {
+                oBackButton.setEnabled(false);
+              }
+
+              // And next button
+              var oNextButton = this.getView().byId("idNextButton");
+              if (oNextPage.data("next")) {
+                oNextButton.setEnabled(true);
+              } else {
+                oNextButton.setEnabled(false);
+              }
+
               // Navigate to the next view
               oNav.to(this.getView().byId(sNextId));
-            }, this));
-          } catch (e) {
-            // No setup step. Navigate immediately
-            oNav.to(this.getView().byId(sNextId));
-          }
+            }, this)
+          ]);
         }, this), // Success callback
         jQuery.proxy(function() {
-
+          // TODO what happens when the validation callback is error. Typically,
+          // the validation function takes care of everything... Maybe it's Not
+          // required?
         }, this) // Error callback
       ]);
     };
@@ -244,45 +262,43 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
      * @return {[type]}        [description]
      */
     Wizard.prototype.onDoneLinkPress = function(oEvent) {
-      this.getRouter().navTo("forecast-from-folder", {
-        folder_id: this._sFolderId,
-        forecast_id: this._sForecastId
-      }, !sap.ui.Device.system.phone);
 
-      // Raise an event to signal the end of all forecast processing.
-      // The user must now go home, or go to the forecast.
-      this.getEventBus().publish("Forecast", "Finished", {
-        forecast_id: this._sForecastId
-      });
+      // Reset everything
+      this.resetWizard(jQuery.proxy(function() {
 
-      // If we've recorded username and password during this process, now
-      // is a good time to get rid of them...
-      this.getEventBus().publish("Wizard", "ClearAuth", {
-        dataset_id: this._sDataSetId
-      });
+        // The user now navigates to the forecast (and optional folder)
+        this.getRouter().navTo("forecast-from-folder", {
+          folder_id: this._sFolderId,
+          forecast_id: this._sForecastId
+        }, !sap.ui.Device.system.phone);
 
+        // If we've recorded username and password during this process, now
+        // is a good time to get rid of them...
+        this.getEventBus().publish("Wizard", "ClearAuth", {
+          dataset_id: this._sDataSetId
+        });
+      }, this));
     };
 
     /**
-     * Go home!
+     * Go home! This button handler is only used on the last page, whereby
+     * the Cancel button is hidden, and the Home button is displayed.
      * @param  {[type]} oEvent [description]
      * @return {[type]}        [description]
      */
-    Wizard.prototype.onHomePress = function(oEvent) {
-      this.getRouter().navTo("workbench", {}, !sap.ui.Device.system.phone);
+    Wizard.prototype.onNavBackPress = function(oEvent) {
 
-      // Raise an event to signal the end of all forecast processing.
-      // The user must now go home, or go to the forecast.
-      this.getEventBus().publish("Forecast", "Finished", {
-        forecast_id: this._sForecastId
-      });
+      // Back to the workbench we go
+      this.resetWizard(jQuery.proxy(function() {
+        this.getRouter().navTo("workbench", {}, !sap.ui.Device.system.phone);
+      }, this));
     };
 
     /**
      * Navigate within the NavContainer backwards (no routing occurs here)
      * @return  {Control}    Nav container control
      */
-    Wizard.prototype._getNavContainer = function(oEvent) {
+    Wizard.prototype.getNavContainer = function(oEvent) {
 
       return this.getView().byId("idNavContainer");
     };
@@ -301,24 +317,44 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
      * Sets the main wizard page title
      * @param  {[type]} sTitle [description]
      */
-    Wizard.prototype._setPageTitle = function(sTitle) {
+    Wizard.prototype.setPageTitle = function(sTitle) {
       this.getView().byId("idWizardTitle").setText(sTitle);
     };
 
     /**
-     * Reset all pages in the screen.
-     * @return {[type]} [description]
+     * Reset all pages in the screen, returns the Wizard to page 1, and corrects
+     * the button states. Return to page 1 is slightly delayed.
+     * @param  {Function} fnCallback Callback function
      */
-    Wizard.prototype._reset = function() {
+    Wizard.prototype.resetWizard = function(fnCallback) {
+
+      // busy, resetting stuff!
+      this.showBusyDialog({});
+      var fnGet = jQuery.proxy(function(sId) {
+        return this.getView().byId(sId);
+      }, this)
 
       // Page 1
-      var oInput = this.getView().byId("idNewForecastNameInput");
-      oInput.setValue("");
-      oInput.setValueState(sap.ui.core.ValueState.None);
-      oInput.setValueStateText("");
+      this._sFolderId = "";
+      var oInput = fnGet("idNewForecastNameInput");
+      oInput.setValue("")
+        .setValueState(sap.ui.core.ValueState.None)
+        .setValueStateText("");
 
-      // Page 2
-      var oTileContainer = this.getView().byId("idDatasetsTileContainer");
+      // Page 2 - clear the selected data set id, and the cache id.
+      // Delete the cache, if one was created.
+      if (this._sCacheId) {
+        if (this._oCacheHandle) {
+          this._oCacheHandle.abort();
+        }
+        this.getView().getModel("forecast").remove("/Cache('" + this._sCacheId + "')", {
+          async: true
+        });
+      }
+
+      this._sDataSetId = "";
+      this._sCacheId = "";
+      var oTileContainer = fnGet("idDatasetsTileContainer");
       var aTiles = oTileContainer.getTiles();
       var sClass = "ffaForecastWizardTileActive";
 
@@ -338,22 +374,8 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
         dataset_id: this._sDataSetId
       });
 
-      // Page 3
-      var oTable = this.getView().byId(
-        sap.ui.core.Fragment.createId("idDateFieldsFragment", "idDateFieldTable")
-      );
-      var aItems = oTable.getItems();
-      if (aItems.length !== 0) {
-        jQuery.each(aItems, function(index, item) {
-          if (item.getSelected()) {
-            item.setSelected(false);
-            return;
-          }
-        });
-      }
-
-      // Page 3
-      var oTable = this.getView().byId(
+      // Forecast field selection page
+      var oTable = fnGet(
         sap.ui.core.Fragment.createId("idForecastFieldsFragment", "idForecastFieldTable")
       );
       var aItems = oTable.getItems();
@@ -366,8 +388,8 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
         });
       }
 
-      // Page 4
-      oTable = this.getView().byId(
+      // Variable selection page
+      oTable = fnGet(
         sap.ui.core.Fragment.createId("idVariableFieldsFragment", "idForecastVariablesTable")
       );
       aItems = oTable.getItems();
@@ -379,27 +401,14 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
         });
       }
 
-      // Page 5
-      this.getView().byId("idToDatePicker").setValue("");
-      this.getView().byId("idHorizonInput").setValue("");
-      this.getView().byId("idFromDatePicker").setValue("");
-      this.getView().byId("idValidationInput").setValue("");
-
-      // Delete the cache, if one was created.
-      if (this._sCacheId) {
-        if (this._oCacheHandle) {
-          this._oCacheHandle.abort();
-        }
-        this.getView().getModel("forecast").remove("/Cache('" + this._sCacheId + "')", {
-          async: true
-        });
-      }
+      // Parameters page
+      fnGet("idToDatePicker").setValue("");
+      fnGet("idHorizonInput").setValue("");
+      fnGet("idFromDatePicker").setValue("");
+      fnGet("idValidationInput").setValue("");
 
       // And unset the global vars.
-      this._sFolderId = "";
       this._sForecastId = "";
-      this._sDataSetId = "";
-      this._sCacheId = "";
       this._aBatchOps = [];
       this._oFields = {
         date: "",
@@ -407,40 +416,21 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
         variables: []
       };
 
+      // Update the Next and Back button enablement
+      fnGet("idBackButton").setEnabled(false).setVisible(true);
+      fnGet("idNextButton").setEnabled(true).setVisible(true);
+      fnGet("idCancelButton").setEnabled(true).setVisible(true);
+      fnGet("idNavBackButton").setEnabled(true).setVisible(false);
+
       // We also need to send the wizard back to page 1
-      this._getNavContainer().backToTop();
-    };
+      var oNav = this.getNavContainer();
+      jQuery.sap.delayedCall(1000, this, function() {
+        oNav.backToTop();
+      }, []);
 
-    /**
-     * When forecasting is completed, we lock up the screen. User may now only
-     * go home, or go to Forecast.
-     * @param  {[type]} sChannel [description]
-     * @param  {[type]} sEvent   [description]
-     * @param  {[type]} oData    [description]
-     */
-    Wizard.prototype._onForecastingFinished = function(sChannel, sEvent, oData) {
-
-      // Cancel button
-      this.getView().byId("idCancelButton").setEnabled(false);
-      this.getView().byId("idCancelButton").setVisible(false);
-
-      // Home button
-      this.getView().byId("idHomeButton").setEnabled(true);
-      this.getView().byId("idHomeButton").setVisible(true);
-
-      // Page title
-      this.getView().byId("idWizardTitle").setText("Done");
-
-      // Back button
-      this.getView().byId("idBackButton").setEnabled(false);
-      this.getView().byId("idBackButton").setVisible(false);
-
-      // Next button
-      this.getView().byId("idNextButton").setEnabled(false);
-      this.getView().byId("idNextButton").setVisible(false);
-
-      // Nav back to start page...
-      this._getNavContainer().backToTop();
+      // Now we can call the callback
+      fnCallback();
+      this.hideBusyDialog({});
     };
 
     /***
@@ -519,15 +509,14 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
      * Set up for Step 1. Create a unique forecast ID
      * @return {object} Promise
      */
-    Wizard.prototype.setupNamePage = function() {
+    Wizard.prototype.setupNamePage = function(done) {
       var oPromise = jQuery.Deferred();
       if (!this._sForecastId) {
         this._sForecastId = ShortId.generate(10);
       }
 
       // return
-      oPromise.resolve();
-      return oPromise;
+      return done();
     };
 
     /**
@@ -570,10 +559,9 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
      * already 'set up'.
      * @return {object} Promise
      */
-    Wizard.prototype.setupDatasetPage = function() {
-      var oPromise = jQuery.Deferred();
-      oPromise.resolve();
-      return oPromise;
+    Wizard.prototype.setupDatasetPage = function(done) {
+      // return
+      return done();
     };
 
     /**
@@ -676,10 +664,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
      * Lists the avaiable columns in the data set,
      * allowing the user to pick their forecast field.
      */
-    Wizard.prototype.setupDatePage = function() {
-
-      // Eventually, we'll return a promise
-      var oPromise = jQuery.Deferred();
+    Wizard.prototype.setupDatePage = function(done) {
 
       // Bind the page to our DataSet...
       var sPath = "/DataSets('" + this._sDataSetId + "')";
@@ -713,9 +698,8 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
         }
       }, this);
 
-      // Return the promise
-      oPromise.resolve();
-      return oPromise;
+      // return
+      return done();
     };
 
     /**
@@ -725,37 +709,6 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
      * @param  {Function} error Error callback
      */
     Wizard.prototype.validateDatePage = function(done, error) {
-      // // Make sure a field has been selected.
-      // var oTable = this.getView().byId(sap.ui.core.Fragment.createId("idDateFieldsFragment", "idDateFieldTable"));
-      // var oItem = null;
-      //
-      // // Spin through items, and make sure only one is selected, and that it is of type Date
-      // var aItems = oTable.getSelectedItems();
-      // if (aItems.length === 0) {
-      //   this.showInfoAlert(
-      //     "Eeep! No Date field was selected. We really, really need this...",
-      //     "Date field selection",
-      //     false /* bCompact */
-      //   );
-      //   return error();
-      // } else {
-      //   // This is a single select list, so there's only one item to pick
-      //   oItem = aItems[0];
-      // }
-      //
-      // // if this is not type date, we have a problem...
-      // var oContext = oItem.getBindingContext("dataset");
-      // if (oContext.getProperty("type").toLowerCase() !== "date") {
-      //   this.showInfoAlert(
-      //     "Erm, that's not a Date field. Please only select Date fields...",
-      //     "Date field selection",
-      //     false /* bCompact */
-      //   );
-      //   return error();
-      // }
-      //
-      // // Remember this dimension as the date dimension.
-      // this._oFields.date = oContext.getProperty("id");
       done();
     };
 
@@ -773,10 +726,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
      * Lists the avaiable columns in the data set, excluding Date,
      * allowing the user to pick their forecast field.
      */
-    Wizard.prototype.setupForecastPage = function() {
-
-      // Eventually, we'll return a promise
-      var oPromise = jQuery.Deferred();
+    Wizard.prototype.setupForecastPage = function(done) {
 
       // Bind the page to our DataSet...
       var sPath = "/DataSets('" + this._sDataSetId + "')";
@@ -822,9 +772,8 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
         }
       }, this);
 
-      // Return the promise
-      oPromise.resolve();
-      return oPromise;
+      // return
+      return done();
     };
 
     /**
@@ -886,10 +835,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
      * Sets up the page for step 4. Now we are selecting - of the remaining fields -
      * which are to be used as variables. Use a Multi select table for this.
      */
-    Wizard.prototype.setupVariablesPage = function() {
-
-      // Eventually, we'll return a promise
-      var oPromise = jQuery.Deferred();
+    Wizard.prototype.setupVariablesPage = function(done) {
 
       // Bind the page to our DataSet...
       var sPath = "/DataSets('" + this._sDataSetId + "')";
@@ -929,9 +875,8 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
         template: sap.ui.xmlfragment("com.ffa.hpc.view.forecasts.VariableField")
       });
 
-      // Return the promise
-      oPromise.resolve();
-      return oPromise;
+      // return
+      return done();
     };
 
     /**
@@ -994,7 +939,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
      * training data (the minimum for which is determined by the horizon), and a
      * validation period, if required (defaults to the same as the horizon).
      */
-    Wizard.prototype.setupParamsPage = function() {
+    Wizard.prototype.setupParamsPage = function(done) {
 
       // Eventually, we'll return a promise
       var oPromise = jQuery.Deferred();
@@ -1031,12 +976,10 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
 
         // Close dialog and resolve promise
         this.closeBusyDialog();
-        oPromise.resolve();
-      }, this));
 
-      // Return our promise - it will not be resolved until data is loaded
-      // and the page is bound.
-      return oPromise;
+        // return
+        done();
+      }, this));
     };
 
     /**
@@ -1145,7 +1088,8 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
           }));
       };
 
-      done();
+      // return
+      return done();
     };
 
     /**
@@ -1193,7 +1137,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
     /**
      * The forecast is now running. Would they like a notficiation when it's done?
      */
-    Wizard.prototype.setupDonePage = function() {
+    Wizard.prototype.setupDonePage = function(done) {
 
       // Indicate the forecast is commencing.
       this.showBusyDialog({
@@ -1202,15 +1146,14 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
         showCancelButton: false
       });
 
-      var oCreatedPromise = jQuery.Deferred();
-      var oRunPromise = jQuery.Deferred();
+      var oPromise = jQuery.Deferred();
       var oModel = this.getView().getModel("forecast");
 
       // Load up the batch changes, and submit.
       oModel.addBatchChangeOperations(this._aBatchOps);
       oModel.submitBatch(jQuery.proxy(function(oData, oResponse, aErrorResponses) {
           // we can resolve the creation promise
-          oCreatedPromise.resolve();
+          oPromise.resolve();
           this._aBatchOps = [];
         }, this),
         jQuery.proxy(function(oError) {
@@ -1231,25 +1174,24 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
       };
 
       // When we know the forecast has been created, we can run it...
-      jQuery.when(oCreatedPromise).then(jQuery.proxy(function() {
+      jQuery.when(oPromise).then(jQuery.proxy(function() {
         oModel.create("/Runs", oRun, {
           success: jQuery.proxy(function(oData, mResponse) {
+
+            // Not busy
             this.closeBusyDialog();
 
-            // and resolve, so that page navigation continues
-            oRunPromise.resolve();
+            // return
+            done();
           }, this),
           error: jQuery.proxy(function(mError) {
 
+            //TODO Much better error handling here
             this.closeBusyDialog();
-            //oRunPromise.resolve();
           }, this),
           async: true
         });
       }, this));
-
-      // return our submitted promise
-      return oRunPromise;
     };
 
     /**

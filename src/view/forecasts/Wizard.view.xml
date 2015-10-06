@@ -17,11 +17,11 @@
 					text="Cancel"
 					press="onCancelPress" />
 				<Button
-					id="idHomeButton"
-					icon="sap-icon://home"
+					id="idNavBackButton"
+					icon="sap-icon://nav-back"
 					visible="false"
 					enabled="false"
-					press="onHomePress" />
+					press="onNavBackPress" />
 				<ToolbarSpacer />
 				<Title
 					id="idWizardTitle"
