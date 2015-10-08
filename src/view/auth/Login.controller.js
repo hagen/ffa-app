@@ -13,7 +13,8 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/auth/LoginController"],
      * On init handler
      */
     Login.prototype.onInit = function() {
-      this.getRouter().getRoute("login").attachPatternMatched(this._onRouteMatched, this);
+      this.getRouter().getRoute("login").attachPatternMatched(this.onRouteMatched, this);
+      this.getRouter().getRoute("noauth").attachPatternMatched(this.onRouteMatchedNoAuth, this);
     };
 
     /**
@@ -40,7 +41,10 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/auth/LoginController"],
      * Currently, this only serves to swap between the two tabs of the login
      * page - sign in and register.
      */
-    Login.prototype._onRouteMatched = function(oEvent) {
+    Login.prototype.onRouteMatched = function(oEvent) {
+      // Remove any VR flags.
+      this.remove("vr");
+
       // When the route is matched, we either want the login tab or
       // the register tab
       var oParameters = oEvent.getParameters(),
@@ -81,6 +85,25 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/auth/LoginController"],
         eDiv.setVisible(true);
 
       }, this));
+    };
+
+    /**
+     * No auth route has been matched. If this is a VR app, then we go back to
+     * the VR login. If it's a normal request, then back to login
+     * @param  {Event} oEvent The route matched event
+     */
+    Login.prototype.onRouteMatchedNoAuth = function (oEvent) {
+
+      var oRouter = this.getRouter();
+      if (this.get("vr")) {
+        oRouter.navTo("vr", {
+          reason : "auth"
+        }, !sap.ui.Device.system.phone)
+      } else {
+        oRouter.navTo("login", {
+          reason : "auth"
+        }, !sap.ui.Device.system.phone)
+      }
     };
 
     /**
@@ -212,12 +235,12 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/auth/LoginController"],
     };
 
     /***
-     *    ████████╗ ██████╗     ██████╗ ███████╗███╗   ███╗ ██████╗
-     *    ╚══██╔══╝██╔═══██╗    ██╔══██╗██╔════╝████╗ ████║██╔═══██╗
-     *       ██║   ██║   ██║    ██║  ██║█████╗  ██╔████╔██║██║   ██║
-     *       ██║   ██║   ██║    ██║  ██║██╔══╝  ██║╚██╔╝██║██║   ██║
-     *       ██║   ╚██████╔╝    ██████╔╝███████╗██║ ╚═╝ ██║╚██████╔╝
-     *       ╚═╝    ╚═════╝     ╚═════╝ ╚══════╝╚═╝     ╚═╝ ╚═════╝
+     *    ██████╗ ███████╗███╗   ███╗ ██████╗
+     *    ██╔══██╗██╔════╝████╗ ████║██╔═══██╗
+     *    ██║  ██║█████╗  ██╔████╔██║██║   ██║
+     *    ██║  ██║██╔══╝  ██║╚██╔╝██║██║   ██║
+     *    ██████╔╝███████╗██║ ╚═╝ ██║╚██████╔╝
+     *    ╚═════╝ ╚══════╝╚═╝     ╚═╝ ╚═════╝
      *
      */
 
@@ -230,9 +253,41 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/auth/LoginController"],
       // Navigate to the demo login screen... this is actually the screen
       // reserved for the VR app to login, but is also where the demo
       // account login can be found. Make sure the correct tab is set
-      this.getRouter().navTo("demo", {
-        tab : "demo"
-      }, !sap.ui.Device.system.phone);
+      if (!this._oDemoDialog) {
+        this._oDemoDialog = sap.ui.xmlfragment("idDemoFragment", "com.ffa.hpc.view.auth.DemoDialog", this);
+        this.getView().addDependent(this._oDemoDialog);
+      }
+
+      // Now we can open the demo DemoDialog
+      jQuery.sap.delayedCall(0, this._oDemoDialog, this._oDemoDialog.open, []);
+    };
+
+    /**
+     * user pressed the demo log in button, so we'll submit login details for
+     * the demo user
+     * @param  {Event} oEvent Button press event
+     */
+    Login.prototype.onDemoLoginPress = function (oEvent) {
+      // The user has started the demo login process.
+      // close dialog
+      if (this._oDemoDialog) { this._oDemoDialog.close(); }
+
+      //  Submit log in details - we're logging in with a static demo account email
+      // and password. These are in the env json file.
+      var oModel = this.getView().getModel("env");
+
+      // Function is in Root Login controller
+      this.doLogin(oModel.getProperty("/demo_username"), oModel.getProperty("/demo_password"));
+    };
+
+    /**
+     * Cancel and close demo dialog
+     * @param  {Event} oEvent Button press event
+     */
+    Login.prototype.onDemoCancelPress = function (oEvent) {
+      // The user has started the demo login process.
+      // close dialog
+      this._oDemoDialog.close();
     };
 
     return Login;

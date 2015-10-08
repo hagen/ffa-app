@@ -60,7 +60,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/auth/Controller"],
      * @param  {String} sEmail username/email
      * @param  {String} sPwd   password
      */
-    Login.prototype.doLogin = function (sEmail, sPwd) {
+    Login.prototype.doLogin = function(sEmail, sPwd) {
       // The rest of this code assumes you are not using a library.
       // It can be made less wordy if you use one.
       var oModel = this.getView().getModel("env");
@@ -271,6 +271,25 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/auth/Controller"],
 
       // return result
       return !bEmpty;
+    };
+
+    /***
+     *    ██████╗ ███████╗███╗   ███╗ ██████╗
+     *    ██╔══██╗██╔════╝████╗ ████║██╔═══██╗
+     *    ██║  ██║█████╗  ██╔████╔██║██║   ██║
+     *    ██║  ██║██╔══╝  ██║╚██╔╝██║██║   ██║
+     *    ██████╔╝███████╗██║ ╚═╝ ██║╚██████╔╝
+     *    ╚═════╝ ╚══════╝╚═╝     ╚═╝ ╚═════╝
+     *
+     */
+
+    Login.prototype.onDemoButtonPress = function(oEvent) {
+      // Demo button is pressed - we're logging in with a static demo account email
+      // and password. These are in the env json file.
+      var oModel = this.getView().getModel("env");
+
+      // Function is in Root Login controller
+      this.doLogin(oModel.getProperty("/demo_username"), oModel.getProperty("/demo_password"));
     };
 
     /***

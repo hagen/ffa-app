@@ -127,7 +127,7 @@
 												type="Emphasized"
 												class="ffaLoginButton"
 												enabled="true"
-												press="onDemoButtonPress">
+												press="onDemoLoginPress">
 												<layoutData>
 													<l:GridData
 														span="XL12 L12 M12 S12" />

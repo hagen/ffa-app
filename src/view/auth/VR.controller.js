@@ -40,6 +40,9 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/auth/LoginController"],
      * page - sign in and register.
      */
     VR.prototype.onRouteMatched = function(oEvent) {
+      // Store a flag so we know this is VR mode.
+      this.put("vr", "true");
+
       // When the route is matched, we either want the login tab or
       // the register tab
       var oParameters = oEvent.getParameters(),
@@ -94,56 +97,6 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/auth/LoginController"],
     };
 
     /***
-     *    ███████╗ ██████╗  ██████╗██╗ █████╗ ██╗
-     *    ██╔════╝██╔═══██╗██╔════╝██║██╔══██╗██║
-     *    ███████╗██║   ██║██║     ██║███████║██║
-     *    ╚════██║██║   ██║██║     ██║██╔══██║██║
-     *    ███████║╚██████╔╝╚██████╗██║██║  ██║███████╗
-     *    ╚══════╝ ╚═════╝  ╚═════╝╚═╝╚═╝  ╚═╝╚══════╝
-     *
-     */
-
-    /**
-     * Authenticate the user, by sending them to Google OAuth; if this is VR mode,
-     * then these links will ONLY sign in - they will not also trigger registration.
-     * @param  {[type]} oEvent [description]
-     */
-    VR.prototype.onGooglePress = function(oEvent) {
-      var oModel = this.getView().getModel("env");
-      window.location.href = oModel.getProperty("/host") + "/auth/google/strict";
-    };
-
-    /**
-     * Authenticate the user, by sending them to Twitter OAuth; if this is VR mode,
-     * then these links will ONLY sign in - they will not also trigger registration.
-     * @param  {[type]} oEvent [description]
-     */
-    VR.prototype.onTwitterPress = function(oEvent) {
-      var oModel = this.getView().getModel("env");
-      window.location.href = oModel.getProperty("/host") + "/auth/twitter/strict";
-    };
-
-    /**
-     * Authenticate the user, by sending them to LinkedIn OAuth; if this is VR mode,
-     * then these links will ONLY sign in - they will not also trigger registration.
-     * @param  {[type]} oEvent [description]
-     */
-    VR.prototype.onLinkedInPress = function(oEvent) {
-      var oModel = this.getView().getModel("env");
-      window.location.href = oModel.getProperty("/host") + "/auth/linkedin/strict";
-    };
-
-    /**
-     * Authenticate the user, by sending them to Google OAuth; if this is VR mode,
-     * then these links will ONLY sign in - they will not also trigger registration.
-     * @param  {[type]} oEvent [description]
-     */
-    VR.prototype.onSCNPress = function(oEvent) {
-      var oModel = this.getView().getModel("env");
-      window.location.href = oModel.getProperty("/host") + "/auth/scn/strict";
-    };
-
-    /***
      *    ██████╗ ███████╗ ██████╗ ██╗███████╗████████╗███████╗██████╗
      *    ██╔══██╗██╔════╝██╔════╝ ██║██╔════╝╚══██╔══╝██╔════╝██╔══██╗
      *    ██████╔╝█████╗  ██║  ███╗██║███████╗   ██║   █████╗  ██████╔╝
@@ -164,29 +117,10 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/auth/LoginController"],
       // Immediately show info alert, advising the user must register
       // when NOT in the VR app
       this.showInfoAlert(
-        "It's so cool that you want to register! To do this, you'll have to create an account via. the web app. Head to hpc.forefrontanalytics.com.au, and select 'create an account'.",
+        "Fantastic! To do this, you'll have to create an account via. the web app. Head to hpc.forefrontanalytics.com.au, and select 'create an account'.",
         "App registration",
         sap.ui.Device.system.phone
       );
-    };
-
-    /***
-     *    ██████╗ ███████╗███╗   ███╗ ██████╗
-     *    ██╔══██╗██╔════╝████╗ ████║██╔═══██╗
-     *    ██║  ██║█████╗  ██╔████╔██║██║   ██║
-     *    ██║  ██║██╔══╝  ██║╚██╔╝██║██║   ██║
-     *    ██████╔╝███████╗██║ ╚═╝ ██║╚██████╔╝
-     *    ╚═════╝ ╚══════╝╚═╝     ╚═╝ ╚═════╝
-     *
-     */
-
-    VR.prototype.onDemoButtonPress = function (oEvent) {
-      // Demo button is pressed - we're logging in with a static demo account email
-      // and password. These are in the env json file.
-      var oModel = this.getView().getModel("env");
-
-      // Function is in Root Login controller
-      this.doLogin(oModel.getProperty("/demo_username"), oModel.getProperty("/demo_password"));
     };
 
     return VR;

@@ -1,0 +1,68 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:l="sap.ui.layout"
+	xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core">
+	<Dialog
+		contentWidth="400px"
+		id="idDemoDialog"
+		title="Demo log in">
+		<beginButton>
+			<Button
+				id="idDemoCloseButton"
+				text="Cancel"
+				press="onDemoCancelPress" />
+		</beginButton>
+		<l:Grid
+			defaultSpan="L12 M12 S12"
+			width="auto">
+			<l:content>
+				<f:SimpleForm
+					id="idDemoForm"
+					maxContainerCols="2"
+					editable="true"
+					layout="ResponsiveGridLayout"
+					labelSpanL="3"
+					labelSpanM="3"
+					emptySpanL="4"
+					emptySpanM="4"
+					columnsL="1"
+					columnsM="1"
+					class="editableForm">
+					<f:content>
+						<Text
+							text="To log in with our demo/evaluation account, simply
+							press the button below. This account is pre-populated with
+							a number of data sets and forecasts for you to explore.">
+							<layoutData>
+								<l:GridData
+									span="XL12 L12 M12 S12" />
+							</layoutData>
+						</Text>
+						<Text
+							text="NOTE: this account is refreshed nightly and does not
+							allow the creation of new data sets and/or forecasts.">
+							<layoutData>
+								<l:GridData
+									span="XL12 L12 M12 S12" />
+							</layoutData>
+						</Text>
+						<Button
+							id="idDemoButton"
+							text="LOG IN"
+							type="Emphasized"
+							class="ffaLoginButton"
+							enabled="true"
+							press="onDemoLoginPress">
+							<layoutData>
+								<l:GridData
+									span="XL12 L12 M12 S12" />
+							</layoutData>
+						</Button>
+					</f:content>
+				</f:SimpleForm>
+			</l:content>
+		</l:Grid>
+	</Dialog>
+</core:FragmentDefinition>
