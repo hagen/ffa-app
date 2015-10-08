@@ -97,11 +97,11 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/auth/LoginController"],
       var oRouter = this.getRouter();
       if (this.get("vr")) {
         oRouter.navTo("vr", {
-          reason : "auth"
+          reason : "noauth"
         }, !sap.ui.Device.system.phone)
       } else {
         oRouter.navTo("login", {
-          reason : "auth"
+          reason : "noauth"
         }, !sap.ui.Device.system.phone)
       }
     };

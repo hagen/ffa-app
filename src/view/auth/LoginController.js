@@ -124,6 +124,15 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/auth/Controller"],
             );
           }, this), []);
           break;
+        case "noauth":
+          jQuery.sap.delayedCall(500, this, jQuery.proxy(function() {
+            this.showErrorAlert(
+              "Looks like your log in details were invalid. Try again...",
+              "Invalid log in",
+              sap.ui.Device.system.phone
+            );
+          }, this), []);
+          break;
       }
     };
 
