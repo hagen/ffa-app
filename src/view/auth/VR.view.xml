@@ -81,10 +81,10 @@
 										</f:content>
 									</f:SimpleForm>
 									<Text
-										text="Currently, our VR App log in will only work with an email and password
+										text="Currently, VR App log in will only work with an email and password
 										combination. If you don't normally use email + password to log in,
-										please head to your profile page of the app in you browser, and under the 'Social'
-										menu item, connect a local account. Then head back here and log in!">
+										please head to your Profile in the app via. a browser, and under the 'Social'
+										menu item, connect a Local account. Then head back here and log in!">
 										<layoutData>
 											<l:GridData
 												span="XL12 L12 M12 S12" />
