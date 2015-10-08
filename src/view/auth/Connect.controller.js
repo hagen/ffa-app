@@ -11,8 +11,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/auth/Controller"],
      * On init handler
      */
     Connect.prototype.onInit = function() {
-      this.getRouter().getRoute("connect").attachPatternMatched(this._onRouteMatched, this);
-      //this.getRouter().getRoute("disconnect").attachPatternMatched(this._onRouteMatched, this);
+      this.getRouter().getRoute("connect").attachPatternMatched(this.onRouteMatched, this);
     };
 
     /**
@@ -37,27 +36,31 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/auth/Controller"],
      * Currently, this only serves to swap between the two tabs of the login
      * page - sign in and register.
      */
-    Connect.prototype._onRouteMatched = function(oEvent) {
-      var oDialog = this.getView().byId("idBusyDialog");
-      oDialog.open();
+    Connect.prototype.onRouteMatched = function(oEvent) {
+      var self = this;
+      this.showBusyDialog({});
 
       // When the route is matched, we either want the login tab or
       // the register tab
       var oParameters = oEvent.getParameters();
-      var sRoute = "";
+      var oRouter = this.getRouter();
 
       // First, check if access_token is supplied. If so, we're authed
       // to go to dash
       if (oParameters.arguments.access_token) {
-        this._handleConnectAuth(oParameters.arguments.access_token, oParameters.arguments.provider);
-        sRoute = "social";
-      } else {
-        sRoute = "login";
+        this.handleConnectAuth(
+          oParameters.arguments.access_token,
+          oParameters.arguments.provider,
+          function() {
+            oRouter.navTo("social", {}, !sap.ui.Device.system.phone);
+            self.showBusyDialog({});
+          },
+          function() {
+            oRouter.navTo("login", {}, !sap.ui.Device.system.phone);
+            self.showBusyDialog({});
+          }
+        );
       }
-
-      // We need to check if this user has the related social profile
-      this.getRouter().navTo(sRoute, {}, !sap.ui.Device.system.phone);
-      oDialog.close();
     };
 
     /**
@@ -66,10 +69,10 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/auth/Controller"],
      * @param  {[type]} sToken    The auth bearer token to use for requests to Node.js
      * @param  {[type]} sProvider   The provider we're authenticating against.
      */
-    Connect.prototype._handleConnectAuth = function(sToken, sProvider) {
+    Connect.prototype.handleConnectAuth = function(sToken, sProvider, done, error) {
 
       // If nothing is returned, then we need to create the user.
-      this._link(sToken, sProvider);
+      this.linkProfiles(sToken, sProvider, done, error);
     };
 
     return Connect;

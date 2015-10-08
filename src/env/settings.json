@@ -1,4 +1,6 @@
 {
   "host" : "http://hagen.forefrontanalytics.com.au",
-  "port" : 80
+  "port" : 80,
+  "demo_username" : "info@forefrontanalytics.com.au",
+  "demo_password" : "g[|]2x@j3a6}n{|E)U0^$}@|9H*13U"
 }

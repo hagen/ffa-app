@@ -38,7 +38,8 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
      * user must log in again.
      * @param  {Error} mError Error object from AJAX call
      */
-    Controller.prototype._maybeHandleAuthError = function(mError) {
+    Controller.prototype._maybeHandleAuthError =
+      Controller.prototype.maybeHandleAuthError = function(mError) {
       if ([401, 400].indexOf(mError.response.statusCode) > -1) {
         // Sometimes, the busy dialog is up when this happens.
         this.hideBusyDialog();
@@ -380,24 +381,35 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
      *
      */
     /**
-     * [_put description]
-     * @param  {[type]} sKey   [description]
-     * @param  {[type]} sValue [description]
-     * @return {[type]}        [description]
+     * Puts a value into SAP namespace local storage
+     * @param  {String} sKey   Key
+     * @param  {String} sValue Value
      */
-    Controller.prototype._put = function(sKey, sValue) {
-      var oStore = new jQuery.sap.storage(jQuery.sap.storage.Type.Local);
+    Controller.prototype._put =
+      Controller.prototype.put = function(sKey, sValue) {
+      var oStore = new jQuery.sap.storage(jQuery.sap.storage.Type.local);
       oStore.put(sKey, sValue);
     };
 
     /**
-     * [_get description]
-     * @param  {[type]} sKey [description]
-     * @return {[type]}      [description]
+     * Retrieves a value from SAP namespace local storage
+     * @param  {String} sKey Key
+     * @return {String}      Value
      */
-    Controller.prototype._get = function(sKey) {
-      var oStore = new jQuery.sap.storage(jQuery.sap.storage.Type.Local);
+    Controller.prototype._get =
+      Controller.prototype.get = function(sKey) {
+      var oStore = new jQuery.sap.storage(jQuery.sap.storage.Type.local);
       return oStore.get(sKey);
+    };
+
+    /**
+     * Removes a value from SAP namespace local storage
+     * @param  {String} sKey Key
+     */
+    Controller.prototype._remove =
+      Controller.prototype.remove = function(sKey) {
+      var oStore = new jQuery.sap.storage(jQuery.sap.storage.Type.local);
+      oStore.remove(sKey);
     };
 
     /***

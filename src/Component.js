@@ -350,7 +350,17 @@ sap.ui.core.UIComponent.extend("com.ffa.hpc.Component", {
         view: "auth.Login",
         viewLevel: 1
       }, {
-        pattern: "auth/{provider}/token/{access_token}",
+        pattern: "vr/:tab:/:reason:",
+        name: "vr",
+        view: "auth.VR",
+        viewLevel: 1
+      }, {
+        pattern: "demo/:tab:",
+        name: "demo",
+        view: "auth.Demo",
+        viewLevel: 1
+      }, {
+        pattern: "auth/{provider}/token/{access_token}/:demo:",
         name: "token",
         view: "auth.Token",
         viewLevel: 1

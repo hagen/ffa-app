@@ -20,16 +20,18 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/util/Controller"],
      */
 
     /**
-     * Connect the profile
-     * @param  {[type]} sToken  [description]
-     * @param  {[type]} sProvider [description]
-     * @return {[type]}           [description]
+     * Connect the user's existing profile to the supplied provider profile; This
+     * is done by reading the Social provider details, now stored in Mongo, And
+     * forwarding these to HANA
+     * @param  {String}   sToken    Bearer token to use for jQuery call
+     * @param  {String}   sProvider Social provider, required for connecting
+     * @param  {Function} done      Call when done
      */
-    Controller.prototype._connect = function(sToken, sProvider) {
+    Controller.prototype.connect = function(sToken, sProvider, done) {
       var oModel = this.getView().getModel("profile");
 
       // Read social stuff from node
-      var bContinue = false;
+
       var oProfiles = {};
       var oHeaders = {
         Authorization: 'Bearer ' + sToken
@@ -37,32 +39,30 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/util/Controller"],
       jQuery.ajax({
         url: '/auth/api/profile',
         type: 'GET',
-        headers: oHeaders,
+        headers: oHeaders, // Do not use the root controller function here
         async: false,
         success: jQuery.proxy(function(oData, mResponse) {
           oProfiles = oData;
-          bContinue = true;
+          // Now, update their social profile
+          // oProfiles should have a named array, matching the provider
+          var fn = "connect" + sProvider.charAt(0).toUpperCase() + sProvider.slice(1);
+          if (typeof this[fn] === "function") {
+            this[fn].apply(this, [oModel, oProfiles, done]);
+          }
         }, this),
         error: jQuery.proxy(function(mError) {
 
         }, this)
       });
-
-      // Now, update their social profile
-      // oProfiles should have a named array, matching the provider
-      var fn = "_connect" + sProvider.charAt(0).toUpperCase() + sProvider.slice(1);
-      if (typeof this[fn] === "function") {
-        this[fn].apply(this, [oModel, oProfiles]);
-      }
     };
 
     /**
      * Connect up the Linkedin account
-     * @param  {[type]} oModel    [description]
-     * @param  {[type]} oProfiles [description]
-     * @return {[type]}           [description]
+     * @param  {String}   sToken    Bearer token to use for jQuery call
+     * @param  {String}   sProvider Social provider, required for connecting
+     * @param  {Function} done      Call when done
      */
-    Controller.prototype._connectLocal = function(oModel, oProfiles) {
+    Controller.prototype.connectLocal = function(oModel, oProfiles, done) {
       var oProfile = {
         profile_id: this.getUserId(),
         email: oProfiles.local.email,
@@ -75,23 +75,23 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/util/Controller"],
       oModel.update("/LocalProfiles('TESTUSER')", oProfile, {
         success: jQuery.proxy(function(oData, mResponse) {
           // Now we continue on to the Social stuff.
-          var bContinue = true;
+          if (done) { done(); }
         }, this),
         error: jQuery.proxy(function(mError) {
-          this._maybeHandleAuthError(mError);
+          this.maybeHandleAuthError(mError);
         }, this),
-        async: false,
+        async: true,
         merge: true
       });
     };
 
     /**
      * Connect up the Google account
-     * @param  {[type]} oModel    [description]
-     * @param  {[type]} oProfiles [description]
-     * @return {[type]}           [description]
+     * @param  {String}   sToken    Bearer token to use for jQuery call
+     * @param  {String}   sProvider Social provider, required for connecting
+     * @param  {Function} done      Call when done
      */
-    Controller.prototype._connectGoogle = function(oModel, oProfiles) {
+    Controller.prototype.connectGoogle = function(oModel, oProfiles, done) {
       var oProfile = {
         profile_id: this.getUserId(),
         id: oProfiles.google.id,
@@ -104,23 +104,23 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/util/Controller"],
       oModel.update("/GoogleProfiles('TESTUSER')", oProfile, {
         success: jQuery.proxy(function(oData, mResponse) {
           // Now we continue on to the Social stuff.
-          var bContinue = true;
+          if (done) { done(); }
         }, this),
         error: jQuery.proxy(function(mError) {
-          this._maybeHandleAuthError(mError);
+          this.maybeHandleAuthError(mError);
         }, this),
-        async: false,
+        async: true,
         merge: true
       });
     };
 
     /**
      * Connect up the Twitter account
-     * @param  {[type]} oModel    [description]
-     * @param  {[type]} oProfiles [description]
-     * @return {[type]}           [description]
+     * @param  {String}   sToken    Bearer token to use for jQuery call
+     * @param  {String}   sProvider Social provider, required for connecting
+     * @param  {Function} done      Call when done
      */
-    Controller.prototype._connectTwitter = function(oModel, oProfiles) {
+    Controller.prototype.connectTwitter = function(oModel, oProfiles, done) {
       var oProfile = {
         profile_id: this.getUserId(),
         id: oProfiles.twitter.id,
@@ -133,23 +133,23 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/util/Controller"],
       oModel.update("/TwitterProfiles('TESTUSER')", oProfile, {
         success: jQuery.proxy(function(oData, mResponse) {
           // Now we continue on to the Social stuff.
-          var bContinue = true;
+          if (done) { done(); }
         }, this),
         error: jQuery.proxy(function(mError) {
-          this._maybeHandleAuthError(mError);
+          this.maybeHandleAuthError(mError);
         }, this),
-        async: false,
+        async: true,
         merge: true
       });
     };
 
     /**
      * Connect up the Linkedin account
-     * @param  {[type]} oModel    [description]
-     * @param  {[type]} oProfiles [description]
-     * @return {[type]}           [description]
+     * @param  {String}   sToken    Bearer token to use for jQuery call
+     * @param  {String}   sProvider Social provider, required for connecting
+     * @param  {Function} done      Call when done
      */
-    Controller.prototype._connectLinkedin = function(oModel, oProfiles) {
+    Controller.prototype.connectLinkedin = function(oModel, oProfiles, done) {
       var oProfile = {
         profile_id: this.getUserId(),
         id: oProfiles.linkedin.id,
@@ -164,12 +164,12 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/util/Controller"],
       oModel.update("/LinkedInProfiles('TESTUSER')", oProfile, {
         success: jQuery.proxy(function(oData, mResponse) {
           // Now we continue on to the Social stuff.
-          var bContinue = true;
+          if (done) { done(); }
         }, this),
         error: jQuery.proxy(function(mError) {
-          this._maybeHandleAuthError(mError);
+          this.maybeHandleAuthError(mError);
         }, this),
-        async: false,
+        async: true,
         merge: true
       });
     };
@@ -177,11 +177,11 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/util/Controller"],
 
     /**
      * Connect up the SCN account
-     * @param  {[type]} oModel    [description]
-     * @param  {[type]} oProfiles [description]
-     * @return {[type]}           [description]
+     * @param  {String}   sToken    Bearer token to use for jQuery call
+     * @param  {String}   sProvider Social provider, required for connecting
+     * @param  {Function} done      Call when done
      */
-    Controller.prototype._connectScn = function(oModel, oProfiles) {
+    Controller.prototype.connectScn = function(oModel, oProfiles, done) {
 
     };
 
@@ -197,16 +197,13 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/util/Controller"],
 
     /**
      * Connect the profile
-     * @param  {[type]} sToken  [description]
-     * @param  {[type]} sProvider [description]
-     * @return {[type]}           [description]
+     * @param  {String} sToken    Auth token
+     * @param  {String} sProvider Social provier name
+     * @param  {Function} fnDone  Call when done
+     * @param  {Function} fnError Call when error
      */
-    Controller.prototype._link = function(sToken, sProvider) {
+    Controller.prototype.linkProfiles = function(sToken, sProvider, fnDone, fnError) {
       var oModel = this.getView().getModel("profile");
-
-      // Read social stuff from node
-      var bContinue = false;
-      var oProfiles = {};
 
       // This will authenticate us with a different user, however it is now
       // up to Node to match up the user with the original user...
@@ -222,15 +219,21 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/util/Controller"],
         },
         async: false,
         success: jQuery.proxy(function(oData, mResponse) {
-          bContinue = true;
+
+          // Clear link token - we won't need it again (root Util controller)
           this.clearLinkToken();
+
+          // Reuse the connect function to link the social profile
+          this.connect(sToken, sProvider, fnDone);
         }, this),
         error: jQuery.proxy(function(mError) {
-          bContinue = false;
-        }, this)
-      })
 
-      // Reuse the connect function to link the social profile
-      this._connect(sToken, sProvider);
+          // Maybe handle an authentication issue?
+          this.maybeHandleAuthError(mError);
+
+          // Call our error handler
+          if (fnError) { fnError(); }
+        }, this)
+      });
     };
   });
