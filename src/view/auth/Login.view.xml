@@ -5,7 +5,7 @@
 	xmlns:l="sap.ui.layout"
   xmlns:f="sap.ui.layout.form"
 	xmlns:core="sap.ui.core"
-	xmlns:html="http://www.w3.org/1999/xhtml">
+	xmlns:html="https://www.w3.org/1999/xhtml">
 	<Page
 		id="idLoginPage"
 		enableScrolling="false"
