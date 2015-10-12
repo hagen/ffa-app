@@ -231,8 +231,13 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/auth/Controller"],
           if (no) { return no(); }
         }, this),
         error: jQuery.proxy(function(mError) {
-          this.maybeHandleAuthError(mError);
-          if (error) { error(); }
+          if (mError.response.statusCode === 404) {
+            // Not found - which means they don't have a plan, and need one
+            if (no) { return no(); }
+          } else {
+            this.maybeHandleAuthError(mError);
+            if (error) { error(); }  
+          }
         }, this),
         async: true
       });
