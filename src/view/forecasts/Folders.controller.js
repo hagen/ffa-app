@@ -41,7 +41,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
      * @param  {object} oEvent Route matched event
      */
     Folders.prototype._onRouteMatched = function(oEvent) {
-      this._checkMetaDataLoaded("forecast");
+      this.checkMetaDataLoaded("forecast");
 
       // Let the master list know I'm on this Folders view.
       this.getEventBus().publish("Folders", "RouteMatched", {} /* payload */ );

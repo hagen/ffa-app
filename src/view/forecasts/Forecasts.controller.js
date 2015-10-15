@@ -139,7 +139,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
      * @param  {object} oEvent Route matched event
      */
     Forecasts.prototype._onRouteMatched = function(oEvent) {
-      this._checkMetaDataLoaded("forecast");
+      this.checkMetaDataLoaded("forecast");
 
       // We are heavily Dependent on the Run Id, so we'll declare this promise
       // each time the route is matched, but only if it doesn't already exist. It is

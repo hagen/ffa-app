@@ -73,7 +73,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/settings/Controller"],
      * Id in order to figure out what type of dataset it is.
      */
     Menu.prototype._onRouteMatched = function(oEvent) {
-      this._checkMetaDataLoaded("profile");
+      this.checkMetaDataLoaded("profile");
       this.getRouter().navTo("profile", {}, !sap.ui.Device.system.phone);
     };
 

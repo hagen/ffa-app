@@ -26,7 +26,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
      * @param {String}   sId      The Data set Id to check
      * @param {Deferred} oPromise Jquery Deferred
      */
-    DatasetAuth.prototype._maybeAuthenticateDataset = function(sId, oPromise) {
+    DatasetAuth.prototype.maybeAuthenticateDataset = function(sId, oPromise) {
       // Okay, so get the data set, and check if it needs authentication.
       // By this stage, all Data sets should be in the model.
       var bAuthReqd = false;

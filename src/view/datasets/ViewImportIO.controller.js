@@ -48,7 +48,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/datasets/ViewController"],
      * Route matched handler fires up the Wizard straight away
      */
     IO.prototype._onRouteMatched = function(oEvent) {
-      this._checkMetaDataLoaded("dataset");
+      this.checkMetaDataLoaded("dataset");
       var oParameters = oEvent.getParameters();
 
       // The dataset ID may not have been provided. If not, that's cool

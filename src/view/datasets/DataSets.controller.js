@@ -75,7 +75,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/datasets/Controller'],
      * Id in order to figure out what type of dataset it is.
      */
     DataSets.prototype._onRouteMatched = function(oEvent) {
-      this._checkMetaDataLoaded("dataset");
+      this.checkMetaDataLoaded("dataset");
       var oParameters = oEvent.getParameters();
 
       // The dataset ID may not have been provided. If not, that's cool

@@ -38,7 +38,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/settings/Controller"],
      */
     Profile.prototype._onRouteMatched = function(oEvent) {
       // Make sure we have a meta data document
-      this._checkMetaDataLoaded("profile");
+      this.checkMetaDataLoaded("profile");
 
       // Let the master list know I'm on this Folders view.
       this.getEventBus().publish("Profile", "RouteMatched", {} /* payload */ );

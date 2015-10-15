@@ -159,7 +159,7 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
      * the user is not authorised to continue.
      * @param  {String} sModel Model name to check meta data of
      */
-    Controller.prototype._checkMetaDataLoaded = function(sModel) {
+    Controller.prototype.checkMetaDataLoaded = function(sModel) {
       if (this._loaded) {
         return;
       }

@@ -66,7 +66,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/functions/Controller'],
      * @param  {object} oEvent Route matched event
      */
     Library.prototype._onRouteMatched = function(oEvent) {
-      this._checkMetaDataLoaded("function");
+      this.checkMetaDataLoaded("function");
     };
 
     return Library;

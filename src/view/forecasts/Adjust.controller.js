@@ -45,7 +45,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
      * @param  {object} oEvent Route matched event
      */
     Adjust.prototype._onRouteMatched = function(oEvent) {
-      this._checkMetaDataLoaded("forecast");
+      this.checkMetaDataLoaded("forecast");
 
       var oParameters = oEvent.getParameters();
       this._sForecastId = oParameters.arguments.forecast_id;

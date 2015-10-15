@@ -58,7 +58,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
      * @param  {object} oEvent Route matched event
      */
     Wizard.prototype._onRouteMatched = function(oEvent) {
-      this._checkMetaDataLoaded("forecast");
+      this.checkMetaDataLoaded("forecast");
       // Couple of scenarios...
       // (1) arrive here from folders - Create New Forecast; if so, retain
       // parent folder Id
@@ -633,7 +633,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
 
       // Maybe prompt the user for authentication
       // NOTE: this function lives down in the DatasetAuth Controller
-      this._maybeAuthenticateDataset(this._sDataSetId, oPromise);
+      this.maybeAuthenticateDataset(this._sDataSetId, oPromise);
 
       jQuery.when(oPromise)
         // if the promise is resolved, then we can advance

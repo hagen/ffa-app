@@ -314,7 +314,7 @@ sap.ui.core.UIComponent.extend("com.ffa.hpc.Component", {
           targetAggregation: "detailPages"
         }]
       }, {
-        pattern: "dash",
+        pattern: "",
         name: "dash",
         view: "Dashboard",
         viewLevel: 2

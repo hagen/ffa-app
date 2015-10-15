@@ -42,7 +42,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
      * @param  {object} oEvent Route matched event
      */
     Rerun.prototype._onRouteMatched = function(oEvent) {
-      this._checkMetaDataLoaded("forecast");
+      this.checkMetaDataLoaded("forecast");
 
       // Busy.
       this.showBusyDialog();
@@ -235,7 +235,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
       var oPromise = jQuery.Deferred();
 
       // NOTE: this function lives down in the DatasetAuth Controller
-      this._maybeAuthenticateDataset(sDatasetId, oPromise);
+      this.maybeAuthenticateDataset(sDatasetId, oPromise);
 
       jQuery.when(oPromise)
         // if the promise is resolved, then we can advance

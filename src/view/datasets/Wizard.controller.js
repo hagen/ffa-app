@@ -46,7 +46,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/datasets/Controller'],
      * Route matched handler fires up the Wizard straight away
      */
     Wizard.prototype._onRouteMatched = function(oEvent) {
-      this._checkMetaDataLoaded("dataset");
+      this.checkMetaDataLoaded("dataset");
 
       // We set up a promise to allow for async checking of allowances
       var oPromise = jQuery.Deferred();
