@@ -48,10 +48,10 @@
         </customHeader>
         <footer>
           <Toolbar>
-            <Button
+            <!--<Button
               id="idCancelButton"
               text="Cancel"
-              press="onCancelPress" />
+              press="onCancelPress" />-->
 						<ToolbarSpacer />
             <Button
               icon="sap-icon://download"

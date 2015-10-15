@@ -82,9 +82,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
           upper: this._calcSelectionUpper(),
           from: null,
           to: null,
-          selected: 0,
-          from: null,
-          to: null
+          selected: 0
         });
         this.getView().setModel(mRange, "range");
 
@@ -108,8 +106,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
      * ensure you navigate back to the correct route. We save the route when
      * the route pattern is matched, however, we may need (depending on the route)
      * to also send some parameters back (like folder_id, for example).
-     * @param  {[type]} oEvent [description]
-     * @return {[type]}        [description]
+     * @param  {Event} oEvent Button press.
      */
     Adjust.prototype.onDonePress = function(oEvent) {
 
@@ -122,6 +119,12 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
       // Do we also need a folder?
       if (this._sReturnRoute.indexOf('folder') > -1) {
         oParams.folder_id = this.getView().getModel("forecast").getProperty("/Adjust('" + this._sForecastId + "')/folder_id");
+      }
+
+      // We're also going to deselect any selected points.
+      var oLink = this.getView().byId("idClearRangeLink");
+      if (oLink.getVisible()) {
+        oLink.firePress();
       }
 
       // Do the routing
@@ -197,7 +200,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
 
       // Collect the TOTAL series points that are currently selected; these will be
       // updated
-      this._aPoints = this._getSelectedPoints();
+      this._aPoints = this.getSelectedPoints();
 
       // if the user hasn't selected any points, show an error
       if (this._aPoints.length === 0) {
@@ -376,7 +379,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
     /**
      * Here we are simply checking how many points are selected, and updating flags
      */
-    Adjust.prototype._updateSelectedPoints = function() {
+    Adjust.prototype.updateSelectedPoints = function() {
       this.getView().getModel("range").setProperty("/selected", (this._workspaceChart.getSelectedPoints() || []).length);
     };
 
@@ -451,7 +454,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
      * The original y value is also stored in the point as y1
      * @return {array} Points array
      */
-    Adjust.prototype._getSelectedPoints = function() {
+    Adjust.prototype.getSelectedPoints = function() {
       var j = 0;
 
       // we collect the user-selected points, as these will only be on the main plot line
@@ -494,7 +497,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
       var fPercent = parseFloat(oEvent.getParameter("value")) / 100;
 
       // Now make the change to our chart...
-      this._update(fPercent, this._aPoints, this._oChart);
+      this.update(fPercent, this._aPoints, this._oChart);
     };
 
     /**
@@ -525,7 +528,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
 
       // And now do the update
       // Now make the change to our chart...
-      this._update(fPercent, this._aPoints, this._oChart);
+      this.update(fPercent, this._aPoints, this._oChart);
     };
 
     /**
@@ -535,7 +538,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
      * @param aPoints The points to update
      * @param oChart The chart to update
      */
-    Adjust.prototype._update = function(fDecimal, aPoints, oChart) {
+    Adjust.prototype.update = function(fDecimal, aPoints, oChart) {
 
       // loop through the point collections and update points
       this._aPoints.forEach(function(point, i) {
