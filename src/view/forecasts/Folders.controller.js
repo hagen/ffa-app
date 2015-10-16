@@ -158,8 +158,8 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
           })],
           filters: [new sap.ui.model.Filter({
             path: "endda",
-            operator: sap.ui.model.FilterOperator.EQ,
-            value1: "9999-12-31"
+            operator: sap.ui.model.FilterOperator.GT,
+            value1: new Date()
           }), new sap.ui.model.Filter({
             path: "parent_id",
             operator: sap.ui.model.FilterOperator.EQ,
@@ -205,8 +205,8 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
         })],
         filters: [new sap.ui.model.Filter({
           path: "endda",
-          operator: sap.ui.model.FilterOperator.EQ,
-          value1: "9999-12-31"
+          operator: sap.ui.model.FilterOperator.GT,
+          value1: new Date()
         }), new sap.ui.model.Filter({
           path: "parent_id",
           operator: sap.ui.model.FilterOperator.EQ,
