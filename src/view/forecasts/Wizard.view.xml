@@ -173,8 +173,8 @@
 								}],
 								filters : [{
 									path : 'endda',
-									operator : 'EQ',
-									value1: '9999-12-31'
+									operator : 'GT',
+									value1: '9999-12-01'
 								}, {
 									path : 'created_by',
 									operator : 'EQ',

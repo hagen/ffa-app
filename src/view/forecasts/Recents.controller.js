@@ -64,8 +64,8 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
         value1: "TESTUSER"
       }), new sap.ui.model.Filter({
         path: "endda",
-        operator: sap.ui.model.FilterOperator.EQ,
-        value1: "9999-12-31"
+        operator: sap.ui.model.FilterOperator.GT,
+        value1: new Date()
       })];
 
       // If we have forecasts, bind the tile container
