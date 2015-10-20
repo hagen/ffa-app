@@ -61,9 +61,9 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/settings/Controller"],
           operator: 'EQ',
           value1: 'TESTUSER'
         }), new sap.ui.model.Filter({
-          path : 'month(created)',
-          operator : 'EQ',
-          value1 : new Date(Date.now()).getMonth() + 1 // Months start at 0
+          path: 'month(created)',
+          operator: 'EQ',
+          value1: new Date(Date.now()).getMonth() + 1 // Months start at 0
         }), new sap.ui.model.Filter({
           path: 'endda',
           operator: 'GT',
@@ -160,13 +160,63 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/settings/Controller"],
      * their account and billing. If there has been any activity during the month
      * the user will be charged a pro-rated amount, as it appears they are trying
      * to get some services for free.
-     * @param  {[type]} oEvent [description]
-     * @return {[type]}        [description]
+     * @param  {Event} oEvent Button press
      */
     Account.prototype.onTerminatePress = function(oEvent) {
-      // body...
+      // Are you sure?!
+      jQuery.sap.require("sap.m.MessageBox");
+      sap.m.MessageBox.confirm("This will terminate your account and remove your data. This is irreversible. Continue?", {
+        title : "Account termination",
+        onClose : jQuery.proxy(this.handleTerminateClose, this),
+        textDirection : sap.ui.core.TextDirection.Inherit
+      });
     };
 
+    /**
+     * Handles close of the termination pop-up. If the user has opted to terminate
+     * then we can terminate. If not, close and continue.
+     * @param  {Action} oAction pop-up close action
+     */
+    Account.prototype.handleTerminateClose = function (sAction) {
+      // Dependent on the action, process termination.
+      if (sAction === sap.m.MessageBox.Action.Cancel) {
+        return;
+      }
+
+      // Otherwise, we're deactivating the user.
+      // Busy.
+      this.showBusyDialog({
+        title : "Terminating account",
+        text : "Please keep this browser window open until this process concludes",
+        showCancelButton : false
+      });
+
+      // Submit a job to remove all their data
+      var oModel = this.getView().getModel("profile");
+      oModel.delete("/Profiles('TESTUSER')", {
+        success : jQuery.proxy(function() {
+          // Batch job was submitted.
+          this.deleteNodeUser(this.getProfileId());
+        }, this),
+        error : jQuery.proxy(function(mError) {
+          // Batch job was submitted.
+          this.maybeHandleAuthError(mError);
+          this.updateBusyDialog({
+            text : "There was an error deleting your account. Please reload the app and try again."
+          })
+          jQuery.sap.delayedCall(3000, this, this.hideBusyDialog, []);
+        }, this)
+      });
+
+      //
+    };
+
+    Account.prototype.deleteNodeUser = function (sProfileId) {
+      // Call Node to delete the user entry
+      //jQuery.ajax({});
+
+      jQuery.sap.delayedCall(3000, this, this.hideBusyDialog, []);
+    };
     return Account;
 
   }, /* bExport= */ true);
