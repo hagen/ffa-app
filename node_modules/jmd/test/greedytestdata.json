@@ -1,0 +1,6 @@
+[
+	{"firstname":"alice","lastname":"adams", "age":23}, 
+	{"firstname":"bob","lastname":"brown","age":32}, 
+	{"firstname":"charlie","age":"sixteen"},
+	{"name":"diane","status":"online"}
+]
