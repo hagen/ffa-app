@@ -424,12 +424,13 @@ sap.ui.core.UIComponent.extend("com.ffa.hpc.Component", {
      *
      */
 
-    var oUrlModel = new sap.ui.model.json.JSONModel("env/settings.json");
-    oUrlModel.setDefaultBindingMode("OneWay");
-    this.setModel(oUrlModel, "env");
+    var mUrlModel = new sap.ui.model.json.JSONModel();
+    mUrlModel.loadData("env/settings.json", {}, false /* bAsync */);
+    mUrlModel.setDefaultBindingMode("OneWay");
+    this.setModel(mUrlModel, "env");
 
     // What is the base path for all xsodata requests?
-    var sPathRoot = oUrlModel.getProperty("/directory");
+    var sPathRoot = mUrlModel.getProperty("/directory");
 
     /***
      *    ██████╗  █████╗ ████████╗ █████╗ ███████╗███████╗████████╗
