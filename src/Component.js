@@ -12,13 +12,7 @@ sap.ui.core.UIComponent.extend("com.ffa.hpc.Component", {
     config: {
       resourceBundle: "i18n/i18n.properties",
       serviceConfig: {
-        name: "OData",
-        datasetOdataUrl: "/fa/ppo/drop3/xs/services/dataset.xsodata",
-        forecastOdataUrl: "/fa/ppo/drop3/xs/services/forecast.xsodata",
-        profileOdataUrl: "/fa/ppo/drop3/xs/services/profile.xsodata",
-        staticsOdataUrl: "/fa/ppo/drop3/xs/services/static.xsodata",
-        functionOdataUrl: "/fa/ppo/drop3/xs/services/function.xsodata",
-        vizOdataUrl: "/fa/ppo/drop3/xs/services/viz.xsodata",
+        name: "OData"
       }
     },
     routing: {
@@ -421,6 +415,23 @@ sap.ui.core.UIComponent.extend("com.ffa.hpc.Component", {
     };
 
     /***
+     *    ███████╗███╗   ██╗██╗   ██╗
+     *    ██╔════╝████╗  ██║██║   ██║
+     *    █████╗  ██╔██╗ ██║██║   ██║
+     *    ██╔══╝  ██║╚██╗██║╚██╗ ██╔╝
+     *    ███████╗██║ ╚████║ ╚████╔╝
+     *    ╚══════╝╚═╝  ╚═══╝  ╚═══╝
+     *
+     */
+
+    var oUrlModel = new sap.ui.model.json.JSONModel("env/settings.json");
+    oUrlModel.setDefaultBindingMode("OneWay");
+    this.setModel(oUrlModel, "env");
+
+    // What is the base path for all xsodata requests?
+    var sPathRoot = oUrlModel.getProperty("/directory");
+
+    /***
      *    ██████╗  █████╗ ████████╗ █████╗ ███████╗███████╗████████╗
      *    ██╔══██╗██╔══██╗╚══██╔══╝██╔══██╗██╔════╝██╔════╝╚══██╔══╝
      *    ██║  ██║███████║   ██║   ███████║███████╗█████╗     ██║
@@ -429,7 +440,7 @@ sap.ui.core.UIComponent.extend("com.ffa.hpc.Component", {
      *    ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚══════╝╚══════╝   ╚═╝
      *
      */
-    var oDSModel = new sap.ui.model.odata.ODataModel(mConfig.serviceConfig.datasetOdataUrl, {
+    var oDSModel = new sap.ui.model.odata.ODataModel(sPathRoot + "dataset.xsodata", {
       headers: oHeaders
     });
     oDSModel.setDefaultBindingMode("OneWay");
@@ -444,7 +455,7 @@ sap.ui.core.UIComponent.extend("com.ffa.hpc.Component", {
      *    ╚═╝      ╚═════╝ ╚═╝  ╚═╝╚══════╝ ╚═════╝╚═╝  ╚═╝╚══════╝   ╚═╝
      *
      */
-    var oFModel = new sap.ui.model.odata.ODataModel(mConfig.serviceConfig.forecastOdataUrl, {
+    var oFModel = new sap.ui.model.odata.ODataModel(sPathRoot + "forecast.xsodata", {
       headers: oHeaders
     });
     oFModel.setDefaultBindingMode("TwoWay");
@@ -459,7 +470,7 @@ sap.ui.core.UIComponent.extend("com.ffa.hpc.Component", {
      *    ╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝╚══════╝
      *
      */
-    var oPModel = new sap.ui.model.odata.ODataModel(mConfig.serviceConfig.profileOdataUrl, {
+    var oPModel = new sap.ui.model.odata.ODataModel(sPathRoot + "profile.xsodata", {
       headers: oHeaders
     });
     oPModel.setDefaultBindingMode("TwoWay");
@@ -474,8 +485,7 @@ sap.ui.core.UIComponent.extend("com.ffa.hpc.Component", {
      *    ╚═╝      ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝
      *
      */
-
-    var oFuncModel = new sap.ui.model.odata.ODataModel(mConfig.serviceConfig.functionOdataUrl, {
+    var oFuncModel = new sap.ui.model.odata.ODataModel(sPathRoot + "function.xsodata", {
       headers: oHeaders
     });
     oFuncModel.setDefaultBindingMode("OneWay");
@@ -490,8 +500,7 @@ sap.ui.core.UIComponent.extend("com.ffa.hpc.Component", {
      *    ╚══════╝   ╚═╝   ╚═╝  ╚═╝   ╚═╝   ╚═╝ ╚═════╝╚══════╝
      *
      */
-
-    var oSModel = new sap.ui.model.odata.ODataModel(mConfig.serviceConfig.staticsOdataUrl, {
+    var oSModel = new sap.ui.model.odata.ODataModel(sPathRoot + "static.xsodata", {
       headers: oHeaders
     });
     oSModel.setDefaultBindingMode("OneWay");
@@ -507,8 +516,7 @@ sap.ui.core.UIComponent.extend("com.ffa.hpc.Component", {
      *      ╚═══╝  ╚═╝╚══════╝
      *
      */
-
-    var oVizModel = new sap.ui.model.odata.ODataModel(mConfig.serviceConfig.vizOdataUrl, {
+    var oVizModel = new sap.ui.model.odata.ODataModel(sPathRoot + "viz.xsodata", {
       headers: oHeaders
     });
     oSModel.setDefaultBindingMode("TwoWay");
@@ -535,20 +543,6 @@ sap.ui.core.UIComponent.extend("com.ffa.hpc.Component", {
         this.setModel(oUModel, "user");
       }, this)
     })
-
-    /***
-     *    ███████╗███╗   ██╗██╗   ██╗
-     *    ██╔════╝████╗  ██║██║   ██║
-     *    █████╗  ██╔██╗ ██║██║   ██║
-     *    ██╔══╝  ██║╚██╗██║╚██╗ ██╔╝
-     *    ███████╗██║ ╚████║ ╚████╔╝
-     *    ╚══════╝╚═╝  ╚═══╝  ╚═══╝
-     *
-     */
-
-    var oUrlModel = new sap.ui.model.json.JSONModel("env/settings.json");
-    oUrlModel.setDefaultBindingMode("OneWay");
-    this.setModel(oUrlModel, "env");
 
     this.getRouter().initialize();
   },
