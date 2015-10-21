@@ -354,11 +354,6 @@ sap.ui.core.UIComponent.extend("com.ffa.hpc.Component", {
         view: "auth.Token",
         viewLevel: 1
       }, {
-        pattern: "noauth/",
-        name: "noauth",
-        view: "auth.Login",
-        viewLevel: 1
-      }, {
         pattern: "connect/{provider}/token/{access_token}",
         name: "connect",
         view: "auth.Connect",

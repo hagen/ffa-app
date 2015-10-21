@@ -165,6 +165,17 @@
 														span="L6 M6 S6" />
 												</layoutData>
 											</Button>
+											<Link
+												id="idDemoLink"
+												text="Not ready to register? Try our demo account"
+												width="100%"
+												textAlign="Right"
+												press="onDemoLinkPress">
+												<layoutData>
+													<l:GridData
+														span="XL12 L12 M12 S12" />
+												</layoutData>
+											</Link>
 										</f:content>
 									</f:SimpleForm>
 								</l:content>
@@ -213,17 +224,6 @@
 							text="Sign in with Twitter"
 							class="ffaLoginButtonTwitter"
 							press="onTwitterPress" />
-						<Link
-							id="idDemoLink"
-							text="Not ready to register? Try our demo account"
-							width="100%"
-							textAlign="Right"
-							press="onDemoLinkPress">
-							<layoutData>
-								<l:GridData
-									span="XL12 L12 M12 S12" />
-							</layoutData>
-						</Link>
 					</l:content>
 				</l:Grid>
 			</html:div>

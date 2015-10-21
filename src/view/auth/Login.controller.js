@@ -14,7 +14,6 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/auth/LoginController"],
      */
     Login.prototype.onInit = function() {
       this.getRouter().getRoute("login").attachPatternMatched(this.onRouteMatched, this);
-      this.getRouter().getRoute("noauth").attachPatternMatched(this.onRouteMatchedNoAuth, this);
     };
 
     /**
@@ -42,8 +41,6 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/auth/LoginController"],
      * page - sign in and register.
      */
     Login.prototype.onRouteMatched = function(oEvent) {
-      // Remove any VR flags.
-      this.remove("vr");
 
       // When the route is matched, we either want the login tab or
       // the register tab
@@ -63,8 +60,10 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/auth/LoginController"],
 
       // Note, that we may have been returned here from an unauthenticated request.
       // Therefore, we need to remember the hash from which we've come.
-      this._maybeShowReason(oParameters.arguments.reason);
-
+      if (oParameters.arguments.reason) {
+        this.maybeShowReason(oParameters.arguments.reason);
+      }
+      
       // Lastly, we'll make sure the correct tab is selected. If it's not,
       // select it
       var oIconTabBar = this.getView().byId("idSignInIconTabBar");
@@ -85,25 +84,6 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/auth/LoginController"],
         eDiv.setVisible(true);
 
       }, this));
-    };
-
-    /**
-     * No auth route has been matched. If this is a VR app, then we go back to
-     * the VR login. If it's a normal request, then back to login
-     * @param  {Event} oEvent The route matched event
-     */
-    Login.prototype.onRouteMatchedNoAuth = function (oEvent) {
-
-      var oRouter = this.getRouter();
-      if (this.get("vr")) {
-        oRouter.navTo("vr", {
-          reason : "noauth"
-        }, !sap.ui.Device.system.phone)
-      } else {
-        oRouter.navTo("login", {
-          reason : "noauth"
-        }, !sap.ui.Device.system.phone)
-      }
     };
 
     /**
