@@ -173,9 +173,9 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/datasets/Controller'],
      */
     Wizard.prototype.onCsvItemPress = function(oEvent) {
       this.showInfoAlert(
-        "Firstly, thanks so much for your interest in uploading data to the Predictive Console."
-        + " We've made an active decision not to allow file uploads (like CSV), preferring instead to have you"
-        + " set up a Google Sheets document, or make use of a cloud platform like Import.IO. Once you've"
+        "It's great that you want to get cracking with forecasting!"
+        + " Rather than uploading static CSV files, please set up a Google Sheets document"
+        + " or make use of a cloud platform like Import.IO. Once you've"
         + " uploaded your data there, come on back and set up your data set with the corresponding data source.",
         "Age of the cloud");
     };

@@ -14,6 +14,14 @@
 		    id="idDataSetsWizardStartPage"
 		    title="Data source">
 		    <content>
+					<MessageStrip
+						id="idBetaMessageStrip"
+						text="While in Beta, all data sources are available. Enjoy! You will be notified well before Beta ends. You can then upgrade
+						your account, or allow those data sources unavailable on your plan to be deactivated."
+						customIcon="sap-icon://FontAwesome/smile-o"
+						type="Success"
+						showCloseButton="false"
+						class="sapUiSmallMargin"/>
 		      <html:div
 		        class="ffaDataSetWizardPage1Container">
 		        <l:Grid
