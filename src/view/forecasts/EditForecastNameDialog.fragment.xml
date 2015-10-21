@@ -42,8 +42,7 @@
 						placeholder="Forecast name..."
 						type="Text"
 						maxLength="80"
-						width="100%"
-						value="{forecast>name}" />
+						width="100%" />
 				</form:content>
 			</form:SimpleForm>
 		</content>

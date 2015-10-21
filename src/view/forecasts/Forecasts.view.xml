@@ -27,11 +27,11 @@
       <Toolbar design="Transparent">
         <ToolbarSpacer/>
         <SegmentedButton id="idForecastSegmentedButton" select="onSegmentedButtonSelect">
-          <Button id="idCarouselDatasetButton" text="Data set" width="100px">
+          <!--<Button id="idCarouselDatasetButton" text="Data set" width="100px">
             <customData>
               <core:CustomData key="tab" value="dataset"/>
             </customData>
-          </Button>
+          </Button>-->
           <Button id="idCarouselOverviewButton" text="Overview" width="100px">
             <customData>
               <core:CustomData key="tab" value="overview"/>
@@ -54,14 +54,14 @@
     <content>
       <Carousel id="idForecastCarousel" pageChanged="onPageChanged" showPageIndicator="false">
         <pages>
-          <Page enableScrolling="false" id="idCarouselDatasetPage" showHeader="false" title="Data set">
+          <!--<Page enableScrolling="false" id="idCarouselDatasetPage" showHeader="false" title="Data set">
             <customData>
               <core:CustomData key="tab" value="dataset"/>
             </customData>
             <content>
               <Text text="Data set page"/>
             </content>
-          </Page>
+          </Page>-->
 
           <Page
             id="idCarouselOverviewPage"
