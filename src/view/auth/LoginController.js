@@ -109,11 +109,14 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/auth/Controller"],
     };
 
     /**
-     * [_maybeShowReason description]
-     * @param  {[type]} reason [description]
-     * @return {[type]}        [description]
+     * When an authentication event happens, and the user is redirected to
+     * login, this function displays a pop=up message in accordance with
+     * the reason parameter. The function also quickly navs to the login page
+     * proper, so that the route is not visible in the address bar.
+     * @param  {String} reason Reason pop-up type
      */
-    Login.prototype._maybeShowReason = function(sReason) {
+    Login.prototype._maybeShowReason =
+      Login.prototype.maybeShowReason = function(sReason) {
       switch (sReason) {
         case "auth":
           jQuery.sap.delayedCall(500, this, jQuery.proxy(function() {

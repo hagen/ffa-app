@@ -92,7 +92,7 @@ module.exports = function(app, passport) {
   // =====================================
   // process the signup form
   app.post('/auth/local/register', passport.authenticate('local-register', {
-    failureRedirect: '/#/noauth', // redirect back to the signup page if there is an error
+    failureRedirect: '/#/login/signin/noauth', // redirect back to the signup page if there is an error
     failureFlash: false // allow flash messages
   }), function(req, res) {
     res.redirect("/#/auth/local/token/" + req.user.accessToken);
@@ -100,7 +100,7 @@ module.exports = function(app, passport) {
 
   // process the login form
   app.post('/auth/local/login', passport.authenticate('local-login', {
-    failureRedirect: '/#/noauth', // redirect back to the signup page if there is an error
+    failureRedirect: '/#/login/signin/noauth', // redirect back to the signup page if there is an error
     failureFlash: false // allow flash messages
   }), function(req, res) {
     res.redirect("/#/auth/local/token/" + req.user.accessToken);
@@ -108,7 +108,7 @@ module.exports = function(app, passport) {
 
   // send to google to do the authorization
   app.post('/connect/local', passport.authorize('local-connect', {
-    failureRedirect: '/#/noauth', // redirect back to the signup page if there is an error
+    failureRedirect: '/#/login/signin/noauth', // redirect back to the signup page if there is an error
     failureFlash: false // allow flash messages
   }), function(req, res) {
     res.json({
@@ -139,7 +139,7 @@ module.exports = function(app, passport) {
 
   app.get('/auth/google/callback', passport.authenticate('google', {
     session: false,
-    failureRedirect: '/#/noauth'
+    failureRedirect: '/#/login/signin/noauth'
   }), function(req, res) {
     res.redirect("/#/auth/google/token/" + req.user.accessToken);
   });
@@ -228,7 +228,7 @@ module.exports = function(app, passport) {
 
   app.get('/auth/twitter/callback', passport.authenticate('twitter', {
     session: false,
-    failureRedirect: '/#/noauth'
+    failureRedirect: '/#/login/signin/noauth'
   }), function(req, res) {
     res.redirect("/#/auth/twitter/token/" + req.user.accessToken);
   });
@@ -317,7 +317,7 @@ module.exports = function(app, passport) {
 
   app.get('/auth/linkedin/callback', passport.authenticate(['bearer','linkedin'], {
     session: false,
-    failureRedirect: '/#/noauth'
+    failureRedirect: '/#/login/signin/noauth'
   }), function(req, res) {
     res.redirect("/#/auth/linkedin/token/" + req.user.accessToken);
   });
@@ -331,7 +331,7 @@ module.exports = function(app, passport) {
   // the callback after LinkedIn has authorized the user
   app.get('/connect/linkedin/callback', passport.authenticate('linkedin-connect', {
     session: false,
-    failureRedirect: '/#/noauth'
+    failureRedirect: '/#/login/signin/noauth'
   }), function(req, res) {
     res.redirect("/#/connect/linkedin/token/" + req.user.accessToken);
   });
