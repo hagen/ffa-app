@@ -452,10 +452,12 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
      */
 
     /**
-     * Refresh the cache
-     * @return {[type]} [description]
+     * Refresh the cache; this odata call will also perform some consistency
+     * checks on the data to ensure it is linear, and that there are no gaps in
+     * dates. Currently, we cannot handle this so forecasts cannot be run using
+     * these types of data sets.
      */
-    Wizard.prototype._startCacheRefresh = function() {
+    Wizard.prototype.startCacheRefresh = function() {
       this._oCachePromise = jQuery.Deferred();
 
       // If we've already tried to create, abort, so we can do it again.
@@ -471,11 +473,47 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
           // so user doesn't have to wait for a refresh later.
           this._oCachePromise.resolve();
         }, this),
-        error: jQuery.proxy(function(mError) {
-
-        }, this),
+        error: jQuery.proxy(this.maybeHandleInconsistency, this),
         async: true
       });
+    };
+
+    /**
+     * Handles the event that a data source's data is non-linear and has gaps
+     * in the ever crucial Date column. If the error is because of data, user
+     * is informed, and then sent back to the folder listing through Cancel
+     * button simulation.
+     * @param  {object} mError Error payload from odata call
+     */
+    Wizard.prototype.maybeHandleInconsistency = function (mError) {
+      // If any errors are return, this is where we'll pick them up. These
+      // errors include non-linear time series data (for now).
+      if (mError.response.statusCode !== 500) {
+        this.maybeHandleAuthError(mError);
+        return;
+      }
+
+      // Then it's likely that the timeseries is not perfectly linear.
+      var mXML = new sap.ui.model.xml.XMLModel();
+      mXML.setXML(mError.response.body);
+      var sMessage = mXML.getProperty("/message").replace(/#!.+$/g, "").replace(/^.+!#/g, "");
+      var oJson = JSON.parse(sMessage);
+
+      // Now we'll check that this is a consistency error
+      if (oJson.status === 'error' && oJson.dates) {
+        // hide busy
+        this.hideBusyDialog();
+
+        // Show error and nav home
+        jQuery.sap.require("sap.m.MessageBox");
+        sap.m.MessageBox.error("Your data set data has missing records for one or more dates. Forecasts cannot currently be run under these circumstances. Please amend your data by filling in missing date records.", {
+          title : "Inconsistent dates",
+          onClose : jQuery.proxy(function() {
+            // Simulate cancel press
+            this.onCancelPress(null);
+          }, this)
+        });
+      }
     };
 
     /**
@@ -639,7 +677,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
         // if the promise is resolved, then we can advance
         .done(jQuery.proxy(function() {
           // begin cache refresh
-          this._startCacheRefresh();
+          this.startCacheRefresh();
 
           // Not busy
           this.hideBusyDialog();

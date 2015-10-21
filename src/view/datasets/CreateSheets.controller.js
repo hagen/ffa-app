@@ -235,9 +235,8 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/datasets/CreateController"
     };
 
     /**
-     * [function description]
-     * @param  {[type]} oEvent [description]
-     * @return {[type]}        [description]
+     * Handles press of the Cancel button.
+     * @param  {Event} oEvent Button press event
      */
     Sheets.prototype.onCancelPress = function(oEvent) {
       // nav back to main Page
@@ -261,14 +260,6 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/datasets/CreateController"
       } else {
         oPromise.resolve();
       }
-    };
-
-    /**
-     * When the help icon is pressed, show help :)
-     * @param  {object} oEvent Icon press event
-     */
-    Sheets.prototype.onHelpPress = function(oEvent) {
-      alert("Help");
     };
 
     /**

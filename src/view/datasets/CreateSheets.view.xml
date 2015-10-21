@@ -55,6 +55,19 @@
 					id="idPage1"
 					enableScrolling="false"
 					showHeader="false">
+					<MessageStrip
+						showCloseButton="false"
+						showIcon="true"
+						text="In order to use Google Sheets as a data set data source, the document must be published to the web. Use either the full URL, or just the Sheets key."
+						type="Information"
+						class="sapUiSmallMargin">
+						<link>
+							<Link
+								text="Instructions here."
+								href="https://forefrontanalytics.zendesk.com/hc/en-us/articles/212197678"
+								target="_blank" />
+						</link>
+					</MessageStrip>
 					<l:Grid
 						defaultSpan="L12 M12 S12"
 						width="auto">
@@ -81,12 +94,12 @@
 										id="idNameInput">
 										<layoutData>
 											<l:GridData
-												span="L6 M6 S5" />
+												span="XL6 L6 M6 S5" />
 										</layoutData>
 									</Input>
 
 									<Label
-										text="Google Sheets Key"
+										text="Google Sheets URL/key"
 										required="true">
 									</Label>
 
@@ -94,20 +107,9 @@
 										id="idKeyInput">
 										<layoutData>
 											<l:GridData
-												span="L5 M5 S4" />
+												span="XL6 L6 M6 S5" />
 										</layoutData>
 									</Input>
-
-									<Button
-										id="idHelpButton"
-										icon="sap-icon://FontAwesome/question"
-										type="Transparent"
-										press="onHelpPress">
-										<layoutData>
-											<l:GridData
-												span="L1 M1 S1" />
-										</layoutData>
-									</Button>
 
 									<Label
 										text="" />
