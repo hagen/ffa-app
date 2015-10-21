@@ -31,6 +31,39 @@ module.exports = function(app, passport) {
   });
 
   // =====================================
+  // UNLINK ==============================
+  // =====================================
+  app.get('/auth/delete/', passport.authenticate('bearer', {
+      session: false
+    }), function(req, res) {
+
+    // make sure we have a user id
+    if (!req.user) {
+      return res.json({
+        status : "error",
+        message : "Session not authenticated - cannot identify user"
+      });
+    }
+
+    // Continue on, and delete the user.
+    User.remove({ _id : req.user.id }, function(err) {
+      if (err) {
+        return res.json({
+          status : "error",
+          message : "User with ID " + req.user.id + " couldn't be removed"
+        });
+      }
+
+      // Logout the user
+      req.logout();
+      return res.json({
+        status : "success",
+        message : "User removed"
+      });
+    });
+  });
+
+  // =====================================
   // LINKING =============================
   // =====================================
   app.post('/auth/profile/link', passport.authenticate('bearer', {

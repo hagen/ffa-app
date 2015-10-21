@@ -133,7 +133,19 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/auth/Controller"],
             );
           }, this), []);
           break;
+        case "terminated":
+          jQuery.sap.delayedCall(500, this, jQuery.proxy(function() {
+            this.showSuccessAlert(
+              "Your account has been removed. We hope to see you back here soon. Have a wonderful day!",
+              "Account terminated",
+              sap.ui.Device.system.phone
+            );
+          }, this), []);
+          break;
       }
+
+      // Nav back to normal login, so the user does not see the URL path
+      this.getRouter().navTo("login", {}, !sap.ui.Device.system.phone);
     };
 
     /***

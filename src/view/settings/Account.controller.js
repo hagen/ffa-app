@@ -179,7 +179,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/settings/Controller"],
      */
     Account.prototype.handleTerminateClose = function (sAction) {
       // Dependent on the action, process termination.
-      if (sAction === sap.m.MessageBox.Action.Cancel) {
+      if (sAction === sap.m.MessageBox.Action.CANCEL) {
         return;
       }
 
@@ -187,36 +187,55 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/settings/Controller"],
       // Busy.
       this.showBusyDialog({
         title : "Terminating account",
-        text : "Please keep this browser window open until this process concludes",
+        text : "Please keep the browser window open until this process concludes",
         showCancelButton : false
       });
 
       // Submit a job to remove all their data
-      var oModel = this.getView().getModel("profile");
-      oModel.delete("/Profiles('TESTUSER')", {
-        success : jQuery.proxy(function() {
-          // Batch job was submitted.
-          this.deleteNodeUser(this.getProfileId());
+      this.deleteNodeUser(this.getProfileId());
+    };
+
+    /**
+     * Now the actual delete. Note, this process doesn't delete the HANA data,
+     * just the link from Mongo to HANA. Effectively, the user is orphaned in HANA
+     * and we get to retain their data for our purposes.
+     * @param  {String} sProfileId Profile ID
+     */
+    Account.prototype.deleteNodeUser = function (sProfileId) {
+      // Call Node to delete the user entry
+      jQuery.ajax({
+        url: '/auth/delete/',
+        type: 'GET',
+        headers: this.getJqueryHeaders(),
+        async: true,
+        success: jQuery.proxy(function(oData, mResponse) {
+          // Update the busy dialog
+          this.updateBusyDialog({
+            text : "Your account has been deleted. Sorry to see you go!"
+          });
+
+          // Clear local tokens.
+          this.clearBearerToken();
+          jQuery.sap.delayedCall(3000, this, function() {
+
+            // nav to login with terminated message
+            this.getRouter().navTo("login", {
+              reason : "terminated"
+            }, !sap.ui.Device.system.phone);
+
+            // hide busy dialog
+            this.hideBusyDialog();
+          }, []);
         }, this),
-        error : jQuery.proxy(function(mError) {
-          // Batch job was submitted.
-          this.maybeHandleAuthError(mError);
+        error: jQuery.proxy(function(mError) {
           this.updateBusyDialog({
             text : "There was an error deleting your account. Please reload the app and try again."
           })
           jQuery.sap.delayedCall(3000, this, this.hideBusyDialog, []);
         }, this)
       });
-
-      //
     };
-
-    Account.prototype.deleteNodeUser = function (sProfileId) {
-      // Call Node to delete the user entry
-      //jQuery.ajax({});
-
-      jQuery.sap.delayedCall(3000, this, this.hideBusyDialog, []);
-    };
+    
     return Account;
 
   }, /* bExport= */ true);

@@ -80,6 +80,20 @@ sap.ui.define(["jquery.sap.global", "sap/ui/core/mvc/Controller"],
     };
 
     /**
+     * Removes the bearer token.
+     */
+    Controller.prototype.clearBearerToken = function() {
+      if (window.localStorage) {
+        window.localStorage.removeItem('_token');
+      }
+
+      // Clear global token too
+      if (_token) {
+        _token = undefined;
+      }
+    };
+
+    /**
      * We Use jQuery GET/POST regularly, so let's ensure the header is globally
      * available to all inheriting Controllers.
      * @param {[type]} sToken [description]
