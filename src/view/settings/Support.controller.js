@@ -49,7 +49,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/settings/Controller"],
       // Supply the model to this view
       this.getView().setModel(this._mArticles, "article");
     };
-
+    
     /**
      * When the search button is pressed, we'll look for some forecasts.
      * @param  {[type]} oEvent [description]
@@ -58,15 +58,6 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/settings/Controller"],
       // Take the forecast search criteria and query forecasts
       var oInput = this.getView().byId("idSearchInput");
       var sSearch = oInput.getValue().trim();
-
-      // if there's no search term, we can't really search!
-      if (!sSearch) {
-        oInput.setValueState(sap.ui.core.ValueState.Error);
-        oInput.setValueStateText("Empty search value...");
-        return;
-      } else {
-        oInput.setValueState(sap.ui.core.ValueState.None);
-      }
 
       // Articles model, sourced from Zendesk
       this._mArticles.loadData("https://forefrontanalytics.zendesk.com/api/v2/help_center/articles/search.json?query=" + sSearch);

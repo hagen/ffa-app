@@ -43,8 +43,7 @@
 								</layoutData>
 							</Label>
 							<Input
-								id="idSearchInput"
-								change="onSearchChange">
+								id="idSearchInput">
 								<layoutData>
 									<l:GridData span="L8 M8 S10" />
 								</layoutData>
