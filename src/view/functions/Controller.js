@@ -5,6 +5,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/util/Controller"],
     "use strict";
 
     var Controller = UtilController.extend("com.ffa.hpc.view.functions.Controller", /** @lends com.ffa.hpc.view.functions.Controller */ {
+      
     });
 
   });

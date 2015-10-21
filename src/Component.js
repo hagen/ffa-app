@@ -28,7 +28,7 @@ sap.ui.core.UIComponent.extend("com.ffa.hpc.Component", {
       routes: [{
         pattern: "functions/:function_id:",
         name: "functions",
-        view: "com.ffa.hpc.functions.Library",
+        view: "functions.Library",
         viewLevel: 3
       }, {
         pattern: "datasets",

@@ -1,7 +1,7 @@
 jQuery.sap.declare("com.ffa.hpc.view.functions.Library");
 
 // Provides controller functions.Library
-sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/functions/Controller'],
+sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/functions/Controller"],
   function(jQuery, Controller) {
     "use strict";
 
