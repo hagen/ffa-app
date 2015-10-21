@@ -49,7 +49,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/settings/Controller"],
       // Supply the model to this view
       this.getView().setModel(this._mArticles, "article");
     };
-    
+
     /**
      * When the search button is pressed, we'll look for some forecasts.
      * @param  {[type]} oEvent [description]
@@ -117,6 +117,18 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/settings/Controller"],
 
       // clear oInput
       oInput.setValue("");
+    };
+
+    /**
+     * Show app support contact details
+     * @param  {Event} oEvent Button press event
+     */
+    Support.prototype.onContactPress = function (oEvent) {
+      // Show the support contact details
+      jQuery.sap.require("sap.m.MessageBox");
+      sap.m.MessageBox.information("Please contact us directly at apps@forefrontanalytics.com.au for additional support", {
+        title : "E-mail support"
+      });
     };
 
     return Support;

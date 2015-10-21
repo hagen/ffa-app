@@ -7,6 +7,7 @@
 	xmlns:core="sap.ui.core">
 	<Page
 		id="idSupportPage"
+		title="Support"
 		enableScrolling="false">
 		<footer>
 			<Toolbar>
@@ -54,6 +55,15 @@
 								type="Transparent"
 								icon="sap-icon://FontAwesome/search"
 								press="onSearchPress">
+								<layoutData>
+									<l:GridData span="L1 M1 S2" />
+								</layoutData>
+							</Button>
+							<Button
+								id="idContactButton"
+								type="Transparent"
+								icon="sap-icon://FontAwesome/envelope-o"
+								press="onContactPress">
 								<layoutData>
 									<l:GridData span="L1 M1 S2" />
 								</layoutData>
