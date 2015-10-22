@@ -107,7 +107,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/datasets/Controller'],
 
       // take the master list out of select mode, if it's in it...
       var oList = this.getView().byId("idDataSetMasterList");
-      this.getRouter().myNavBack("dash");
+      this.getRouter().navTo("dash", {}, !sap.ui.Device.system.phone);
 
       // Delayed call to remove select state, so as not to hold up nav
       jQuery.sap.delayedCall(1000, this, function() {

@@ -145,6 +145,14 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/datasets/Controller"],
     Controller.prototype.onDefinitionLinkPress = function(oEvent) {
 
       // Otherwise, we can show the definition pop-up and go from there.
+      var oFrag = this._oDefinitionDialog = sap.ui.core.Fragment.byId("idDataTypeFragment", "idDialog");
+      if (!this._oDefinitionDialog && oFrag) {
+        // Try and read it from already instantiated fragment...
+        this._oDefinitionDialog = oFrag;
+        this.getView().addDependent(this._oDefinitionDialog);
+      }
+
+      // If we still don't have a fragment, then we need to create it...
       if (!this._oDefinitionDialog) {
         this._oDefinitionDialog = sap.ui.xmlfragment("idDataTypeFragment", "com.ffa.hpc.view.datasets.DimensionDataTypeDialog", this);
         this.getView().addDependent(this._oDefinitionDialog);
