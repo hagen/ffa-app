@@ -26,7 +26,6 @@ module.exports = function(req, res) {
     var query = req.get("X-Redshift-query") || "select count(*) from pg_table_def;";
     console.log(query);
     client.query(query, function(err, rows) {
-      client.end();
       if (err) {
         res.json({
           error: true,
@@ -52,6 +51,9 @@ module.exports = function(req, res) {
         console.log("Returned " + bytes + " bytes to caller");
         console.log("First record: ", JSON.stringify(rows.rows[0]), "Last record: ", JSON.stringify(rows.rows[rows.rows.length - 1]));
       });
+
+      // Moved client.end down here, in the hope I'll get a longer connection open.
+      client.end();
     });
 
     // All done, thanks
