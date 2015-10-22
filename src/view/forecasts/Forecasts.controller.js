@@ -703,7 +703,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
 
         // Add to data array, only if actual is less than or equal to the
         // train_to date
-        if (actual <= dTrainTo) {
+        if (date < dTrainTo) {
            aActual.data.push([date, actual]);
         }
 
