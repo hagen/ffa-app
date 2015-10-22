@@ -24,6 +24,7 @@ module.exports = function(req, res) {
     }
 
     var query = req.get("X-Redshift-query") || "select count(*) from pg_table_def;";
+    console.log(query);
     client.query(query, function(err, rows) {
       client.end();
       if (err) {

@@ -321,6 +321,10 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/datasets/CreateController"
       // clear the combobox...
       this.getView().byId("idViewsComboBox").setValue("");
       this.getView().byId("idTablesComboBox").setValue("");
+
+      // Head back, boi!
+      var sPageId = this.getView().createId("idPageStart");
+      this.getView().byId("idNavContainer").backToPage(sPageId);
     };
 
     /**
