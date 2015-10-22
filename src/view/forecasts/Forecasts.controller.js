@@ -695,10 +695,11 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
         } else {
           actual = obj.actual;
         }
+
         // Add to data array
-        if (actual !== 0) {
-          aActual.data.push([date, actual]);
-        }
+        // if (actual !== 0) {
+           aActual.data.push([date, actual]);
+        // }
 
         // Similarly, string number values are of no use; parse a number
         if (typeof obj.forecast === "string") {
@@ -712,6 +713,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
         } else {
           forecast = obj.forecast;
         }
+
         // Add to data array
         aForecast.data.push([date, forecast]);
 
