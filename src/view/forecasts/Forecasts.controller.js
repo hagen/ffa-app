@@ -668,6 +668,11 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
         zIndex: 10
       };
 
+      // Collect the forecasts train_to date. Actuals greater than this are not
+      // valid for display. They are zero values and should be ignored.
+      // #40
+      var dTrainTo = this.getForecast(this._sForecastId).train_to;
+
       // prepare two series...
       aResults.forEach(function(obj, index) {
 
@@ -696,10 +701,11 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
           actual = obj.actual;
         }
 
-        // Add to data array
-        // if (actual !== 0) {
+        // Add to data array, only if actual is less than or equal to the
+        // train_to date
+        if (actual <= dTrainTo) {
            aActual.data.push([date, actual]);
-        // }
+        }
 
         // Similarly, string number values are of no use; parse a number
         if (typeof obj.forecast === "string") {
