@@ -486,6 +486,11 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
      * @param  {object} mError Error payload from odata call
      */
     Wizard.prototype.maybeHandleInconsistency = function (mError) {
+      // Check we actually have an error to process.
+      if (!mError) {
+        return;
+      }
+
       // If any errors are return, this is where we'll pick them up. These
       // errors include non-linear time series data (for now).
       if (mError.response.statusCode !== 500) {
