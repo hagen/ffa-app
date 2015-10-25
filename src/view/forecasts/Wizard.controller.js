@@ -93,6 +93,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
 
       // When the promise is resolved, we set up as per usual. If the Promise
       // is rejected, then show the message page
+      var oNav = this.getNavContainer();
       jQuery.when(oPromise)
         .fail(function() { // rejected - go to sad face
           oNav.to(self.getView().byId("idOverLimitMessagePage"));
@@ -1502,6 +1503,10 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
           path: 'user',
           operator: sap.ui.model.FilterOperator.EQ,
           value1: "TESTUSER"
+        }), new sap.ui.model.Filter({
+          path: 'endda',
+          operator: sap.ui.model.FilterOperator.GT,
+          value1: "9999-12-01"
         })],
         success: jQuery.proxy(function(oData, mResponse) {
           // Callback and resolve
