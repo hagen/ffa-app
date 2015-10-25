@@ -167,7 +167,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
       var sFolderId = this._sFolderId;
 
       // Reset all pages...
-      this.resetWizard(jQuery.proxy(function() {
+      this.resetWizard(true /* bClearCache */, jQuery.proxy(function() {
         var sRoute = "";
         var oArgs = {};
 
@@ -269,7 +269,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
         sDatasetId  = this._sDataSetId;
 
       // Reset everything
-      this.resetWizard(jQuery.proxy(function() {
+      this.resetWizard(false /* bClearCache */, jQuery.proxy(function() {
 
         // The user now navigates to the forecast (and optional folder); Remember
         // that we will always go back to folders, because that is the only
@@ -297,7 +297,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
     Wizard.prototype.onNavBackPress = function(oEvent) {
 
       // Back to the workbench we go
-      this.resetWizard(jQuery.proxy(function() {
+      this.resetWizard(false /* bClearCache */,jQuery.proxy(function() {
         this.getRouter().navTo("workbench", {}, !sap.ui.Device.system.phone);
       }, this));
     };
@@ -334,7 +334,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
      * the button states. Return to page 1 is slightly delayed.
      * @param  {Function} fnCallback Callback function
      */
-    Wizard.prototype.resetWizard = function(fnCallback) {
+    Wizard.prototype.resetWizard = function(bClearCache, fnCallback) {
 
       // busy, resetting stuff!
       this.showBusyDialog({});
@@ -355,9 +355,11 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
         if (this._oCacheHandle) {
           this._oCacheHandle.abort();
         }
-        this.getView().getModel("forecast").remove("/Cache('" + this._sCacheId + "')", {
-          async: true
-        });
+        if (bClearCache) {
+          this.getView().getModel("forecast").remove("/Cache('" + this._sCacheId + "')", {
+            async: true
+          });
+        }
       }
 
       this._sDataSetId = "";
