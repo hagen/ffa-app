@@ -1493,7 +1493,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/forecasts/DatasetAuth'],
       var oModel = this.getView().getModel("forecast");
 
       // first check if the model has the data we want...
-      oModel.read("/ForecastIds", {
+      oModel.read("/Forecasts", {
         async: true,
         filters: [new sap.ui.model.Filter({
           path: 'month(created)',
