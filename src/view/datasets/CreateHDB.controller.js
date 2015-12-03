@@ -284,7 +284,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/datasets/CreateController"
               .setEnabled(false);
 
             // Reset all form values
-            this.clearForms(["idHanaConfigForm", "idHanaTestConsoleForm", "idHanaQueryForm", "idHanaConsoleForm", "idViewForm", "idTableForm"]);
+            this.clearForms(["idHanaConfigForm", "idHanaTestConsoleForm", "idHanaQueryForm", "idHanaConsoleForm"]);
 
             // NOt busy any more
             this.closeBusyDialog();
@@ -665,6 +665,10 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/datasets/CreateController"
      */
     Hdb.prototype.setupPageViews = function() {
       //this.bindEntityComboBox(this.getView().byId("idViewsComboBox"));
+      // Let's clear the search field as a start.
+      var oSearchField = this.getView().byid("idViewSearchField");
+      oSearchField.setValue("");
+
       // Previously we were showing all views in a dropdown ComboBox; the issue
       // with a combo box is that it's limited in size, according to the model's
       // max record parameter. We don't really want to change the max read size
@@ -758,6 +762,11 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/datasets/CreateController"
     Hdb.prototype.setupPageTables = function() {
       // Bind the page to the Redshift Id
       //this.bindEntityComboBox(this.getView().byId("idTablesComboBox"));
+      // Initially, clear the search field.
+      var oSearchField = this.getView().byid("idTableSearchField");
+      oSearchField.setValue("");
+
+      // Collect the list and bind.
       var oList = this.getView().byId("idTableSearchList");
 
       // Note, that because the connection attempt to database also populates
