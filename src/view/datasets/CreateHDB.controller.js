@@ -687,7 +687,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/datasets/CreateController"
           operator: sap.ui.model.FilterOperator.EQ,
           value1: this.getView().byId("idSchemaInput").getValue().toUpperCase()
         })],
-        template: new sap.m.ListItem({
+        template: new sap.m.StandardListItem({
           title: "{dataset>entity}"
         })
       });
@@ -775,7 +775,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/datasets/CreateController"
           operator: sap.ui.model.FilterOperator.EQ,
           value1: this.getView().byId("idSchemaInput").getValue().toUpperCase()
         })],
-        template: new sap.m.ListItem({
+        template: new sap.m.StandardListItem({
           title: "{dataset>entity}"
         })
       });
@@ -933,7 +933,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/datasets/CreateController"
         if (!oItem) {
           return "";
         }
-        
+
         // Now we'll continue.
         var oBinding = oItem.getBinding("dataset");
         return oBinding.getProperty("entity");
