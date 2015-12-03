@@ -453,10 +453,10 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/datasets/CreateController"
       switch (this.getQueryType(false)) {
         case 'tables':
           // Check if the tables combo box is populated with a valid entry
-          bValid = this.validateTables(control("idTablesComboBox"));
+          bValid = this.validateTables();
           break;
         case 'views':
-          bValid = this.validateViews(control("idViewsComboBox"));
+          bValid = this.validateViews();
           break;
         case 'query':
           bValid = this.validateQuery(control("idQueryTextArea"));
@@ -660,37 +660,85 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/datasets/CreateController"
      */
 
     /**
-     * Set up the views page
-     * @return {[type]} [description]
+     * Set up the views page; here, we are binding the list to the HdbEntities.
+     * We also supply a search box, to filter on.
      */
     Hdb.prototype.setupPageViews = function() {
-      this.bindEntityComboBox(this.getView().byId("idViewsComboBox"));
+      //this.bindEntityComboBox(this.getView().byId("idViewsComboBox"));
+      // Previously we were showing all views in a dropdown ComboBox; the issue
+      // with a combo box is that it's limited in size, according to the model's
+      // max record parameter. We don't really want to change the max read size
+      // of the entire model, so using a list table means we can utilise growing
+      // attributes to our needs.
+      var oList = this.getView().byId("idViewSearchList");
+
+      // Note, that because the connection attempt to database also populates
+      // the entities on the basis of the view/table selection, we can
+      // safely query the entities table without worrying about whether
+      // we're looking at tables or views.
+      oList.bindItems({
+        path: 'dataset>/HdbEntities',
+        filters: [new sap.ui.model.Filter({
+          path: 'profile_id',
+          operator: sap.ui.model.FilterOperator.EQ,
+          value1: 'TESTUSER' // binding to only our user's listings
+        }), new sap.ui.model.Filter({
+          path: 'schema',
+          operator: sap.ui.model.FilterOperator.EQ,
+          value1: this.getView().byId("idSchemaInput").getValue().toUpperCase()
+        })],
+        template: new sap.m.ListItem({
+          title: "{dataset>entity}"
+        })
+      });
     };
 
     /**
-     * Validates the user's selection on the Views screen. Again, presumption is
-     * that they've got views to select from. If none are selected, not going
-     * anywhere
-     * @param  {Control} oControl The ComboBox control
+     * Validates the user's selection on the Views screen. Must make sure
+     * that a list item has been selected from the views list.
      * @return {boolean}          Is valid?
      */
-    Hdb.prototype.validateViews = function(oControl) {
+    Hdb.prototype.validateViews = function() {
 
-      // Valid
-      var bValid = true;
-
-      // Now we can do the checking
-      var oComboBox = oControl || this.control("idViewsComboBox");
-      if (oComboBox.getSelectedKey() === "" || !oComboBox.getSelectedKey()) {
-        oComboBox.setValueState(sap.ui.core.ValueState.Error);
-        oComboBox.setValueStateText("Please pick only from the available views");
-        return false;
-      } else {
-        oComboBox.setValueState(sap.ui.core.ValueState.None);
+      // Selected list item.
+      var oItem = this.getView().byId("idViewSearchList").getSelectedItem();
+      if(oItem) {
         return true;
       }
 
-      return bValid;
+      this.showErrorAlert("Please select view to continue.");
+      return false;
+    };
+
+    /**
+     * When the search button/reset button is pressed, this handler will either
+     * reset the search, or apply the search term to the list of Hdb view entities.
+     * @param  {Event} oEvent Press event
+     */
+    Hdb.prototype.onViewSearch = function (oEvent) {
+      var sQuery = oEvent.getParameter("query"),
+        bRefresh = oEvent.getParameter("refreshButtonPressed");
+
+      // Refresh case.
+      if (bRefresh) {
+        // Clear the search, and reset the filter.
+        sQuery = "";
+      }
+
+      // Now, we'll filter the list.
+			var aFilters = [];
+      if (sQuery) {
+        var filter = new sap.ui.model.Filter({
+          path : "entity",
+          operator: sap.ui.model.FilterOperator.Contains,
+          value1 : sQuery
+        });
+  			aFilters.push(filter);
+      }
+
+			// update list binding
+			var oList = this.getView().byId("idViewSearchList");
+			list.getBinding("items").filter(aFilters, "Application");
     };
 
     /***
@@ -709,57 +757,75 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/datasets/CreateController"
      */
     Hdb.prototype.setupPageTables = function() {
       // Bind the page to the Redshift Id
-      this.bindEntityComboBox(this.getView().byId("idTablesComboBox"));
-    };
+      //this.bindEntityComboBox(this.getView().byId("idTablesComboBox"));
+      var oList = this.getView().byId("idTableSearchList");
 
-    /**
-     * Bind the supplied Combo box to the list of entities for this Redshift database
-     * @param  {[type]} oComboBox [description]
-     * @return {[type]}           [description]
-     */
-    Hdb.prototype.bindEntityComboBox = function(oComboBox) {
-      oComboBox.bindItems({
+      // Note, that because the connection attempt to database also populates
+      // the entities on the basis of the view/table selection, we can
+      // safely query the entities table without worrying about whether
+      // we're looking at tables or views.
+      oList.bindItems({
         path: 'dataset>/HdbEntities',
         filters: [new sap.ui.model.Filter({
           path: 'profile_id',
           operator: sap.ui.model.FilterOperator.EQ,
-          value1: 'TESTUSER'
+          value1: 'TESTUSER' // binding to only our user's listings
         }), new sap.ui.model.Filter({
           path: 'schema',
           operator: sap.ui.model.FilterOperator.EQ,
           value1: this.getView().byId("idSchemaInput").getValue().toUpperCase()
         })],
-        template: new sap.ui.core.Item({
-          key: "{dataset>entity}",
-          text: "{dataset>entity}"
+        template: new sap.m.ListItem({
+          title: "{dataset>entity}"
         })
       });
     };
-
     /**
-     * Validates the table selection screen. This is working on the presumption
-     * that the user is picking a table from the list returned. If no tables
-     * are returned, then they're not able to progress past this screen.
-     * @param  {Control} oControl The ComboBox table listing control
+     * Validates the user's selection on the Views screen. Must make sure
+     * that a list item has been selected from the views list.
      * @return {boolean}          Is valid?
      */
-    Hdb.prototype.validateTables = function(oControl) {
+    Hdb.prototype.validateTables = function() {
 
-      // Valid
-      var bValid = true;
-
-      // Now we can do the checking
-      var oComboBox = oControl || this.control("idTablesComboBox");
-      if (oComboBox.getSelectedKey() === "" || !oComboBox.getSelectedKey()) {
-        oComboBox.setValueState(sap.ui.core.ValueState.Error);
-        oComboBox.setValueStateText("Please pick only from the available tables");
-        return false;
-      } else {
-        oComboBox.setValueState(sap.ui.core.ValueState.None);
+      // Selected list item.
+      var oItem = this.getView().byId("idTableSearchList").getSelectedItem();
+      if(oItem) {
         return true;
       }
 
-      return bValid;
+      this.showErrorAlert("Please select table to continue.");
+      return false;
+    };
+
+    /**
+     * When the search button/reset button is pressed, this handler will either
+     * reset the search, or apply the search term to the list of Hdb table entities.
+     * @param  {Event} oEvent Press event
+     */
+    Hdb.prototype.onTableSearch = function (oEvent) {
+      var sQuery = oEvent.getParameter("query"),
+        bRefresh = oEvent.getParameter("refreshButtonPressed");
+
+      // Refresh case.
+      if (bRefresh) {
+        // Clear the search, and reset the filter.
+        sQuery = "";
+      }
+
+      // Now, we'll filter the list.
+			var aFilters = [];
+      if (sQuery) {
+        var filter = new sap.ui.model.Filter({
+          path : "entity",
+          operator: sap.ui.model.FilterOperator.Contains,
+          value1 : sQuery
+        });
+  			aFilters.push(filter);
+      }
+
+			// update list binding
+			var oList = this.getView().byId("idTableSearchList");
+			list.getBinding("items").filter(aFilters, "Application");
     };
 
     /***
@@ -854,6 +920,26 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/datasets/CreateController"
      */
     Hdb.prototype.getData = function() {
 
+      // We'll need this in our local function
+      var oView = this.getView();
+
+      // For selecting the entity property of either the view/table list.
+      var getSelectedItemEntity = function(sListId) {
+        var oList = oView.byId(sListId);
+        var oItem = oList.getSelectedItem();
+
+        // Just in case this is called and either the list is not populated,
+        // or nothing is selected.
+        if (!oItem) {
+          return "";
+        }
+        
+        // Now we'll continue.
+        var oBinding = oItem.getBinding("dataset");
+        return oBinding.getProperty("entity");
+      };
+
+      // This function is used to collect the value from a text field
       var value = jQuery.proxy(this._value, this);
 
       // return
@@ -879,10 +965,10 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/datasets/CreateController"
       try {
         switch (this.getQueryType(false)) {
           case 'tables':
-            oData.query = value("idTablesComboBox");
+            oData.query = getSelectedItemEntity("idTableSearchList");
             break;
           case 'views':
-            oData.query = value("idViewsComboBox");
+            oData.query = getSelectedItemEntity("idViewSearchList");
             break;
           case 'query':
             var sQuery = value("idQueryTextArea").trim();

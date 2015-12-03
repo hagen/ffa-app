@@ -303,40 +303,26 @@
 								expandable="false"
 								headerText="">
 								<Text
-									text="Select a database view from those listed below. Either begin typing the name of the view
-									or select from the drop-down. It's important to ensure your	database user has privileges to read
-									from the view you select here." />
+									text="Search for a database view by typing in the view name. Once you've found your view, please select it to continue.
+									It's important to ensure your	database user has privileges to read from the view you select here." />
 							</Panel>
-							<f:SimpleForm
-								id="idViewForm"
-								maxContainerCols="1"
-								editable="true"
-								layout="ResponsiveGridLayout"
-								labelSpanL="3"
-								labelSpanM="3"
-								emptySpanL="4"
-								emptySpanM="4"
-								columnsL="1"
-								columnsM="1"
-								class="editableForm">
-								<f:content>
 
-									<Label text="View">
-									</Label>
-									<ComboBox
-										id="idViewsComboBox"
-										change="onViewChange">
-										<layoutData>
-											<l:GridData span="L6 M6 S10" />
-										</layoutData>
-									</ComboBox>
-									<Label text="">
-										<layoutData>
-											<l:GridData span="L3 M3 S1" />
-										</layoutData>
-									</Label>
-								</f:content>
-							</f:SimpleForm>
+							<!-- Search field to begin searching our list -->
+							<SearchField
+								id="idViewSearchField"
+								showRefreshButton="true"
+								showSearchButton="true"
+								search="onViewSearch" />
+
+							<!-- Declare our search listing -->
+							<List
+								id="idViewSearchList"
+								enableBusyIndicator="true"
+								growing="true"
+								growingScrollToLoad="true"
+								growingThreshold="50"
+								noDataText="No views found"
+								mode="SingleSelectLeft" />
 						</l:content>
 					</l:Grid>
 				</Page>
@@ -362,40 +348,26 @@
 								expandable="false"
 								headerText="">
 								<Text
-									text="Select a database table from those listed below. Either begin typing the name of the table
-									or select from the drop-down. It's important to ensure your	database user has privileges to read
-									from the table you select here." />
+									text="Search for a database table by typing in the table name. Once you've found your table, please select it to continue.
+									It's important to ensure your	database user has privileges to read from the table you select here." />
 							</Panel>
-							<f:SimpleForm
-								id="idTableForm"
-								maxContainerCols="1"
-								editable="true"
-								layout="ResponsiveGridLayout"
-								labelSpanL="3"
-								labelSpanM="3"
-								emptySpanL="4"
-								emptySpanM="4"
-								columnsL="1"
-								columnsM="1"
-								class="editableForm">
-								<f:content>
 
-									<Label text="Table">
-									</Label>
-									<ComboBox
-										id="idTablesComboBox"
-										change="onTableChange">
-										<layoutData>
-											<l:GridData span="L6 M6 S10" />
-										</layoutData>
-									</ComboBox>
-									<Label text="">
-										<layoutData>
-											<l:GridData span="L3 M3 S1" />
-										</layoutData>
-									</Label>
-								</f:content>
-							</f:SimpleForm>
+							<!-- Search field to begin searching our list -->
+							<SearchField
+								id="idTableSearchField"
+								showRefreshButton="true"
+								showSearchButton="true"
+								search="onTableSearch" />
+
+							<!-- Declare our search listing -->
+							<List
+								id="idTableSearchList"
+								enableBusyIndicator="true"
+								growing="true"
+								growingScrollToLoad="true"
+								growingThreshold="50"
+								noDataText="No tables found"
+								mode="SingleSelectLeft" />
 						</l:content>
 					</l:Grid>
 				</Page>
