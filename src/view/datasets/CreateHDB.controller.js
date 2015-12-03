@@ -666,7 +666,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/datasets/CreateController"
     Hdb.prototype.setupPageViews = function() {
       //this.bindEntityComboBox(this.getView().byId("idViewsComboBox"));
       // Let's clear the search field as a start.
-      var oSearchField = this.getView().byid("idViewSearchField");
+      var oSearchField = this.getView().byId("idViewSearchField");
       oSearchField.setValue("");
 
       // Previously we were showing all views in a dropdown ComboBox; the issue
@@ -763,7 +763,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/datasets/CreateController"
       // Bind the page to the Redshift Id
       //this.bindEntityComboBox(this.getView().byId("idTablesComboBox"));
       // Initially, clear the search field.
-      var oSearchField = this.getView().byid("idTableSearchField");
+      var oSearchField = this.getView().byId("idTableSearchField");
       oSearchField.setValue("");
 
       // Collect the list and bind.
