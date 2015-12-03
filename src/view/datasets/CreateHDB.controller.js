@@ -742,7 +742,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/datasets/CreateController"
 
 			// update list binding
 			var oList = this.getView().byId("idViewSearchList");
-			list.getBinding("items").filter(aFilters, "Application");
+			oList.getBinding("items").filter(aFilters, "Application");
     };
 
     /***
@@ -834,7 +834,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/datasets/CreateController"
 
 			// update list binding
 			var oList = this.getView().byId("idTableSearchList");
-			list.getBinding("items").filter(aFilters, "Application");
+			oList.getBinding("items").filter(aFilters, "Application");
     };
 
     /***
