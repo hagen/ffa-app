@@ -386,7 +386,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/datasets/CreateController"
         this._sId = undefined;
 
         // Clear all input fields of all forms.
-        this.clearForms(["idHanaConfigForm", "idHanaTestConsoleForm", "idHanaQueryForm", "idHanaConsoleForm", "idViewForm", "idTableForm"]);
+        this.clearForms(["idHanaConfigForm", "idHanaTestConsoleForm", "idHanaQueryForm", "idHanaConsoleForm"]);
 
         // Nav back to new data set
         this.getRouter().navTo("new-dataset", {}, !sap.ui.Device.system.phone);
