@@ -320,8 +320,8 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/datasets/CreateController"
       oEvent.getSource().setEnabled(false);
 
       // clear the combobox...
-      this.getView().byId("idViewsComboBox").setValue("");
-      this.getView().byId("idTablesComboBox").setValue("");
+      this.getView().byId("idViewsSearchField").setValue("");
+      this.getView().byId("idTablesearchField").setValue("");
 
       // Head back, boi!
       var sPageId = this.getView().createId("idPageStart");
