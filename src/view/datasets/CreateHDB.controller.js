@@ -944,7 +944,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/datasets/CreateController"
         }
 
         // Now we'll continue.
-        var oBinding = oItem.getBinding("dataset");
+        var oBinding = oItem.getContextBinding("dataset");
         return oBinding.getProperty("entity");
       };
 
