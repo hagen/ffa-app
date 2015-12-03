@@ -293,7 +293,7 @@
 
 				<Page
 					id="idPageViews"
-					enableScrolling="false"
+					enableScrolling="true"
 					showHeader="false">
 					<l:Grid
 						defaultSpan="L12 M12 S12"
@@ -338,7 +338,7 @@
 
 				<Page
 					id="idPageTables"
-					enableScrolling="false"
+					enableScrolling="true"
 					showHeader="false">
 					<l:Grid
 						defaultSpan="L12 M12 S12"
