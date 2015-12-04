@@ -1,6 +1,6 @@
-jQuery.sap.declare("util.CSVExporter");
+jQuery.sap.declare("com.ffa.hpc.util.CSVExporter");
 
-util.CSVExporter = {
+com.ffa.hpc.util.CSVExporter = {
 
 	jsonToCsv : function(JSONData, ReportTitle, ShowLabel) {
 	    // If JSONData is not an object then JSON.parse will parse the JSON
