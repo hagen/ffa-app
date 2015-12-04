@@ -48,16 +48,6 @@
         </customHeader>
         <footer>
           <Toolbar>
-            <!--<Button
-              id="idCancelButton"
-              text="Cancel"
-              press="onCancelPress" />-->
-						<ToolbarSpacer />
-            <Button
-              icon="sap-icon://download"
-              enabled="{device>/isDesktop}"
-              type="Transparent"
-              press="onExportPress" />
           </Toolbar>
         </footer>
         <content>

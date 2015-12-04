@@ -185,7 +185,8 @@
             </customData>
             <content>
               <Table
-								growing="false"
+								growing="true"
+                growingThreshold="365"
 								id="idForecastDataTable"
 								inset="false"
 								items="{

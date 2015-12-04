@@ -140,26 +140,6 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
     };
 
     /**
-     * Export using Highcharts export server
-     * @param  {Event} oEvent Button press Event
-     */
-    Adjust.prototype.onExportPress = function(oEvent) {
-      // check we have a chart, and then call export on it, providing a larger size
-      if (!this._oChart) {
-        this.showInfoAlert("Oops. You don't yet have a chart to export", "No chart to export");
-        return;
-      }
-
-      // Export at larger dimensions
-      this._oChart.exportChart(null, {
-        chart: {
-          height: 720,
-          width: 1280
-        }
-      });
-    };
-
-    /**
      * Clear all selected points
      * @param  {Event} oEvent Button press Event
      */
@@ -592,7 +572,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
         var sPath = sBasePath.replace("&1", dFormat.format(new Date(point.x)));
         // create and add the batch operation
         this._aBatchOps.push(oModel.createBatchOperation(sPath, "MERGE", {
-          adjustment: point.y
+          adjustme  nt: point.y
         }));
       }, this);
 
