@@ -217,7 +217,7 @@
 		            emptySpanM="4"
 		            columnsL="1"
 		            columnsM="1"
-		            class="editableForm">
+		            class="editableForm sapUiSmallMarginTop">
 		            <f:content>
 		              <Label
 		                text="Please also supply an SQL query to run against the database. This
