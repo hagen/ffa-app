@@ -1,8 +1,9 @@
 <core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m">
   <ActionSheet placement="Bottom" showCancelButton="true" title="Forecast actions">
     <buttons>
-      <Button icon="sap-icon://FontAwesome/cogs" id="idSettingsButton" press="onDisplaySettingsPress" text="Chart display" tooltip="Chart display options"/>
-      <Button icon="sap-icon://FontAwesome/pencil" id="idAdjustmentsButton" press="onAdjustPress" text="Adjust" tooltip="Make some forecast adjustments"/>
+      <Button icon="sap-icon://FontAwesome/cogs" id="idSettingsButton" press="onDisplaySettingsPress" text="Chart display" tooltip="Chart display options" />
+      <Button icon="sap-icon://FontAwesome/pencil" id="idAdjustmentsButton" press="onAdjustPress" text="Adjust" tooltip="Make some forecast adjustments" />
+      <Button icon="sap-icon://download" id="idDownloadButton" press="onDownloadChart" text="Download image" tooltip="Download image of chart" />
     </buttons>
   </ActionSheet>
 </core:FragmentDefinition>

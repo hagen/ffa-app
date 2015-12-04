@@ -296,24 +296,6 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
     };
 
     /***
-     *    ██████╗  █████╗ ████████╗ █████╗ ███████╗███████╗████████╗
-     *    ██╔══██╗██╔══██╗╚══██╔══╝██╔══██╗██╔════╝██╔════╝╚══██╔══╝
-     *    ██║  ██║███████║   ██║   ███████║███████╗█████╗     ██║
-     *    ██║  ██║██╔══██║   ██║   ██╔══██║╚════██║██╔══╝     ██║
-     *    ██████╔╝██║  ██║   ██║   ██║  ██║███████║███████╗   ██║
-     *    ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚══════╝╚══════╝   ╚═╝
-     *
-     */
-
-    /**
-     * Set up the data set page (if necessary)
-     * @return {[type]} [description]
-     */
-    Forecasts.prototype.setupDatasetPage = function() {
-
-    };
-
-    /***
      *     ██████╗ ██╗   ██╗███████╗██████╗ ██╗   ██╗██╗███████╗██╗    ██╗
      *    ██╔═══██╗██║   ██║██╔════╝██╔══██╗██║   ██║██║██╔════╝██║    ██║
      *    ██║   ██║██║   ██║█████╗  ██████╔╝██║   ██║██║█████╗  ██║ █╗ ██║
@@ -597,7 +579,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
      * @param  {Function} fnSucces Success callback
      * @param  {Function} fnError  Error callback
      */
-    Forecasts.prototype._getChartSettings = function (sRunId, fnSucces, fnError) {
+    Forecasts.prototype._getChartSettings = function(sRunId, fnSucces, fnError) {
       var oModel = this.getView().getModel("viz");
       var sPath = "/Runs('" + sRunId + "')/ChartSettings";
 
@@ -613,14 +595,14 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
       } else {
         // Otherwise, we call back end
         oModel.read(sPath, {
-          success : function(oData, mResponse) {
+          success: function(oData, mResponse) {
             if (typeof fnSucces === "function") {
               try {
                 fnSucces(oData);
               } catch (e) {}
             }
           },
-          error : jQuery.proxy(function(mError) {
+          error: jQuery.proxy(function(mError) {
             this._maybeHandleAuthError(mError);
             if (typeof fnError === "function") {
               try {
@@ -704,7 +686,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
         // Add to data array, only if actual is less than or equal to the
         // train_to date
         if (date < dTrainTo) {
-           aActual.data.push([date, actual]);
+          aActual.data.push([date, actual]);
         }
 
         // Similarly, string number values are of no use; parse a number
@@ -746,6 +728,33 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
     };
 
     /***
+     *    ██╗   ██╗██╗███████╗    ██████╗  ██████╗ ██╗    ██╗███╗   ██╗██╗      ██████╗  █████╗ ██████╗
+     *    ██║   ██║██║╚══███╔╝    ██╔══██╗██╔═══██╗██║    ██║████╗  ██║██║     ██╔═══██╗██╔══██╗██╔══██╗
+     *    ██║   ██║██║  ███╔╝     ██║  ██║██║   ██║██║ █╗ ██║██╔██╗ ██║██║     ██║   ██║███████║██║  ██║
+     *    ╚██╗ ██╔╝██║ ███╔╝      ██║  ██║██║   ██║██║███╗██║██║╚██╗██║██║     ██║   ██║██╔══██║██║  ██║
+     *     ╚████╔╝ ██║███████╗    ██████╔╝╚██████╔╝╚███╔███╔╝██║ ╚████║███████╗╚██████╔╝██║  ██║██████╔╝
+     *      ╚═══╝  ╚═╝╚══════╝    ╚═════╝  ╚═════╝  ╚══╝╚══╝ ╚═╝  ╚═══╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚═════╝
+     *
+     */
+
+    /**
+     * User wishes to download an image of the chart. This requires a connection
+     * to the internet to call the HighCharts svg to png function. Chart is
+     * returned as a downloadable PNG image.
+     * @param  {Event} oEvent Button press event
+     */
+    Forecasts.prototype.onDownloadChart = function(oEvent) {
+      // Call the export method of the chart. Highcharts takes care of the exporting
+      this._oChart.exportChart(null, {
+        chart: {
+          height: 720,
+          width: 1280,
+          backgroundColor: "#ffffff"
+        }
+      });
+    };
+
+    /***
      *    ████████╗ █████╗ ██████╗ ██╗     ███████╗
      *    ╚══██╔══╝██╔══██╗██╔══██╗██║     ██╔════╝
      *       ██║   ███████║██████╔╝██║     █████╗
@@ -767,6 +776,86 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
         var oPage = this.getView().byId("idCarouselTablePage");
         oPage.bindElement("forecast>/Runs('" + this._sRunId + "')");
       }, this));
+    };
+
+    /***
+     *    ██████╗  █████╗ ████████╗ █████╗     ███████╗██╗  ██╗██████╗  ██████╗ ██████╗ ████████╗
+     *    ██╔══██╗██╔══██╗╚══██╔══╝██╔══██╗    ██╔════╝╚██╗██╔╝██╔══██╗██╔═══██╗██╔══██╗╚══██╔══╝
+     *    ██║  ██║███████║   ██║   ███████║    █████╗   ╚███╔╝ ██████╔╝██║   ██║██████╔╝   ██║
+     *    ██║  ██║██╔══██║   ██║   ██╔══██║    ██╔══╝   ██╔██╗ ██╔═══╝ ██║   ██║██╔══██╗   ██║
+     *    ██████╔╝██║  ██║   ██║   ██║  ██║    ███████╗██╔╝ ██╗██║     ╚██████╔╝██║  ██║   ██║
+     *    ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝    ╚══════╝╚═╝  ╚═╝╚═╝      ╚═════╝ ╚═╝  ╚═╝   ╚═╝
+     *
+     */
+
+    /**
+     * Handle export of table data. This must be revisited to allow the user the option
+     * of selecting specific columns to download.
+     */
+    Forecasts.prototype.onDataExport = function(oEvent) {
+
+      // Get table binding path, and then request all this data as a JSON packet from HANA
+      var oTable = this.getView().byId("idForecastDataTable"),
+        oContext = oTable.getBindingContext("forecast"),
+        oModel = oContext.getModel(),
+        sTitle = oModel.getProperty("/Forecasts('" + this._sForecastId + "')/name"),
+        aData = [],
+        that = this;
+
+      // I don't want count to limit data, so temporarily, disable count mode
+      var countMode = oModel.getDefaultCountMode();
+      oModel.setDefaultCountMode(sap.ui.model.odata.CountMode.None);
+
+      // Read in the table data (all of it)
+      oModel.read("Data", {
+        context: oContext,
+        async: false,
+        sorters: [new sap.ui.model.Sorter("date", false)],
+        success: function(oData, mResponse) {
+          aData = oData.results;
+        },
+        error: function(mResponse) {
+          that.showErrorAlert("Couldn't retrieve table data - sorry!", "Data error");
+        }
+      });
+
+      // Count mode back on
+      oModel.setDefaultCountMode(countMode);
+
+      // Curate the data and generate the CSV file
+      jQuery.sap.require("com.ffa.hpc.util.CSVExporter");
+      com.ffa.hpc.util.CSVExporter.jsonToCsv(this.formatExportData(aData) /* results array */ , sTitle, true /* show label */ );
+    };
+
+    /**
+     * Formats the array data into nice, neat array, with the correct property names. This is
+     * important, as these property names will be used as column headers. So inflect the names
+     * so they are correctly capitalised.
+     * @param  {Array} aData OData read data
+     * @return {Array}       resulting formatted array
+     */
+    Forecasts.prototype.formatExportData = function(aData) {
+      var aResults = [];
+      try {
+        // Spin through, and pull out the good stuff
+        for (var i = 0; i < aData.length; i++) {
+          var oData = aData[i];
+          aResults.push({
+            Date: com.ffa.hpc.util.DateFormatter.ddMMyyyy(oData.DATE), // format
+            Actual: oData.actual,
+            Forecast: oData.forecast,
+            Adjusted: oData.adjustment
+          });
+        }
+      } catch (e) {
+        aResults.push({
+          Error: "Data Error",
+          Message: "Unable to prepare table data"
+        });
+      }
+
+      // Done
+      return aResults;
     };
 
     /***
@@ -938,9 +1027,9 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
 
         // Bind the dialog to the chart settings for this run.
         this._oSettingsDialog.bindElement({
-          path : "viz>" + sPath,
-          parameters : {
-            expand : "ChartSettings"
+          path: "viz>" + sPath,
+          parameters: {
+            expand: "ChartSettings"
           }
         });
       }
@@ -971,11 +1060,11 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
       // 1. If chart title is on, then we must have text in Chart title.
       if (get("idTitleSwitch").getState() && !get("idTitleInput").getValue()) {
         get("idTitleInput").setValueState(sap.ui.core.ValueState.Error)
-                            .setValueStateText("Empty chart title");
+          .setValueStateText("Empty chart title");
         bValid = false;
       } else {
         get("idTitleInput").setValueState(sap.ui.core.ValueState.None)
-                            .setValueStateText("");
+          .setValueStateText("");
       }
 
       // 2. if axis labels is on, then we must have two axis labels - one for y
@@ -984,21 +1073,21 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
         // check x axis label input.
         if (!get("idXAxisInput").getValue()) {
           get("idXAxisInput").setValueState(sap.ui.core.ValueState.Error)
-                              .setValueStateText("Empty x axis label");
+            .setValueStateText("Empty x axis label");
           bValid = false;
         } else {
           get("idXAxisInput").setValueState(sap.ui.core.ValueState.None)
-                              .setValueStateText("");
+            .setValueStateText("");
         }
 
         // check y axis label input.
         if (!get("idYAxisInput").getValue()) {
           get("idYAxisInput").setValueState(sap.ui.core.ValueState.Error)
-                              .setValueStateText("Empty y axis label");
+            .setValueStateText("Empty y axis label");
           bValid = false;
         } else {
           get("idYAxisInput").setValueState(sap.ui.core.ValueState.None)
-                              .setValueStateText("");
+            .setValueStateText("");
         }
       }
 
@@ -1014,7 +1103,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
      * this title input field
      * @param  {Event} oEvent The switch event
      */
-    Forecasts.prototype.onTitleSwitchChange = function (oEvent) {
+    Forecasts.prototype.onTitleSwitchChange = function(oEvent) {
 
       // Getter
       var get = jQuery.proxy(function(sId) {
@@ -1023,7 +1112,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
 
       // Declare oData payload
       var oData = {
-        show_title : ""
+        show_title: ""
       };
 
       // When the switch is switch off, clear the title input and disable.
@@ -1035,9 +1124,9 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
       if (!bState) {
         // clear and disable
         oInput.setValue("")
-                .setEnabled(false)
-                .setValueState(sap.ui.core.ValueState.None)
-                .setValueStateText("");
+          .setEnabled(false)
+          .setValueState(sap.ui.core.ValueState.None)
+          .setValueStateText("");
 
         // Add to update payload, only if being removed
         oData.title = "";
@@ -1049,9 +1138,9 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
       var oContext = oEvent.getSource().getBindingContext("viz"),
         oModel = oContext.getModel(),
         sId = oModel.getProperty("ChartSettings/id", oContext);
-      oModel.update("/ChartSettings('" + sId +"')", oData, {
-        merge : true,
-        async : true
+      oModel.update("/ChartSettings('" + sId + "')", oData, {
+        merge: true,
+        async: true
       });
 
       // Update the chart
@@ -1063,7 +1152,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
      * the axis label input fields.
      * @param  {Event} oEvent The switch event
      */
-    Forecasts.prototype.onAxisLabelsSwitchChange = function (oEvent) {
+    Forecasts.prototype.onAxisLabelsSwitchChange = function(oEvent) {
 
       // Getter
       var get = jQuery.proxy(function(sId) {
@@ -1072,7 +1161,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
 
       // Declare oData payload
       var oData = {
-        show_axis_labels : ""
+        show_axis_labels: ""
       };
 
       // When the switch is switch off, clear the title input and disable.
@@ -1085,9 +1174,9 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
       if (!bState) {
         // clear and disable
         oInput.setValue("")
-                .setEnabled(false)
-                .setValueState(sap.ui.core.ValueState.None)
-                .setValueStateText("");
+          .setEnabled(false)
+          .setValueState(sap.ui.core.ValueState.None)
+          .setValueStateText("");
 
         // Add to update payload, only if being removed
         oData.xlabel = "";
@@ -1104,9 +1193,9 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
       if (!bState) {
         // clear and disable
         oInput.setValue("")
-                .setEnabled(false)
-                .setValueState(sap.ui.core.ValueState.None)
-                .setValueStateText("");
+          .setEnabled(false)
+          .setValueState(sap.ui.core.ValueState.None)
+          .setValueStateText("");
 
         // Add to update payload, only if being removed
         oData.ylabel = "";
@@ -1118,9 +1207,9 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
       var oContext = oEvent.getSource().getBindingContext("viz"),
         oModel = oContext.getModel(),
         sId = oModel.getProperty("ChartSettings/id", oContext);
-      oModel.update("/ChartSettings('" + sId +"')", oData, {
-        merge : true,
-        async : true
+      oModel.update("/ChartSettings('" + sId + "')", oData, {
+        merge: true,
+        async: true
       });
 
       // Update the chart
@@ -1132,7 +1221,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
      * value supplied. Sets state accordingly.
      * @param  {Event} oEvent Value change event
      */
-    Forecasts.prototype.onChartSettingsInputChange = function (oEvent) {
+    Forecasts.prototype.onChartSettingsInputChange = function(oEvent) {
       // All we need do is check if there is a value, and if so, remove
       // error value and state.
       var sValue = oEvent.getParameter("value"),
@@ -1150,9 +1239,9 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
       var oContext = oControl.getBindingContext("viz"),
         oModel = oContext.getModel(),
         sId = oModel.getProperty("ChartSettings/id", oContext);
-      oModel.update("/ChartSettings('" + sId +"')", oData, {
-        merge : true,
-        async : true
+      oModel.update("/ChartSettings('" + sId + "')", oData, {
+        merge: true,
+        async: true
       });
 
       this.updateHighcharts(this._oChart, oData);
@@ -1164,32 +1253,50 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
      * @param  {Highcharts} oChart  Highcharts chart
      * @param  {Object}     oParams Named array
      */
-    Forecasts.prototype.updateHighcharts = function (oChart, oParams) {
+    Forecasts.prototype.updateHighcharts = function(oChart, oParams) {
 
       // spin through all parameters, and apply the approriate function for each
       for (var key in oParams) {
         if (oParams.hasOwnProperty(key)) {
           if ("show_title" === key) {
             if (oParams.show_title !== "X") {
-              oChart.setTitle({ text : "" }, "", false);
+              oChart.setTitle({
+                text: ""
+              }, "", false);
             }
           } else if ("title" === key) {
-            oChart.setTitle({ text : oParams.title }, "", false);
+            oChart.setTitle({
+              text: oParams.title
+            }, "", false);
           } else if ("show_axis_labels" === key) {
             if (oParams.show_axis_labels !== "X") {
-              oChart.xAxis[0].setTitle({ text : "" }, false);
-              oChart.yAxis[0].setTitle({ text : "" }, false);
+              oChart.xAxis[0].setTitle({
+                text: ""
+              }, false);
+              oChart.yAxis[0].setTitle({
+                text: ""
+              }, false);
             }
-          } else if ("xlabel" === key){
-            oChart.xAxis[0].setTitle({ text : oParams.xlabel }, false);
-          } else if ("ylabel" === key){
-            oChart.yAxis[0].setTitle({ text : oParams.ylabel }, false);
+          } else if ("xlabel" === key) {
+            oChart.xAxis[0].setTitle({
+              text: oParams.xlabel
+            }, false);
+          } else if ("ylabel" === key) {
+            oChart.yAxis[0].setTitle({
+              text: oParams.ylabel
+            }, false);
           } else if ("actual_title" === key) {
-            oChart.get("idActualSeries").update({ name : oParams.actual_title }, false);
+            oChart.get("idActualSeries").update({
+              name: oParams.actual_title
+            }, false);
           } else if ("forecast_title" === key) {
-            oChart.get("idForecastSeries").update({ name : oParams.forecast_title }, false);
+            oChart.get("idForecastSeries").update({
+              name: oParams.forecast_title
+            }, false);
           } else if ("adjustment_title" === key) {
-            oChart.get("idAdjustmentSeries").update({ name : oParams.adjustment_title }, false);
+            oChart.get("idAdjustmentSeries").update({
+              name: oParams.adjustment_title
+            }, false);
           }
         }
       }
@@ -1202,7 +1309,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
      * Collects and returns all controls in the Chart Settings dialog form.
      * @return {Array} Array of controls
      */
-    Forecasts.prototype.getSettingsControls = function () {
+    Forecasts.prototype.getSettingsControls = function() {
       // Getter
       var get = jQuery.proxy(function(sId) {
         return this.getFragmentControl("idChartSettingsFragment", sId);
@@ -1371,7 +1478,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
      * @param  {String} sId The control id
      * @return {Control}     The control
      */
-    Forecasts.prototype._getControl = function (sId) {
+    Forecasts.prototype._getControl = function(sId) {
       return this.getView().byId(sId);
     };
 
@@ -1380,7 +1487,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
      * @param  {String} sId The control id
      * @return {Control}     The control
      */
-    Forecasts.prototype.getFragmentControl = function (sFragmentId, sId) {
+    Forecasts.prototype.getFragmentControl = function(sFragmentId, sId) {
       return sap.ui.core.Fragment.byId(sFragmentId, sId);
     };
 
