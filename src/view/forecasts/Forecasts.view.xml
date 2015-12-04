@@ -184,6 +184,14 @@
               <core:CustomData key="tab" value="table"/>
             </customData>
             <content>
+              <MessageStrip
+                text="Some columns are hidden when displayed on a phone. To view more columns, please view this screen on a tablet or desktop."
+                type="Information"
+                visible="{device>/isPhone}" />
+              <MessageStrip
+                text="Some columns are hidden when displayed on a tablet. For a full view of columns, please view this screen on a desktop."
+                type="Information"
+                visible="{device>/isTablet}" />
               <Table
 								growing="true"
                 growingThreshold="365"
@@ -217,14 +225,23 @@
                   <Column demandPopin="true" hAlign="Right" minScreenWidth="Tablet">
                     <Text text="Actual"/>
                   </Column>
-                  <Column demandPopin="true" hAlign="Right" minScreenWidth="Tablet">
-                    <Text text="Diff"/>
-                  </Column>
-                  <Column demandPopin="true" hAlign="Right" minScreenWidth="Tablet">
+                  <Column demandPopin="true" hAlign="Right" minScreenWidth="Phone">
                     <Text text="Forecast"/>
                   </Column>
+                  <Column demandPopin="true" hAlign="Right" minScreenWidth="Desktop">
+                    <Text text="Diff. b/w Actual and Forecast"/>
+                  </Column>
                   <Column demandPopin="true" hAlign="Right" minScreenWidth="Tablet">
-                    <Text text="Adjustment"/>
+                    <Text text="Diff. b/w Actual and Forecast %"/>
+                  </Column>
+                  <Column demandPopin="true" hAlign="Right" minScreenWidth="Tablet">
+                    <Text text="Adjusted Forecast"/>
+                  </Column>
+                  <Column demandPopin="true" hAlign="Right" minScreenWidth="Desktop">
+                    <Text text="Difference b/w Forecast and Adjustment"/>
+                  </Column>
+                  <Column demandPopin="true" hAlign="Right" minScreenWidth="Desktop">
+                    <Text text="Difference b/w Forecast and Adjustment %"/>
                   </Column>
                 </columns>
                 <items>

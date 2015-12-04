@@ -843,12 +843,12 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
           aResults.push({
             "Date" : com.ffa.hpc.util.DateFormatter.ddMMyyyy(oData.date), // format
             "Actual" : oData.actual,
-            "Forecast" : oData.forecast,
-            "Adjusted": oData.adjustment,
-            "Change" : oData.change,
-            "Change Percent" : oData.change_percent,
-            "Difference" : oData.diff,
-            "Difference (%)" : oData.diff_percent
+            "Forecast" : oData.forecast,,
+            "Difference b/w Actual and Forecast" : oData.diff,
+            "Difference b/w Actual and Forecast (%)" : oData.diff_percent
+            "Adjusted Forecast": oData.adjustment,
+            "Difference b/w Forecast and Adjustment" : oData.change,
+            "Difference b/w Forecast and Adjustment (%)" : oData.change_percent
           });
         }
       } catch (e) {
