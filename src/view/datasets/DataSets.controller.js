@@ -511,7 +511,7 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/datasets/Controller'],
 
         // If this data set is currently displayed, then trigger a Refresh
         // of data set detail Page
-        if (sId = this._sId) {
+        if (sId === this._sId && !bRefresh) {
           bRefresh = true;
         }
       }, this);
@@ -604,7 +604,6 @@ sap.ui.define(['jquery.sap.global', 'com/ffa/hpc/view/datasets/Controller'],
         bUpdate // Import data?
       );
     };
-
 
     return DataSets;
 
