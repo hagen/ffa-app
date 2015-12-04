@@ -255,16 +255,18 @@
                         }
                       }"/>
                       <ObjectNumber number="{= ${forecast>actual} === 0 ? '' : ${forecast>actual} }"/>
-                      <ObjectNumber number="{= ${forecast>diff_percent} === 0 ? '' : ${forecast>diff_percent} + '%' }"/>
                       <ObjectNumber number="{
-												path: 'forecast>forecast',
-												type: 'sap.ui.model.type.Float',
+                        path: 'forecast>forecast',
+                        type: 'sap.ui.model.type.Float',
                         formatOptions : {
                           minFractionDigits : '2',
                           maxFractionDigits : '2'
                         }
-											}"/>
+                      }"/>
+                      <ObjectNumber number="{= ${forecast>diff} === 0 ? '' : ${forecast>diff} }"/>
+                      <ObjectNumber number="{= ${forecast>diff_percent} === 0 ? '' : ${forecast>diff_percent} + '%' }"/>
                       <ObjectNumber number="{= ${forecast>change} === 0 ? '' : ${forecast>change} }"/>
+                      <ObjectNumber number="{= ${forecast>change_percent} === 0 ? '' : ${forecast>change_percent} + '%' }"/>
                     </cells>
                   </ColumnListItem>
                 </items>

@@ -391,6 +391,8 @@ sap.ui.core.UIComponent.extend("com.ffa.hpc.Component", {
       isNoTouch: !sap.ui.Device.support.touch,
       isPhone: sap.ui.Device.system.phone,
       isNoPhone: !sap.ui.Device.system.phone,
+      isTablet: sap.ui.Device.system.tablet,
+      isNoTablet: !sap.ui.Device.system.tablet,
       isDesktop: sap.ui.Device.system.desktop,
       isNoDesktop: !sap.ui.Device.system.desktop,
       listMode: sap.ui.Device.system.phone ? "None" : "SingleSelectMaster",
