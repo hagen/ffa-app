@@ -255,14 +255,7 @@
                         }
                       }"/>
                       <ObjectNumber number="{= ${forecast>actual} === 0 ? '' : ${forecast>actual} }"/>
-                      <ObjectNumber number="{
-                        path: 'forecast>forecast',
-                        type: 'sap.ui.model.type.Float',
-                        formatOptions : {
-                          minFractionDigits : '2',
-                          maxFractionDigits : '2'
-                        }
-                      }"/>
+                      <ObjectNumber number="{= ${forecast>forecast} === 0 ? '' : ${forecast>forecast} }"/>
                       <ObjectNumber number="{= ${forecast>diff} === 0 ? '' : ${forecast>diff} }"/>
                       <ObjectNumber number="{= ${forecast>diff_percent} === 0 ? '' : ${forecast>diff_percent} + '%' }"/>
                       <ObjectNumber number="{= ${forecast>adjustment} === 0 ? '' : ${forecast>adjustment} }"/>
