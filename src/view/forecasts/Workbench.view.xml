@@ -23,7 +23,7 @@
 						<Title
 							id="idWorkbenchMasterTitle"
 							textAlign="Center"
-							text="Catalog"
+							text="Workbench"
 							width="100%" />
 						<!-- This button is only activated when navigating through folders -->
 						<Button
