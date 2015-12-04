@@ -525,7 +525,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
         // for each point, update the y value by our percentage amount
         point.update({
           // new y value (using y1 as our base)
-          y: point.y1 * (1 + fDecimal/1000)
+          y: point.y1 * (1 + fDecimal/100)
         }, /*redraw = */ false, /* animation = */ true);
       }, this);
 
