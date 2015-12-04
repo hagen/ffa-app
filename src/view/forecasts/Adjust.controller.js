@@ -473,7 +473,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
      */
     Adjust.prototype.onSliderChange = function(oEvent) {
       // Get the change value (%); it is safe to simply take this from
-      // the event, as the value fromthe slider is always a float
+      // the event, as the value from the slider is always a float
       var fPercent = parseFloat(oEvent.getParameter("value")) / 100;
 
       // Now make the change to our chart...
@@ -572,7 +572,7 @@ sap.ui.define(["jquery.sap.global", "com/ffa/hpc/view/forecasts/Controller"],
         var sPath = sBasePath.replace("&1", dFormat.format(new Date(point.x)));
         // create and add the batch operation
         this._aBatchOps.push(oModel.createBatchOperation(sPath, "MERGE", {
-          adjustme  nt: point.y
+          adjustment: point.y
         }));
       }, this);
 
